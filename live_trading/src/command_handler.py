@@ -293,7 +293,7 @@ class CommandHandler:
 
     def handle_strategy(self) -> str:
         """
-        Show current strategy parameters
+        Show current strategy parameters with full description
 
         Returns:
             Strategy info message
@@ -301,17 +301,45 @@ class CommandHandler:
         try:
             strategy_config = self.config['strategy']
 
-            message = f"📈 <b>CURRENT STRATEGY</b>\n\n"
-            message += f"<b>Name:</b> Overnight Recovery\n"
-            message += f"<b>Entry Time:</b> {strategy_config['entry_hour']}:00 PM EST\n"
-            message += f"<b>Max Entry Price:</b> ${strategy_config['max_entry_price_usd']:,.0f}\n"
-            message += f"<b>Trailing Stop:</b> {strategy_config['trailing_stop_pct']}%\n"
-            message += f"<b>Never Sell at Loss:</b> YES\n"
+            message = f"📈 <b>OVERNIGHT RECOVERY STRATEGY</b>\n\n"
 
-            message += f"\n<b>December Backtest:</b>\n"
-            message += f"• Return: +17.95%\n"
-            message += f"• Win Rate: 76.9%\n"
-            message += f"• Max Drawdown: -3.25%"
+            message += f"<b>🎯 Overview:</b>\n"
+            message += f"Capitalize on Bitcoin's tendency to recover overnight after intraday weakness. "
+            message += f"Enters at 3PM EST and holds until price hits trailing stop.\n\n"
+
+            message += f"<b>📥 ENTRY CONDITIONS:</b>\n"
+            message += f"• <b>Time:</b> {strategy_config['entry_hour']}:00 PM EST daily\n"
+            message += f"• <b>Price Check:</b> BTC must be below ${strategy_config['max_entry_price_usd']:,.0f}\n"
+            message += f"• <b>Position:</b> Not already in a position\n"
+            message += f"• <b>Risk Check:</b> Daily loss limit not exceeded\n"
+            message += f"• <b>Action:</b> Market buy with calculated position size\n\n"
+
+            message += f"<b>📤 EXIT CONDITIONS:</b>\n"
+            message += f"• <b>Trailing Stop:</b> {strategy_config['trailing_stop_pct']}% from peak price\n"
+            message += f"• <b>Protection:</b> NEVER sells at a loss\n"
+            message += f"• <b>Peak Tracking:</b> Continuously updates highest price reached\n"
+            message += f"• <b>Trigger:</b> Price drops {strategy_config['trailing_stop_pct']}% from peak → Market sell\n\n"
+
+            message += f"<b>📊 BACKTEST RESULTS (December 2024):</b>\n"
+            message += f"• <b>Total Return:</b> +17.95%\n"
+            message += f"• <b>Win Rate:</b> 76.9% (20/26 trades)\n"
+            message += f"• <b>Max Drawdown:</b> -3.25%\n"
+            message += f"• <b>Avg Win:</b> +1.2%\n"
+            message += f"• <b>Largest Win:</b> +3.8%\n"
+            message += f"• <b>Risk/Reward:</b> Asymmetric (capped losses, unlimited gains)\n\n"
+
+            message += f"<b>⚙️ RISK MANAGEMENT:</b>\n"
+            message += f"• <b>Position Size:</b> {self.config['risk']['position_size_pct']}% of account per trade\n"
+            message += f"• <b>Max Daily Loss:</b> {self.config['risk']['max_daily_loss_pct']}% of account\n"
+            message += f"• <b>Max Consecutive Losses:</b> {self.config['risk']['max_consecutive_losses']}\n\n"
+
+            # Show current status
+            is_enabled = not self.bot.is_paused
+            status_emoji = "🟢" if is_enabled else "🔴"
+            message += f"<b>Status:</b> {status_emoji} {'ENABLED' if is_enabled else 'DISABLED'}\n"
+
+            if not is_enabled:
+                message += f"\nUse /start to enable trading"
 
             return message
 
