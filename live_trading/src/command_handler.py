@@ -118,6 +118,8 @@ class CommandHandler:
                 return self.handle_help()
             elif command == '/status':
                 return self.handle_status()
+            elif command == '/balance':
+                return self.handle_balance()
             elif command == '/strategy':
                 return self.handle_strategy()
             elif command == '/auth':
@@ -149,10 +151,11 @@ class CommandHandler:
 
 <b>Monitoring:</b>
 /status - View current position, balance, P&L
+/balance - View account balance
 /strategy - View strategy parameters
 
 <b>Control:</b>
-/start - Enable trading
+/start - Enable trading (deploy strategy)
 /stop - Disable trading 🔒
 /close - Emergency close position 🔒
 
@@ -242,6 +245,51 @@ class CommandHandler:
 
         except Exception as e:
             return f"❌ Error getting status: {str(e)}"
+
+    def handle_balance(self) -> str:
+        """
+        Show current account balance
+
+        Returns:
+            Balance message
+        """
+        try:
+            # Get balance
+            try:
+                balance = self.bot.exchange.get_account_balance()
+            except Exception as e:
+                return f"❌ Error fetching balance: {str(e)}"
+
+            # Get current price
+            try:
+                current_price = self.bot.exchange.get_btc_price()
+            except:
+                current_price = None
+
+            message = f"💰 <b>ACCOUNT BALANCE</b>\n\n"
+            message += f"<b>Balance:</b> ${balance:,.2f} USDC\n"
+
+            if current_price:
+                message += f"<b>BTC Price:</b> ${current_price:,.2f}\n"
+
+            # Show position if any
+            position = self.bot.state_manager.get_position_details()
+            if position:
+                size_btc = position['size_btc']
+                entry_price = position['entry_price']
+
+                if current_price:
+                    position_value = size_btc * current_price
+                    profit_pct = ((current_price - entry_price) / entry_price) * 100
+                    profit_usd = (current_price - entry_price) * size_btc
+
+                    message += f"\n<b>Position Value:</b> ${position_value:,.2f}\n"
+                    message += f"<b>Unrealized P&L:</b> {profit_pct:+.2f}% (${profit_usd:+,.2f})"
+
+            return message
+
+        except Exception as e:
+            return f"❌ Error getting balance: {str(e)}"
 
     def handle_strategy(self) -> str:
         """
