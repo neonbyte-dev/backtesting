@@ -1,0 +1,10 @@
+✅ SUCCESS! You're looking at the backtesting project!
+
+If you can see this file, you're in the right place.
+
+Quick start:
+1. Open terminal in this folder
+2. Run: source venv/bin/activate
+3. Run: python run_backtest.py
+
+The backtesting system is ready to use.

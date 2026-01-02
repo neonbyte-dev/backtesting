@@ -1,0 +1,34 @@
+{
+  "strategy": {
+    "entry_hour": 15,
+    "max_entry_price_usd": 90000,
+    "trailing_stop_pct": 1.0,
+    "timezone": "America/New_York"
+  },
+  "exchange": {
+    "symbol": "BTC",
+    "testnet": true,
+    "retry_attempts": 3,
+    "request_timeout_seconds": 30
+  },
+  "bot": {
+    "loop_interval_seconds": 300,
+    "heartbeat_interval_hours": 1,
+    "enable_trading": false
+  },
+  "risk": {
+    "max_daily_loss_pct": 5.0,
+    "max_consecutive_losses": 3,
+    "position_size_pct": 100
+  },
+  "logging": {
+    "level": "INFO",
+    "log_trades": true,
+    "log_heartbeats": true
+  },
+  "security": {
+    "require_pin": true,
+    "pin_timeout_minutes": 5,
+    "allowed_chat_ids": ["1644767408"]
+  }
+}

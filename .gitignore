@@ -1,0 +1,29 @@
+# Virtual environment
+venv/
+env/
+*.pyc
+__pycache__/
+
+# Data and results (these can get large)
+data/*.csv
+results/*.png
+
+# Keep the directories but not the contents
+!data/.gitkeep
+!results/.gitkeep
+
+# Environment variables
+.env
+
+# Live trading state and logs (contain sensitive data)
+live_trading/state/*.json
+live_trading/logs/*.log
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
