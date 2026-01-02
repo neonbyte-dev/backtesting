@@ -83,7 +83,7 @@ class CommandHandler:
         now = datetime.now(pytz.UTC)
         return now < self.authenticated_until
 
-    def process_command(self, message_text: str, chat_id: str) -> str:
+    def process_command(self, message_text: str, chat_id: str):
         """
         Process a command and return response
 
@@ -92,17 +92,17 @@ class CommandHandler:
             chat_id: Telegram chat ID of sender
 
         Returns:
-            Response message to send back
+            Tuple of (message, keyboard) where keyboard is optional inline keyboard markup
         """
         # Check authorization
         if not self.is_authorized_chat(chat_id):
             self.bot.logger.warning(f"Unauthorized command from chat_id: {chat_id}")
-            return ""  # Silent ignore
+            return ("", None)  # Silent ignore
 
         # Parse command
         parts = message_text.strip().split()
         if not parts:
-            return "❌ Empty message"
+            return ("❌ Empty message", None)
 
         command = parts[0].lower()
         args = parts[1:] if len(parts) > 1 else []
@@ -110,34 +110,34 @@ class CommandHandler:
         # Check authentication for protected commands
         if command in self.protected_commands:
             if not self.is_authenticated():
-                return f"🔒 <b>Authentication Required</b>\n\nThis command requires PIN.\nSend: /auth &lt;your_pin&gt;"
+                return (f"🔒 <b>Authentication Required</b>\n\nThis command requires PIN.\nSend: /auth &lt;your_pin&gt;", None)
 
         # Route to appropriate handler
         try:
             if command == '/help':
-                return self.handle_help()
+                return (self.handle_help(), None)
             elif command == '/status':
-                return self.handle_status()
+                return (self.handle_status(), None)
             elif command == '/balance':
-                return self.handle_balance()
+                return (self.handle_balance(), None)
             elif command == '/strategy':
-                return self.handle_strategy()
+                return self.handle_strategy()  # Returns tuple with keyboard
             elif command == '/auth':
-                return self.handle_auth(args, chat_id)
+                return (self.handle_auth(args, chat_id), None)
             elif command == '/start':
-                return self.handle_start()
+                return (self.handle_start(), None)
             elif command == '/stop':
-                return self.handle_stop()
+                return (self.handle_stop(), None)
             elif command == '/close':
-                return self.handle_close()
+                return (self.handle_close(), None)
             elif command == '/switch':
-                return self.handle_switch(args)
+                return (self.handle_switch(args), None)
             else:
-                return f"❌ Unknown command: <code>{command}</code>\n\nSend /help for available commands"
+                return (f"❌ Unknown command: <code>{command}</code>\n\nSend /help for available commands", None)
 
         except Exception as e:
             self.bot.logger.error(f"Error processing command {command}: {e}", exc_info=True)
-            return f"❌ <b>Error</b>\n\nFailed to execute command: {str(e)}"
+            return (f"❌ <b>Error</b>\n\nFailed to execute command: {str(e)}", None)
 
     def handle_help(self) -> str:
         """
@@ -338,15 +338,27 @@ class CommandHandler:
             status_emoji = "🟢" if is_enabled else "🔴"
             message += f"<b>Status:</b> {status_emoji} {'ENABLED' if is_enabled else 'DISABLED'}\n"
 
+            # Create inline keyboard with action button
+            keyboard = None
             if not is_enabled:
-                message += f"\n<b>📌 TO ACTIVATE:</b> Send /start to begin trading with this strategy"
+                message += f"\n<b>📌 TO ACTIVATE:</b> Use the button below to start trading"
+                keyboard = {
+                    "inline_keyboard": [[
+                        {"text": "▶️ START TRADING", "callback_data": "/start"}
+                    ]]
+                }
             else:
-                message += f"\n<b>✅ ACTIVE:</b> Strategy is currently running. Send /stop to pause."
+                message += f"\n<b>✅ ACTIVE:</b> Strategy is currently running"
+                keyboard = {
+                    "inline_keyboard": [[
+                        {"text": "⏸️ PAUSE TRADING", "callback_data": "/stop"}
+                    ]]
+                }
 
-            return message
+            return (message, keyboard)
 
         except Exception as e:
-            return f"❌ Error getting strategy info: {str(e)}"
+            return (f"❌ Error getting strategy info: {str(e)}", None)
 
     def handle_auth(self, args: list, chat_id: str) -> str:
         """

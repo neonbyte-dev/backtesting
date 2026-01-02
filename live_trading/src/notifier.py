@@ -48,13 +48,14 @@ class TelegramNotifier:
         # Track last heartbeat to avoid spam
         self.last_heartbeat = None
 
-    def _send_message(self, text: str, parse_mode: str = 'HTML') -> bool:
+    def _send_message(self, text: str, parse_mode: str = 'HTML', reply_markup: dict = None) -> bool:
         """
         Send message to Telegram
 
         Args:
             text: Message text (supports HTML formatting)
             parse_mode: 'HTML' or 'Markdown'
+            reply_markup: Optional inline keyboard or reply keyboard markup
 
         Returns:
             True if sent successfully, False otherwise
@@ -70,6 +71,9 @@ class TelegramNotifier:
                 'text': text,
                 'parse_mode': parse_mode
             }
+
+            if reply_markup:
+                payload['reply_markup'] = reply_markup
 
             response = requests.post(url, json=payload, timeout=10)
             response.raise_for_status()
@@ -338,7 +342,7 @@ Bot is ready to trade.
             url = f"{self.base_url}/getUpdates"
             params = {
                 'timeout': timeout,
-                'allowed_updates': ['message']
+                'allowed_updates': ['message', 'callback_query']
             }
 
             if offset:
@@ -389,6 +393,25 @@ Bot is ready to trade.
                         # Update offset to acknowledge this message
                         offset = update['update_id'] + 1
 
+                        # Handle callback queries (button clicks)
+                        if 'callback_query' in update:
+                            callback = update['callback_query']
+                            callback_id = callback['id']
+                            chat_id = callback['message']['chat']['id']
+                            data = callback['data']
+
+                            print(f"🔘 Button clicked: {data} from {chat_id}")
+
+                            # Answer callback to remove loading state
+                            answer_url = f"{self.base_url}/answerCallbackQuery"
+                            requests.post(answer_url, json={'callback_query_id': callback_id})
+
+                            # Process the command from button
+                            message, keyboard = command_handler.process_command(data, str(chat_id))
+                            if message:
+                                self._send_message(message, reply_markup=keyboard)
+                            continue
+
                         # Extract message
                         if 'message' not in update:
                             continue
@@ -405,11 +428,11 @@ Bot is ready to trade.
 
                         # Process command
                         print(f"📨 Received command: {text} from {chat_id}")
-                        response = command_handler.process_command(text, str(chat_id))
+                        response_msg, keyboard = command_handler.process_command(text, str(chat_id))
 
                         # Send response
-                        if response:
-                            self._send_message(response)
+                        if response_msg:
+                            self._send_message(response_msg, reply_markup=keyboard)
 
                 except KeyboardInterrupt:
                     print("\n🛑 Telegram listener stopped")
