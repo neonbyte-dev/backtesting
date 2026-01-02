@@ -151,13 +151,13 @@ class CommandHandler:
 
 <b>Monitoring:</b>
 /status - View current position, balance, P&L
-/balance - View account balance
-/strategy - View strategy parameters
+/balance - Quick balance check
+/strategy - View strategy details & how to activate
 
-<b>Control:</b>
-/start - Enable trading (deploy strategy)
-/stop - Disable trading 🔒
-/close - Emergency close position 🔒
+<b>Trading Control:</b>
+/start - ▶️ ACTIVATE STRATEGY & start trading
+/stop - ⏸️ PAUSE STRATEGY 🔒
+/close - ⛔ Emergency close position 🔒
 
 <b>Configuration:</b>
 /switch &lt;account&gt; - Switch HyperLiquid account 🔒
@@ -339,7 +339,9 @@ class CommandHandler:
             message += f"<b>Status:</b> {status_emoji} {'ENABLED' if is_enabled else 'DISABLED'}\n"
 
             if not is_enabled:
-                message += f"\nUse /start to enable trading"
+                message += f"\n<b>📌 TO ACTIVATE:</b> Send /start to begin trading with this strategy"
+            else:
+                message += f"\n<b>✅ ACTIVE:</b> Strategy is currently running. Send /stop to pause."
 
             return message
 

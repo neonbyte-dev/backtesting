@@ -146,14 +146,19 @@ class HyperLiquidClient:
             BTC: $87,432.50
         """
         try:
-            # HyperLiquid ticker endpoint
-            response = self._make_request('GET', '/info/ticker?coin=BTC')
+            # Use POST /info with allMids type to get all mid prices
+            payload = {
+                "type": "allMids"
+            }
 
-            # Extract last price
-            if 'price' in response:
-                return float(response['price'])
+            response = self._make_request('POST', '/info', data=payload,
+                                         authenticated=False)
+
+            # Response is a dict with asset names as keys (e.g., {"BTC": "87432.5", "ETH": "3245.2"})
+            if isinstance(response, dict) and 'BTC' in response:
+                return float(response['BTC'])
             else:
-                raise Exception(f"Unexpected response format: {response}")
+                raise Exception(f"BTC price not found in response: {response}")
 
         except Exception as e:
             raise Exception(f"Failed to get BTC price: {str(e)}")
@@ -171,8 +176,14 @@ class HyperLiquidClient:
             Balance: $100,000.00
         """
         try:
-            response = self._make_request('GET', '/info/spotClearinghouseState',
-                                         authenticated=True)
+            # Use POST /info with spotClearinghouseState type
+            payload = {
+                "type": "spotClearinghouseState",
+                "user": self.api_key  # Wallet address
+            }
+
+            response = self._make_request('POST', '/info', data=payload,
+                                         authenticated=False)
 
             # Find USDC balance
             if 'balances' in response:
