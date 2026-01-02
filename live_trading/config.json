@@ -7,7 +7,7 @@
   },
   "exchange": {
     "symbol": "BTC",
-    "testnet": true,
+    "testnet": false,
     "retry_attempts": 3,
     "request_timeout_seconds": 30
   },

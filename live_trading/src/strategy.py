@@ -4,7 +4,7 @@ Overnight Recovery Strategy Logic
 This is the LIVE TRADING version of our backtested MarketOpenDumpStrategy.
 
 Strategy Rules (from December optimization):
-1. Entry: Buy at 3 PM EST when price < $90,000
+1. Entry: Buy at 3 PM EST (8 PM GMT) when price < $90,000
 2. Exit: Trailing stop 1% from peak (never sell at loss)
 3. Position: 100% of capital per trade
 
@@ -79,7 +79,7 @@ class OvernightRecoveryStrategy:
             ...     print(f"ENTRY: {reason}")
             ENTRY: All conditions met - Price $87,500 < $90,000 at 3:00 PM EST
         """
-        # Convert to EST
+        # Convert to EST (strategy timezone)
         est_time = current_time.astimezone(self.timezone)
         current_hour = est_time.hour
         current_minute = est_time.minute
@@ -222,7 +222,7 @@ if __name__ == '__main__':
 
     # Test entry logic
     test_time = datetime.now(pytz.UTC)
-    test_time = test_time.replace(hour=19, minute=2)  # 3:02 PM EST (19:00 UTC)
+    test_time = test_time.replace(hour=20, minute=2)  # 3:02 PM EST (20:02 UTC)
 
     print(f"\nTest Entry Logic:")
     print(f"Time: {test_time.astimezone(pytz.timezone('America/New_York'))}")

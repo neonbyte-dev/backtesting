@@ -647,7 +647,7 @@ if __name__ == '__main__':
 ╔═══════════════════════════════════════════════════════════╗
 ║                                                           ║
 ║        OVERNIGHT RECOVERY TRADING BOT                     ║
-║        Strategy: Buy 3PM EST, Trailing Stop 1%            ║
+║        Strategy: Buy 3PM EST (8PM GMT), Trailing Stop 1%  ║
 ║                                                           ║
 ║        IMPORTANT: Review config.json before starting      ║
 ║        - Check testnet vs mainnet setting                 ║

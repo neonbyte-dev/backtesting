@@ -8,8 +8,8 @@ Supported Commands:
 - /status - View current bot status, position, balance
 - /strategy - View current strategy parameters
 - /auth <pin> - Authenticate for sensitive commands
-- /start - Enable trading
-- /stop - Disable trading (requires PIN)
+- /enable - Enable trading
+- /disable - Disable trading (requires PIN)
 - /close - Emergency close position (requires PIN)
 - /switch <account> - Switch HyperLiquid accounts (requires PIN)
 """
@@ -53,7 +53,7 @@ class CommandHandler:
         self.allowed_chat_ids = config.get('security', {}).get('allowed_chat_ids', [])
 
         # Commands that require authentication
-        self.protected_commands = ['/stop', '/close', '/switch']
+        self.protected_commands = ['/disable', '/close', '/switch']
 
     def is_authorized_chat(self, chat_id: str) -> bool:
         """
@@ -124,9 +124,9 @@ class CommandHandler:
                 return self.handle_strategy()  # Returns tuple with keyboard
             elif command == '/auth':
                 return (self.handle_auth(args, chat_id), None)
-            elif command == '/start':
+            elif command == '/enable':
                 return (self.handle_start(), None)
-            elif command == '/stop':
+            elif command == '/disable':
                 return (self.handle_stop(), None)
             elif command == '/close':
                 return (self.handle_close(), None)
@@ -152,11 +152,11 @@ class CommandHandler:
 <b>Monitoring:</b>
 /status - View current position, balance, P&L
 /balance - Quick balance check
-/strategy - View strategy details & how to activate
+/strategy - View strategy details & activation button
 
 <b>Trading Control:</b>
-/start - ▶️ ACTIVATE STRATEGY & start trading
-/stop - ⏸️ PAUSE STRATEGY 🔒
+/enable - ▶️ ACTIVATE STRATEGY & start trading
+/disable - ⏸️ PAUSE STRATEGY 🔒
 /close - ⛔ Emergency close position 🔒
 
 <b>Configuration:</b>
@@ -194,9 +194,11 @@ class CommandHandler:
 
             # Build status message
             trading_status = "🛑 DISABLED" if is_paused else "✅ ENABLED"
+            strategy_name = "Overnight Recovery"  # Future: get from active strategy
 
             message = f"📊 <b>BOT STATUS</b>\n\n"
             message += f"<b>Trading:</b> {trading_status}\n"
+            message += f"<b>Strategy:</b> {strategy_name}\n"
 
             if current_price:
                 message += f"<b>BTC Price:</b> ${current_price:,.2f}\n"
@@ -226,14 +228,15 @@ class CommandHandler:
             else:
                 message += f"\n<b>Position:</b> None\n"
 
-                # Next entry time
-                now_est = datetime.now(pytz.timezone('America/New_York'))
-                entry_hour = self.config['strategy']['entry_hour']
+                # Next entry time - show both EST and GMT
+                now_london = datetime.now(pytz.timezone('Europe/London'))
+                entry_hour_est = self.config['strategy']['entry_hour']  # 15 = 3 PM EST
+                entry_hour_gmt = 20  # 8 PM GMT (3 PM EST + 5 hours)
 
-                if now_est.hour < entry_hour:
-                    message += f"<b>Next Entry:</b> Today {entry_hour}:00 PM EST"
+                if now_london.hour < entry_hour_gmt:
+                    message += f"<b>Next Entry:</b> Today 20:00 GMT (15:00 EST)"
                 else:
-                    message += f"<b>Next Entry:</b> Tomorrow {entry_hour}:00 PM EST"
+                    message += f"<b>Next Entry:</b> Tomorrow 20:00 GMT (15:00 EST)"
 
             # Daily P&L
             risk_metrics = self.bot.state_manager.get_risk_metrics()
@@ -254,13 +257,10 @@ class CommandHandler:
             Balance message
         """
         try:
-            # Get balance
-            try:
-                balance = self.bot.exchange.get_account_balance()
-            except Exception as e:
-                return f"❌ Error fetching balance: {str(e)}"
+            # Get balance from perp clearinghouse
+            balance = self.bot.exchange.get_account_balance()
 
-            # Get current price
+            # Get current BTC price
             try:
                 current_price = self.bot.exchange.get_btc_price()
             except:
@@ -305,10 +305,10 @@ class CommandHandler:
 
             message += f"<b>🎯 Overview:</b>\n"
             message += f"Capitalize on Bitcoin's tendency to recover overnight after intraday weakness. "
-            message += f"Enters at 3PM EST and holds until price hits trailing stop.\n\n"
+            message += f"Enters at 20:00 GMT (15:00 EST) and holds until price hits trailing stop.\n\n"
 
             message += f"<b>📥 ENTRY CONDITIONS:</b>\n"
-            message += f"• <b>Time:</b> {strategy_config['entry_hour']}:00 PM EST daily\n"
+            message += f"• <b>Time:</b> 20:00 GMT (15:00 EST) daily\n"
             message += f"• <b>Price Check:</b> BTC must be below ${strategy_config['max_entry_price_usd']:,.0f}\n"
             message += f"• <b>Position:</b> Not already in a position\n"
             message += f"• <b>Risk Check:</b> Daily loss limit not exceeded\n"
@@ -344,14 +344,14 @@ class CommandHandler:
                 message += f"\n<b>📌 TO ACTIVATE:</b> Use the button below to start trading"
                 keyboard = {
                     "inline_keyboard": [[
-                        {"text": "▶️ START TRADING", "callback_data": "/start"}
+                        {"text": "▶️ ENABLE STRATEGY", "callback_data": "/enable"}
                     ]]
                 }
             else:
                 message += f"\n<b>✅ ACTIVE:</b> Strategy is currently running"
                 keyboard = {
                     "inline_keyboard": [[
-                        {"text": "⏸️ PAUSE TRADING", "callback_data": "/stop"}
+                        {"text": "⏸️ DISABLE STRATEGY", "callback_data": "/disable"}
                     ]]
                 }
 
@@ -410,12 +410,12 @@ class CommandHandler:
         try:
             self.bot.enable_trading()
 
-            now_est = datetime.now(pytz.timezone('America/New_York'))
-            entry_hour = self.config['strategy']['entry_hour']
+            now_london = datetime.now(pytz.timezone('Europe/London'))
+            entry_hour_london = 20  # 8 PM London (3 PM EST)
 
             message = "✅ <b>Trading ENABLED</b>\n\n"
             message += "The bot will now:\n"
-            message += f"• Monitor for entry signals at {entry_hour}:00 PM EST\n"
+            message += f"• Monitor for entry signals at 20:00 GMT (15:00 EST)\n"
             message += "• Execute trades automatically\n"
             message += "• Send alerts on all actions\n\n"
 
@@ -423,10 +423,10 @@ class CommandHandler:
             if position:
                 message += f"<b>Current:</b> In position"
             else:
-                if now_est.hour < entry_hour:
-                    message += f"<b>Next Entry Check:</b> Today {entry_hour}:00 PM EST"
+                if now_london.hour < entry_hour_london:
+                    message += f"<b>Next Entry Check:</b> Today 20:00 GMT (15:00 EST)"
                 else:
-                    message += f"<b>Next Entry Check:</b> Tomorrow {entry_hour}:00 PM EST"
+                    message += f"<b>Next Entry Check:</b> Tomorrow 20:00 GMT (15:00 EST)"
 
             return message
 

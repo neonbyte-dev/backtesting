@@ -165,7 +165,10 @@ class HyperLiquidClient:
 
     def get_account_balance(self) -> float:
         """
-        Get available USDC balance
+        Get available USDC balance from perp clearinghouse
+
+        HyperLiquid stores USDC in the perpetual trading clearinghouse,
+        not the spot clearinghouse. This queries the perp account.
 
         Returns:
             Available USDC balance
@@ -176,22 +179,40 @@ class HyperLiquidClient:
             Balance: $100,000.00
         """
         try:
-            # Use POST /info with spotClearinghouseState type
+            # Use POST /info with clearinghouseState type (perp, not spot)
+            # USDC is held in the perp clearinghouse on HyperLiquid
             payload = {
-                "type": "spotClearinghouseState",
-                "user": self.api_key  # Wallet address
+                "type": "clearinghouseState",
+                "user": self.api_key  # Wallet address (0x...)
             }
 
             response = self._make_request('POST', '/info', data=payload,
                                          authenticated=False)
 
-            # Find USDC balance
-            if 'balances' in response:
-                for balance in response['balances']:
+            # Extract withdrawable balance from margin summary
+            # Response format: {"marginSummary": {"accountValue": "...", "totalMarginUsed": "...", ...}, ...}
+            if 'marginSummary' in response:
+                margin = response['marginSummary']
+                # accountValue = total account value including unrealized P&L
+                # withdrawable = what you can actually withdraw (available margin)
+                account_value = float(margin.get('accountValue', 0))
+                return account_value
+
+            # Fallback: try spot clearinghouse if perp is empty
+            spot_payload = {
+                "type": "spotClearinghouseState",
+                "user": self.api_key
+            }
+            spot_response = self._make_request('POST', '/info', data=spot_payload,
+                                              authenticated=False)
+
+            if 'balances' in spot_response:
+                for balance in spot_response['balances']:
                     if balance['coin'] == 'USDC':
                         return float(balance['total'])
 
-            raise Exception(f"USDC balance not found in response")
+            # No balance found in either clearinghouse
+            return 0.0
 
         except Exception as e:
             raise Exception(f"Failed to get account balance: {str(e)}")

@@ -21,6 +21,16 @@ from typing import Optional
 import pytz
 
 
+class ConflictError(Exception):
+    """
+    Raised when another bot instance is already polling Telegram.
+
+    The Telegram Bot API only allows ONE polling connection per bot token.
+    If you see this error, kill other bot.py processes first.
+    """
+    pass
+
+
 class TelegramNotifier:
     """
     Sends notifications via Telegram Bot API
@@ -60,8 +70,13 @@ class TelegramNotifier:
         Returns:
             True if sent successfully, False otherwise
         """
+        import json as json_module
+        import logging
+
+        logger = logging.getLogger('TradingBot')
+
         if not self.enabled:
-            print(f"[TELEGRAM DISABLED] {text}")
+            logger.debug(f"[TELEGRAM DISABLED] {text[:100]}...")
             return False
 
         try:
@@ -72,15 +87,26 @@ class TelegramNotifier:
                 'parse_mode': parse_mode
             }
 
+            # Add inline keyboard if provided
             if reply_markup:
                 payload['reply_markup'] = reply_markup
 
             response = requests.post(url, json=payload, timeout=10)
-            response.raise_for_status()
+
+            # Check for errors in response
+            if response.status_code != 200:
+                logger.error(f"Telegram API error: {response.status_code} - {response.text}")
+                return False
+
+            result = response.json()
+            if not result.get('ok'):
+                logger.error(f"Telegram API returned error: {result}")
+                return False
+
             return True
 
         except Exception as e:
-            print(f"❌ Failed to send Telegram message: {e}")
+            logger.error(f"Failed to send Telegram message: {e}")
             return False
 
     def send_entry_alert(self, price: float, size_btc: float, size_usd: float,
@@ -90,19 +116,20 @@ class TelegramNotifier:
 
         Example message:
             🟢 ENTRY EXECUTED
-            Time: 3:00 PM EST
+            Time: 20:00 GMT (15:00 EST)
             Price: $87,432
             Size: 1.1435 BTC ($100,000)
 
             Stop: 1% trailing stop
             Strategy: Overnight Recovery
         """
+        london_time = entry_time.astimezone(pytz.timezone('Europe/London'))
         est_time = entry_time.astimezone(pytz.timezone('America/New_York'))
 
         message = f"""
 🟢 <b>ENTRY EXECUTED</b>
 
-⏰ Time: {est_time.strftime('%I:%M %p %Z')}
+⏰ Time: {london_time.strftime('%H:%M')} GMT ({est_time.strftime('%H:%M')} EST)
 💰 Price: ${price:,.2f}
 📊 Size: {size_btc:.4f} BTC (${size_usd:,.0f})
 
@@ -119,13 +146,15 @@ class TelegramNotifier:
 
         Example message:
             🔴 EXIT EXECUTED
-            Entry: $87,432 (3:00 PM Jan 2)
-            Exit: $89,127 (9:15 AM Jan 3)
+            Entry: $87,432 (20:00 GMT / 15:00 EST Jan 2)
+            Exit: $89,127 (09:15 GMT / 04:15 EST Jan 3)
 
             Profit: +$1,695 (+1.94%)
             Hold: 18h 15m
             Reason: Trailing stop hit
         """
+        london_entry = entry_time.astimezone(pytz.timezone('Europe/London'))
+        london_exit = exit_time.astimezone(pytz.timezone('Europe/London'))
         est_entry = entry_time.astimezone(pytz.timezone('America/New_York'))
         est_exit = exit_time.astimezone(pytz.timezone('America/New_York'))
 
@@ -141,8 +170,8 @@ class TelegramNotifier:
         message = f"""
 {emoji} <b>EXIT EXECUTED</b>
 
-📊 Entry: ${entry_price:,.2f} ({est_entry.strftime('%I:%M %p %b %d')})
-📊 Exit: ${exit_price:,.2f} ({est_exit.strftime('%I:%M %p %b %d')})
+📊 Entry: ${entry_price:,.2f} ({london_entry.strftime('%H:%M')} GMT / {est_entry.strftime('%H:%M')} EST {london_entry.strftime('%b %d')})
+📊 Exit: ${exit_price:,.2f} ({london_exit.strftime('%H:%M')} GMT / {est_exit.strftime('%H:%M')} EST {london_exit.strftime('%b %d')})
 
 💰 Profit: {sign}${profit_usd:,.2f} ({profit_pct:+.2f}%)
 ⏱️ Hold: {hours}h {minutes}m
@@ -157,7 +186,7 @@ class TelegramNotifier:
         Example message:
             ⚠️ ERROR - BOT PAUSED
             Error: HyperLiquid API timeout
-            Time: 2:45 PM EST
+            Time: 20:45 GMT (15:45 EST)
 
             Current Position: LONG 1.1435 BTC
             Entry: $87,432 | Current: $88,102
@@ -165,13 +194,14 @@ class TelegramNotifier:
 
             Action: Manual check required
         """
+        now_london = datetime.now(pytz.timezone('Europe/London'))
         now_est = datetime.now(pytz.timezone('America/New_York'))
 
         message = f"""
 ⚠️ <b>ERROR - BOT PAUSED</b>
 
 ❌ Error: {error_msg}
-⏰ Time: {now_est.strftime('%I:%M %p %Z')}
+⏰ Time: {now_london.strftime('%H:%M')} GMT ({now_est.strftime('%H:%M')} EST)
 """
 
         # Add position info if in a position
@@ -193,7 +223,7 @@ class TelegramNotifier:
 
     def send_daily_summary(self, stats: dict):
         """
-        Send daily summary (at 9 AM EST)
+        Send daily summary (at 9 AM GMT)
 
         Example message:
             📊 DAILY SUMMARY - Jan 3
@@ -203,15 +233,15 @@ class TelegramNotifier:
             Trades: 2 (2W, 0L)
 
             Current: No position
-            Next entry: Today 3 PM
+            Next entry: Today 20:00 GMT (15:00 EST)
         """
-        now_est = datetime.now(pytz.timezone('America/New_York'))
+        now_london = datetime.now(pytz.timezone('Europe/London'))
 
         position_status = "In position" if stats.get('in_position') else "No position"
-        next_entry = "Today 3 PM" if not stats.get('in_position') else "After current exit"
+        next_entry = "Today 20:00 GMT (15:00 EST)" if not stats.get('in_position') else "After current exit"
 
         message = f"""
-📊 <b>DAILY SUMMARY</b> - {now_est.strftime('%b %d')}
+📊 <b>DAILY SUMMARY</b> - {now_london.strftime('%b %d')}
 
 💰 Yesterday: ${stats.get('daily_pnl', 0):+,.2f}
 📈 MTD: ${stats.get('mtd_pnl', 0):+,.2f}
@@ -231,7 +261,7 @@ class TelegramNotifier:
         - OR we're in a position (send every heartbeat)
 
         Example message:
-            💚 Bot Active - 4:00 PM EST
+            💚 Bot Active - 20:00 GMT (15:00 EST)
 
             Status: In position
             Entry: $87,432 (1h ago)
@@ -246,6 +276,7 @@ class TelegramNotifier:
             if time_since_last < 3600 and not state.get('in_position'):
                 return False
 
+        now_london = now.astimezone(pytz.timezone('Europe/London'))
         now_est = now.astimezone(pytz.timezone('America/New_York'))
 
         if state.get('in_position'):
@@ -259,7 +290,7 @@ class TelegramNotifier:
             hours = int(time_in_position.total_seconds() // 3600)
 
             message = f"""
-💚 <b>Bot Active</b> - {now_est.strftime('%I:%M %p %Z')}
+💚 <b>Bot Active</b> - {now_london.strftime('%H:%M')} GMT ({now_est.strftime('%H:%M')} EST)
 
 📊 Status: In position
 💰 Entry: ${entry_price:,.0f} ({hours}h ago)
@@ -267,10 +298,10 @@ class TelegramNotifier:
 """
         else:
             message = f"""
-💚 <b>Bot Active</b> - {now_est.strftime('%I:%M %p %Z')}
+💚 <b>Bot Active</b> - {now_london.strftime('%H:%M')} GMT ({now_est.strftime('%H:%M')} EST)
 
 ✅ Status: Monitoring
-⏰ Next entry window: Today 3:00 PM EST
+⏰ Next entry window: Today 20:00 GMT (15:00 EST)
 """
 
         self.last_heartbeat = now
@@ -337,6 +368,9 @@ Bot is ready to trade.
 
         Returns:
             List of updates (messages)
+
+        Raises:
+            ConflictError: If another bot instance is already polling (409)
         """
         try:
             url = f"{self.base_url}/getUpdates"
@@ -349,6 +383,14 @@ Bot is ready to trade.
                 params['offset'] = offset
 
             response = requests.get(url, params=params, timeout=timeout + 5)
+
+            # Check for 409 Conflict - means another instance is polling
+            if response.status_code == 409:
+                raise ConflictError(
+                    "Another bot instance is already polling Telegram!\n"
+                    "Kill other bot.py processes with: pkill -f 'python.*bot.py'"
+                )
+
             response.raise_for_status()
 
             result = response.json()
@@ -362,9 +404,13 @@ Bot is ready to trade.
         except requests.exceptions.Timeout:
             # Timeout is normal for long polling
             return []
+        except ConflictError:
+            # Re-raise conflict errors to stop the polling loop
+            raise
         except Exception as e:
             print(f"❌ Error getting Telegram updates: {e}")
             return []
+
 
     def start_listening_for_commands(self, command_handler):
         """
@@ -377,10 +423,15 @@ Bot is ready to trade.
         for new messages and processes them as commands.
         """
         import threading
+        import logging
+        import sys
+
+        # Get logger for the polling thread
+        logger = logging.getLogger('TradingBot')
 
         def polling_loop():
             """Background thread for polling Telegram"""
-            print("📱 Telegram command listener started")
+            logger.info("Telegram polling loop started")
 
             offset = None  # Track last update ID
 
@@ -400,16 +451,16 @@ Bot is ready to trade.
                             chat_id = callback['message']['chat']['id']
                             data = callback['data']
 
-                            print(f"🔘 Button clicked: {data} from {chat_id}")
+                            logger.info(f"Button clicked: {data} from chat {chat_id}")
 
                             # Answer callback to remove loading state
                             answer_url = f"{self.base_url}/answerCallbackQuery"
                             requests.post(answer_url, json={'callback_query_id': callback_id})
 
                             # Process the command from button
-                            message, keyboard = command_handler.process_command(data, str(chat_id))
-                            if message:
-                                self._send_message(message, reply_markup=keyboard)
+                            response_msg, keyboard = command_handler.process_command(data, str(chat_id))
+                            if response_msg:
+                                self._send_message(response_msg, reply_markup=keyboard)
                             continue
 
                         # Extract message
@@ -426,19 +477,32 @@ Bot is ready to trade.
                         chat_id = message['chat']['id']
                         text = message['text']
 
+                        # Log received command
+                        logger.info(f"Received command: '{text}' from chat {chat_id}")
+
                         # Process command
-                        print(f"📨 Received command: {text} from {chat_id}")
                         response_msg, keyboard = command_handler.process_command(text, str(chat_id))
 
                         # Send response
                         if response_msg:
-                            self._send_message(response_msg, reply_markup=keyboard)
+                            logger.info(f"Sending response to chat {chat_id}")
+                            success = self._send_message(response_msg, reply_markup=keyboard)
+                            if not success:
+                                logger.error(f"Failed to send response to chat {chat_id}")
+                        else:
+                            logger.warning(f"No response generated for command: {text}")
 
                 except KeyboardInterrupt:
-                    print("\n🛑 Telegram listener stopped")
+                    logger.info("Telegram listener stopped by keyboard interrupt")
                     break
+                except ConflictError as e:
+                    # Another bot instance is running - exit with clear error
+                    logger.error(f"🛑 CONFLICT: {e}")
+                    print(f"\n🛑 FATAL ERROR: {e}")
+                    print("Telegram polling stopped. Only ONE bot instance can run at a time.")
+                    break  # Exit the polling loop, don't retry
                 except Exception as e:
-                    print(f"❌ Error in Telegram polling loop: {e}")
+                    logger.error(f"Error in Telegram polling loop: {e}", exc_info=True)
                     import time
                     time.sleep(5)  # Wait before retrying
 
