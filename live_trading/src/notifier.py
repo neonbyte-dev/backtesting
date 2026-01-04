@@ -457,8 +457,12 @@ Bot is ready to trade.
                             answer_url = f"{self.base_url}/answerCallbackQuery"
                             requests.post(answer_url, json={'callback_query_id': callback_id})
 
-                            # Process the command from button
-                            response_msg, keyboard = command_handler.process_command(data, str(chat_id))
+                            # Process the callback (button click)
+                            if hasattr(command_handler, 'process_callback'):
+                                response_msg, keyboard = command_handler.process_callback(data, str(chat_id))
+                            else:
+                                response_msg, keyboard = command_handler.process_command(data, str(chat_id))
+
                             if response_msg:
                                 self._send_message(response_msg, reply_markup=keyboard)
                             continue

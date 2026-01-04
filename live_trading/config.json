@@ -1,9 +1,30 @@
 {
-  "strategy": {
-    "entry_hour": 15,
-    "max_entry_price_usd": 90000,
-    "trailing_stop_pct": 1.0,
-    "timezone": "America/New_York"
+  "strategies": {
+    "overnight": {
+      "enabled": true,
+      "allocated_capital_usd": 58.0,
+      "description": "Buy at 3 PM EST, trailing stop 1%",
+      "params": {
+        "entry_hour": 15,
+        "max_entry_price_usd": 90000,
+        "trailing_stop_pct": 1.0,
+        "timezone": "America/New_York"
+      }
+    },
+    "oi": {
+      "enabled": true,
+      "allocated_capital_usd": 40.0,
+      "description": "Open Interest signals, never sell at loss",
+      "params": {
+        "oi_drop_threshold": -0.15,
+        "price_drop_threshold": -0.3,
+        "sma_distance_threshold": -0.5,
+        "profit_target_pct": 1.0,
+        "oi_lookback_hours": 4,
+        "sma_hours": 24,
+        "min_hours_between_trades": 8
+      }
+    }
   },
   "exchange": {
     "symbol": "BTC",
@@ -13,13 +34,11 @@
   },
   "bot": {
     "loop_interval_seconds": 300,
-    "heartbeat_interval_hours": 1,
-    "enable_trading": false
+    "heartbeat_interval_hours": 1
   },
   "risk": {
     "max_daily_loss_pct": 5.0,
-    "max_consecutive_losses": 3,
-    "position_size_pct": 100
+    "max_consecutive_losses": 3
   },
   "logging": {
     "level": "INFO",
@@ -29,6 +48,8 @@
   "security": {
     "require_pin": true,
     "pin_timeout_minutes": 5,
-    "allowed_chat_ids": ["1644767408"]
+    "allowed_chat_ids": [
+      "1644767408"
+    ]
   }
 }

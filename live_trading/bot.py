@@ -1,23 +1,20 @@
 """
-Overnight Recovery Trading Bot
+Multi-Strategy Trading Bot
 Main orchestrator that runs 24/7
 
-This is the entry point - run this file to start the bot.
+Supports multiple strategies running simultaneously, each with:
+- Its own capital allocation (fixed USD amount)
+- Independent position tracking
+- Individual entry/exit logic
 
 How it works:
 1. Load configuration and credentials
-2. Initialize all components (exchange, strategy, notifier, etc.)
+2. Initialize all strategy instances
 3. Enter main loop:
-   - Every 5 minutes: Check if should buy or sell
+   - Every 5 minutes: For each ENABLED strategy, check entry/exit
    - Every hour: Send heartbeat
    - On errors: Alert and pause
 4. Loop forever (until manually stopped)
-
-Safety Features:
-- All errors are caught and logged
-- Bot pauses on any exception (fail-safe)
-- State is saved after every action
-- STOP file allows emergency shutdown
 """
 
 import os
@@ -27,6 +24,7 @@ import time
 import logging
 from datetime import datetime, timedelta
 from pathlib import Path
+from typing import Dict
 import pytz
 from dotenv import load_dotenv
 
@@ -35,17 +33,30 @@ sys.path.append(str(Path(__file__).parent / 'src'))
 
 from src.exchange import HyperLiquidClient
 from src.strategy import OvernightRecoveryStrategy
+from src.oi_strategy import OIStrategy
 from src.state_manager import StateManager
 from src.notifier import TelegramNotifier
 from src.risk_manager import RiskManager
 from src.command_handler import CommandHandler
 
 
+# Strategy registry - maps names to classes
+STRATEGY_CLASSES = {
+    'overnight': OvernightRecoveryStrategy,
+    'oi': OIStrategy
+}
+
+STRATEGY_DESCRIPTIONS = {
+    'overnight': 'Buy at 3 PM EST, trailing stop 1%',
+    'oi': 'Open Interest signals, never sell at loss'
+}
+
+
 class TradingBot:
     """
-    Main trading bot orchestrator
+    Multi-strategy trading bot orchestrator
 
-    Coordinates all components and runs the trading loop.
+    Manages multiple strategies, each with its own capital pool.
     """
 
     def __init__(self, config_path: str = './config.json'):
@@ -55,6 +66,8 @@ class TradingBot:
         Args:
             config_path: Path to configuration file
         """
+        self.config_path = config_path
+
         # Load configuration
         print("Loading configuration...")
         with open(config_path, 'r') as f:
@@ -87,30 +100,27 @@ class TradingBot:
         log_dir = Path('./logs')
         log_dir.mkdir(exist_ok=True)
 
-        # Create logger
         self.logger = logging.getLogger('TradingBot')
         self.logger.setLevel(logging.INFO)
 
-        # File handler (daily log files)
-        log_file = log_dir / f"trades_{datetime.now().strftime('%Y-%m-%d')}.log"
-        file_handler = logging.FileHandler(log_file)
-        file_handler.setLevel(logging.INFO)
+        # Avoid duplicate handlers
+        if not self.logger.handlers:
+            log_file = log_dir / f"trades_{datetime.now().strftime('%Y-%m-%d')}.log"
+            file_handler = logging.FileHandler(log_file)
+            file_handler.setLevel(logging.INFO)
 
-        # Console handler
-        console_handler = logging.StreamHandler()
-        console_handler.setLevel(logging.INFO)
+            console_handler = logging.StreamHandler()
+            console_handler.setLevel(logging.INFO)
 
-        # Formatter
-        formatter = logging.Formatter(
-            '%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-            datefmt='%Y-%m-%d %H:%M:%S'
-        )
-        file_handler.setFormatter(formatter)
-        console_handler.setFormatter(formatter)
+            formatter = logging.Formatter(
+                '%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+                datefmt='%Y-%m-%d %H:%M:%S'
+            )
+            file_handler.setFormatter(formatter)
+            console_handler.setFormatter(formatter)
 
-        # Add handlers
-        self.logger.addHandler(file_handler)
-        self.logger.addHandler(console_handler)
+            self.logger.addHandler(file_handler)
+            self.logger.addHandler(console_handler)
 
     def _initialize_components(self):
         """Initialize all bot components"""
@@ -124,9 +134,14 @@ class TradingBot:
         )
         self.logger.info(f"Exchange: {'TESTNET' if self.config['exchange']['testnet'] else 'MAINNET'}")
 
-        # Strategy
-        self.strategy = OvernightRecoveryStrategy(self.config['strategy'])
-        self.logger.info(f"Strategy: {self.strategy}")
+        # Initialize ALL strategy instances
+        self.strategies: Dict[str, object] = {}
+        for name, strategy_config in self.config.get('strategies', {}).items():
+            if name in STRATEGY_CLASSES:
+                strategy_class = STRATEGY_CLASSES[name]
+                params = strategy_config.get('params', {})
+                self.strategies[name] = strategy_class(params)
+                self.logger.info(f"Strategy loaded: {name}")
 
         # State manager
         self.state_manager = StateManager('./state')
@@ -137,7 +152,7 @@ class TradingBot:
         self.notifier = TelegramNotifier(
             bot_token=os.getenv('TELEGRAM_BOT_TOKEN'),
             chat_id=os.getenv('TELEGRAM_CHAT_ID'),
-            enabled=True  # Set False to disable notifications during testing
+            enabled=True
         )
         self.logger.info("Telegram notifier initialized")
 
@@ -153,67 +168,67 @@ class TradingBot:
         self.notifier.start_listening_for_commands(self.command_handler)
         self.logger.info("Telegram command listener started")
 
+    def save_config(self):
+        """Save current config to disk"""
+        with open(self.config_path, 'w') as f:
+            json.dump(self.config, f, indent=2)
+
     def _check_stop_file(self) -> bool:
-        """
-        Check if STOP file exists (emergency shutdown)
-
-        To stop the bot:
-        1. Create a file named STOP in the live_trading directory
-        2. Bot will detect it and shut down safely
-
-        Returns:
-            True if should stop, False otherwise
-        """
+        """Check if STOP file exists (emergency shutdown)"""
         stop_file = Path('./STOP')
         if stop_file.exists():
             self.logger.warning("STOP file detected - shutting down")
             return True
         return False
 
-    def _handle_entry(self, current_price: float, current_time: datetime):
+    def _handle_strategy_entry(self, strategy_name: str, strategy, current_price: float, current_time: datetime):
         """
-        Handle entry logic
+        Handle entry logic for a specific strategy
 
         Args:
+            strategy_name: Name of the strategy
+            strategy: Strategy instance
             current_price: Current BTC price
             current_time: Current timestamp
         """
-        # Check if should enter
-        should_enter, reason = self.strategy.should_enter(current_time, current_price)
+        # Check if already in position for this strategy
+        if self.state_manager.is_in_position(strategy_name):
+            return
 
-        self.logger.info(f"Entry check: {should_enter} - {reason}")
+        # Get allocated capital for this strategy
+        allocated_capital = self.state_manager.get_strategy_capital(strategy_name)
+        if allocated_capital <= 0:
+            return
+
+        # Check if should enter
+        should_enter, reason = strategy.should_enter(current_time, current_price)
+
+        self.logger.info(f"[{strategy_name}] Entry check: {should_enter} - {reason}")
+
+        # Record entry check
+        if not reason.startswith("Not entry hour") and not reason.startswith("Cooldown"):
+            self.state_manager.record_entry_check(strategy_name, current_time, should_enter, reason)
 
         if not should_enter:
             return
 
-        # Get account balance
-        balance = self.exchange.get_account_balance()
-        self.logger.info(f"Account balance: ${balance:,.2f}")
-
         # Check risk conditions
         is_safe, risk_reason = self.risk_manager.should_allow_entry(
-            current_balance=balance,
-            initial_balance=self.daily_start_balance or balance,
-            consecutive_losses=self.state_manager.state['consecutive_losses'],
+            current_balance=allocated_capital,
+            initial_balance=allocated_capital,
+            consecutive_losses=self.state_manager.get_risk_metrics(strategy_name).get('consecutive_losses', 0),
             last_data_update=current_time
         )
 
         if not is_safe:
-            self.logger.warning(f"Entry blocked by risk manager: {risk_reason}")
-            self.notifier.send_circuit_breaker_alert(
-                risk_reason,
-                self.state_manager.get_risk_metrics()
-            )
-            self.is_paused = True
+            self.logger.warning(f"[{strategy_name}] Entry blocked by risk manager: {risk_reason}")
             return
 
-        # Calculate position size
-        position_size_usd = self.risk_manager.calculate_position_size(
-            balance, self.config['risk']
-        )
+        # Use the allocated capital for position size
+        position_size_usd = allocated_capital * 0.999  # Leave 0.1% for fees
 
         # Place order
-        self.logger.info(f"Placing BUY order for ${position_size_usd:,.0f}")
+        self.logger.info(f"[{strategy_name}] Placing BUY order for ${position_size_usd:,.0f}")
 
         try:
             order_id, fill_price, fill_size = self.exchange.place_market_order(
@@ -222,6 +237,7 @@ class TradingBot:
 
             # Update state
             self.state_manager.enter_position(
+                strategy_name=strategy_name,
                 entry_time=current_time,
                 entry_price=fill_price,
                 size_btc=fill_size,
@@ -229,34 +245,35 @@ class TradingBot:
             )
 
             # Send notification
-            self.notifier.send_entry_alert(
-                price=fill_price,
-                size_btc=fill_size,
-                size_usd=position_size_usd,
-                entry_time=current_time,
-                trailing_stop_pct=self.config['strategy']['trailing_stop_pct']
+            self.notifier.send_message(
+                f"📈 <b>[{strategy_name.upper()}] ENTRY</b>\n\n"
+                f"<b>Price:</b> ${fill_price:,.2f}\n"
+                f"<b>Size:</b> {fill_size:.4f} BTC (${position_size_usd:,.0f})\n"
+                f"<b>Time:</b> {current_time.strftime('%H:%M UTC')}\n"
+                f"<b>Reason:</b> {reason[:100]}"
             )
 
-            self.logger.info(f"✅ ENTRY: {fill_size:.4f} BTC @ ${fill_price:,.2f}")
+            self.logger.info(f"[{strategy_name}] ENTRY: {fill_size:.4f} BTC @ ${fill_price:,.2f}")
 
         except Exception as e:
-            self.logger.error(f"Failed to place entry order: {e}")
+            self.logger.error(f"[{strategy_name}] Failed to place entry order: {e}")
             self.notifier.send_error_alert(
-                f"Entry order failed: {str(e)}",
-                self.state_manager.get_position_details()
+                f"[{strategy_name}] Entry order failed: {str(e)}",
+                None
             )
-            self.is_paused = True
 
-    def _handle_exit(self, current_price: float, current_time: datetime):
+    def _handle_strategy_exit(self, strategy_name: str, strategy, current_price: float, current_time: datetime):
         """
-        Handle exit logic
+        Handle exit logic for a specific strategy
 
         Args:
+            strategy_name: Name of the strategy
+            strategy: Strategy instance
             current_price: Current BTC price
             current_time: Current timestamp
         """
-        # Get position details
-        position = self.state_manager.get_position_details()
+        # Get position details for this strategy
+        position = self.state_manager.get_position_details(strategy_name)
         if not position:
             return
 
@@ -265,35 +282,21 @@ class TradingBot:
         size_btc = position['size_btc']
 
         # Update peak price
-        new_peak = self.state_manager.update_peak_price(current_price)
-        if new_peak > peak_price:
-            self.logger.info(f"New peak: ${new_peak:,.2f}")
+        new_peak = self.state_manager.update_peak_price(strategy_name, current_price)
+        if new_peak and new_peak > peak_price:
+            self.logger.info(f"[{strategy_name}] New peak: ${new_peak:,.2f}")
             peak_price = new_peak
 
         # Check if should exit
-        should_exit, reason = self.strategy.should_exit(
-            current_price, entry_price, peak_price
-        )
+        should_exit, reason = strategy.should_exit(current_price, entry_price, peak_price)
 
-        self.logger.info(f"Exit check: {should_exit} - {reason}")
+        self.logger.info(f"[{strategy_name}] Exit check: {should_exit} - {reason}")
 
         if not should_exit:
             return
 
-        # Check risk conditions (only data staleness for exits)
-        is_safe, risk_reason = self.risk_manager.should_allow_exit(current_time)
-
-        if not is_safe:
-            self.logger.warning(f"Exit blocked by risk manager: {risk_reason}")
-            # Don't pause on stale data during exit - we WANT to exit
-            # Just log the warning and proceed if it's been less than 30 min
-            if 'stale' in risk_reason.lower():
-                # Allow exit if data is less than 30 minutes old
-                # (prevents being stuck in position during temporary network issues)
-                pass
-
         # Place sell order
-        self.logger.info(f"Placing SELL order for {size_btc:.4f} BTC")
+        self.logger.info(f"[{strategy_name}] Placing SELL order for {size_btc:.4f} BTC")
 
         try:
             order_id, fill_price, fill_size = self.exchange.place_market_order(
@@ -306,65 +309,57 @@ class TradingBot:
 
             # Update state
             self.state_manager.exit_position(
+                strategy_name=strategy_name,
                 exit_time=current_time,
                 exit_price=fill_price,
                 profit_pct=profit_pct
             )
 
             # Send notification
-            entry_time = datetime.fromisoformat(position['entry_time'])
-            self.notifier.send_exit_alert(
-                entry_price=entry_price,
-                exit_price=fill_price,
-                entry_time=entry_time,
-                exit_time=current_time,
-                profit_pct=profit_pct,
-                profit_usd=profit_usd,
-                reason=reason
+            emoji = "🟢" if profit_pct >= 0 else "🔴"
+            self.notifier.send_message(
+                f"{emoji} <b>[{strategy_name.upper()}] EXIT</b>\n\n"
+                f"<b>Entry:</b> ${entry_price:,.2f}\n"
+                f"<b>Exit:</b> ${fill_price:,.2f}\n"
+                f"<b>P&L:</b> {profit_pct:+.2f}% (${profit_usd:+,.2f})\n"
+                f"<b>Reason:</b> {reason[:100]}"
             )
 
-            self.logger.info(f"✅ EXIT: {fill_size:.4f} BTC @ ${fill_price:,.2f} ({profit_pct:+.2f}%)")
+            self.logger.info(f"[{strategy_name}] EXIT: {fill_size:.4f} BTC @ ${fill_price:,.2f} ({profit_pct:+.2f}%)")
 
         except Exception as e:
-            self.logger.error(f"Failed to place exit order: {e}")
+            self.logger.error(f"[{strategy_name}] Failed to place exit order: {e}")
             self.notifier.send_error_alert(
-                f"Exit order failed: {str(e)}",
-                self.state_manager.get_position_details()
+                f"[{strategy_name}] Exit order failed: {str(e)}",
+                position
             )
-            self.is_paused = True
 
     def _send_heartbeat(self, current_price: float):
-        """
-        Send hourly heartbeat
-
-        Args:
-            current_price: Current BTC price
-        """
+        """Send daily heartbeat (once per day)"""
         now = datetime.now(pytz.UTC)
 
-        # Send heartbeat every hour (or if in position)
         if self.last_heartbeat:
             time_since = (now - self.last_heartbeat).total_seconds()
-            if time_since < 3600 and not self.state_manager.is_in_position():
+            # Only send once per day (86400 seconds) unless in position
+            if time_since < 86400 and not self.state_manager.is_in_position():
                 return
 
         # Prepare state for heartbeat
-        state = self.state_manager.get_position_details() or {}
-        state['current_price'] = current_price
+        positions = self.state_manager.get_all_positions()
+        state = {
+            'current_price': current_price,
+            'positions': positions,
+            'enabled_strategies': self.state_manager.get_enabled_strategies()
+        }
 
         self.notifier.send_heartbeat(state)
         self.last_heartbeat = now
 
     def _check_daily_reset(self):
-        """
-        Check if we need to reset daily statistics
-
-        Resets at midnight EST.
-        """
+        """Check if we need to reset daily statistics"""
         now_est = datetime.now(pytz.timezone('America/New_York'))
         current_date = now_est.date()
 
-        # First run - initialize
         if self.last_daily_reset is None:
             self.last_daily_reset = current_date
             balance = self.exchange.get_account_balance()
@@ -372,16 +367,17 @@ class TradingBot:
             self.risk_manager.reset_daily_limits(balance)
             return
 
-        # Check if date changed
         if current_date > self.last_daily_reset:
             self.logger.info(f"Daily reset triggered - new day: {current_date}")
-
-            # Reset daily stats
             balance = self.exchange.get_account_balance()
             self.daily_start_balance = balance
             self.risk_manager.reset_daily_limits(balance)
             self.state_manager.reset_daily_stats()
-            self.strategy.reset_daily_state()
+
+            # Reset daily state for all strategies
+            for strategy in self.strategies.values():
+                if hasattr(strategy, 'reset_daily_state'):
+                    strategy.reset_daily_state()
 
             self.last_daily_reset = current_date
 
@@ -389,7 +385,9 @@ class TradingBot:
         """
         Run one iteration of the main loop
 
-        This is called every 5 minutes.
+        For each enabled strategy:
+        - If in position: check exit
+        - If not in position: check entry
         """
         self.loop_count += 1
         current_time = datetime.now(pytz.UTC)
@@ -397,32 +395,41 @@ class TradingBot:
         self.logger.info(f"=== Loop {self.loop_count} - {current_time.strftime('%Y-%m-%d %H:%M:%S UTC')} ===")
 
         try:
-            # Check for emergency stop
             if self._check_stop_file():
                 self.is_running = False
                 return
 
-            # Check if bot is paused
             if self.is_paused:
-                self.logger.warning("Bot is PAUSED - manual restart required")
+                self.logger.warning("Bot is PAUSED - use /enable to resume")
                 return
 
-            # Check daily reset
             self._check_daily_reset()
 
             # Get current price
             current_price = self.exchange.get_btc_price()
             self.logger.info(f"BTC Price: ${current_price:,.2f}")
 
-            # Check if in position
-            in_position = self.state_manager.is_in_position()
+            # Get enabled strategies
+            enabled_strategies = self.state_manager.get_enabled_strategies()
 
-            if in_position:
-                # Handle exit logic
-                self._handle_exit(current_price, current_time)
+            if not enabled_strategies:
+                self.logger.info("No strategies enabled")
             else:
-                # Handle entry logic
-                self._handle_entry(current_price, current_time)
+                self.logger.info(f"Enabled strategies: {', '.join(enabled_strategies)}")
+
+            # Process each enabled strategy
+            for strategy_name in enabled_strategies:
+                if strategy_name not in self.strategies:
+                    self.logger.warning(f"Strategy {strategy_name} enabled but not loaded")
+                    continue
+
+                strategy = self.strategies[strategy_name]
+
+                # Check if in position for this strategy
+                if self.state_manager.is_in_position(strategy_name):
+                    self._handle_strategy_exit(strategy_name, strategy, current_price, current_time)
+                else:
+                    self._handle_strategy_entry(strategy_name, strategy, current_price, current_time)
 
             # Send heartbeat
             self._send_heartbeat(current_price)
@@ -431,108 +438,185 @@ class TradingBot:
             self.logger.error(f"ERROR in loop iteration: {e}", exc_info=True)
             self.notifier.send_error_alert(
                 f"Loop error: {str(e)}",
-                self.state_manager.get_position_details()
+                None
             )
             self.is_paused = True
 
     # ===== TELEGRAM COMMAND METHODS =====
 
     def enable_trading(self):
-        """Enable trading (called by /start command)"""
+        """Enable trading (unpause bot)"""
         self.is_paused = False
         self.logger.info("Trading ENABLED via Telegram command")
 
     def disable_trading(self):
-        """Disable trading (called by /stop command)"""
+        """Disable trading (pause bot)"""
         self.is_paused = True
         self.logger.info("Trading DISABLED via Telegram command")
 
-    def emergency_close_position(self) -> str:
+    def enable_strategy(self, strategy_name: str, capital_usd: float) -> str:
         """
-        Force close current position (called by /close command)
+        Enable a strategy with allocated capital
+
+        Args:
+            strategy_name: Name of strategy to enable
+            capital_usd: USD amount to allocate
 
         Returns:
             Status message
         """
-        import threading
+        if strategy_name not in STRATEGY_CLASSES:
+            available = ', '.join(STRATEGY_CLASSES.keys())
+            return f"Unknown strategy: {strategy_name}\n\nAvailable: {available}"
 
-        if not self.state_manager.is_in_position():
-            return "❌ <b>No Position to Close</b>\n\nCurrently not in any position."
-
+        # Check total allocation doesn't exceed balance
+        current_total = self.state_manager.get_total_allocated_capital()
         try:
-            position = self.state_manager.get_position_details()
-            size_btc = position['size_btc']
-            entry_price = position['entry_price']
+            account_balance = self.exchange.get_account_balance()
+        except:
+            account_balance = None
 
-            # Get current price
-            current_price = self.exchange.get_btc_price()
+        if account_balance and (current_total + capital_usd) > account_balance:
+            return (f"Cannot allocate ${capital_usd:,.0f}\n\n"
+                    f"Current allocation: ${current_total:,.0f}\n"
+                    f"Account balance: ${account_balance:,.0f}\n"
+                    f"Available: ${account_balance - current_total:,.0f}")
 
-            # Calculate P&L
-            profit_pct = ((current_price - entry_price) / entry_price) * 100
-            profit_usd = (current_price - entry_price) * size_btc
+        # Enable the strategy
+        self.state_manager.enable_strategy(strategy_name, capital_usd)
 
-            # Execute market sell
-            self.logger.info(f"Emergency close: Selling {size_btc:.4f} BTC")
-            order_id, fill_price, fill_size = self.exchange.place_market_order(
-                'SELL',
-                size_btc * current_price
-            )
+        # Update config
+        if 'strategies' not in self.config:
+            self.config['strategies'] = {}
+        if strategy_name not in self.config['strategies']:
+            self.config['strategies'][strategy_name] = {}
+        self.config['strategies'][strategy_name]['enabled'] = True
+        self.config['strategies'][strategy_name]['allocated_capital_usd'] = capital_usd
+        self.save_config()
 
-            # Update state
-            self.state_manager.exit_position(
-                exit_time=datetime.now(pytz.UTC),
-                exit_price=fill_price,
-                profit_pct=profit_pct
-            )
+        self.logger.info(f"Strategy '{strategy_name}' enabled with ${capital_usd:,.0f}")
 
-            # Pause trading
-            self.is_paused = True
+        return (f"Strategy <b>{strategy_name}</b> enabled\n\n"
+                f"<b>Allocated Capital:</b> ${capital_usd:,.0f}\n"
+                f"<b>Description:</b> {STRATEGY_DESCRIPTIONS.get(strategy_name, 'N/A')}")
 
-            self.logger.info(f"Emergency close completed: {fill_size:.4f} BTC @ ${fill_price:,.2f}")
-
-            emoji = "🟢" if profit_pct >= 0 else "🔴"
-            return f"""
-{emoji} <b>EMERGENCY CLOSE EXECUTED</b>
-
-<b>Position:</b> LONG {size_btc:.4f} BTC
-<b>Entry:</b> ${entry_price:,.2f}
-<b>Exit:</b> ${fill_price:,.2f} (market order)
-<b>P&L:</b> {profit_pct:+.2f}% (${profit_usd:+,.2f})
-
-🛑 Trading paused - use /start to resume
-"""
-
-        except Exception as e:
-            self.logger.error(f"Emergency close failed: {e}", exc_info=True)
-            return f"❌ <b>Close Failed</b>\n\n{str(e)}"
-
-    def switch_account(self, account_name: str) -> str:
+    def disable_strategy(self, strategy_name: str) -> str:
         """
-        Switch to different HyperLiquid account
+        Disable a strategy
 
         Args:
-            account_name: Account name from .env (e.g., "account1")
+            strategy_name: Name of strategy to disable
 
         Returns:
             Status message
         """
         # Check if in position
-        if self.state_manager.is_in_position():
-            position = self.state_manager.get_position_details()
+        if self.state_manager.is_in_position(strategy_name):
+            position = self.state_manager.get_position_details(strategy_name)
+            return (f"Cannot disable - strategy has open position\n\n"
+                    f"Position: {position['size_btc']:.4f} BTC @ ${position['entry_price']:,.0f}\n\n"
+                    f"Close position first with /close {strategy_name}")
+
+        self.state_manager.disable_strategy(strategy_name)
+
+        # Update config
+        if 'strategies' in self.config and strategy_name in self.config['strategies']:
+            self.config['strategies'][strategy_name]['enabled'] = False
+        self.save_config()
+
+        self.logger.info(f"Strategy '{strategy_name}' disabled")
+
+        return f"Strategy <b>{strategy_name}</b> disabled"
+
+    def emergency_close_position(self, strategy_name: str = None) -> str:
+        """
+        Force close position(s)
+
+        Args:
+            strategy_name: If provided, close only this strategy's position.
+                          If None, close all positions.
+
+        Returns:
+            Status message
+        """
+        if strategy_name:
+            # Close specific strategy's position
+            position = self.state_manager.get_position_details(strategy_name)
+            if not position:
+                return f"No position for strategy: {strategy_name}"
+
+            return self._close_position(strategy_name, position)
+        else:
+            # Close all positions
+            positions = self.state_manager.get_all_positions()
+            if not positions:
+                return "No positions to close"
+
+            results = []
+            for pos in positions:
+                result = self._close_position(pos['strategy'], pos)
+                results.append(result)
+
+            return "\n\n".join(results)
+
+    def _close_position(self, strategy_name: str, position: dict) -> str:
+        """Close a specific position"""
+        try:
             size_btc = position['size_btc']
             entry_price = position['entry_price']
 
-            return f"""
-⚠️ <b>Cannot Switch Account</b>
+            current_price = self.exchange.get_btc_price()
 
-You have an open position:
-<b>Position:</b> LONG {size_btc:.4f} BTC @ ${entry_price:,.2f}
+            profit_pct = ((current_price - entry_price) / entry_price) * 100
+            profit_usd = (current_price - entry_price) * size_btc
 
-Please close the position first using /close
-"""
+            self.logger.info(f"[{strategy_name}] Emergency close: Selling {size_btc:.4f} BTC")
+            order_id, fill_price, fill_size = self.exchange.place_market_order(
+                'SELL',
+                size_btc * current_price
+            )
+
+            self.state_manager.exit_position(
+                strategy_name=strategy_name,
+                exit_time=datetime.now(pytz.UTC),
+                exit_price=fill_price,
+                profit_pct=profit_pct
+            )
+
+            self.logger.info(f"[{strategy_name}] Emergency close completed")
+
+            emoji = "🟢" if profit_pct >= 0 else "🔴"
+            return (f"{emoji} <b>[{strategy_name.upper()}] CLOSED</b>\n\n"
+                    f"<b>Entry:</b> ${entry_price:,.2f}\n"
+                    f"<b>Exit:</b> ${fill_price:,.2f}\n"
+                    f"<b>P&L:</b> {profit_pct:+.2f}% (${profit_usd:+,.2f})")
+
+        except Exception as e:
+            self.logger.error(f"[{strategy_name}] Emergency close failed: {e}")
+            return f"Close failed for {strategy_name}: {str(e)}"
+
+    def get_strategies_summary(self) -> list:
+        """Get summary of all strategies for display"""
+        summaries = []
+        for name in STRATEGY_CLASSES.keys():
+            state = self.state_manager.get_strategy_state(name)
+            summaries.append({
+                'name': name,
+                'description': STRATEGY_DESCRIPTIONS.get(name, ''),
+                'enabled': state.get('enabled', False),
+                'allocated_capital_usd': state.get('allocated_capital_usd', 0),
+                'in_position': state.get('in_position', False),
+                'entry_price': state.get('entry_price'),
+                'position_size_btc': state.get('position_size_btc')
+            })
+        return summaries
+
+    def switch_account(self, account_name: str) -> str:
+        """Switch to different HyperLiquid account"""
+        if self.state_manager.is_in_position():
+            return "Cannot switch account - close all positions first"
 
         try:
-            # Load new credentials
             account_key_var = f"{account_name.upper()}_API_KEY"
             account_secret_var = f"{account_name.upper()}_API_SECRET"
 
@@ -540,33 +624,8 @@ Please close the position first using /close
             new_api_secret = os.getenv(account_secret_var)
 
             if not new_api_key or not new_api_secret:
-                available_accounts = []
-                for key in os.environ.keys():
-                    if key.endswith('_API_KEY') and not key.startswith('HYPERLIQUID'):
-                        account = key.replace('_API_KEY', '').lower()
-                        available_accounts.append(account)
+                return f"Account '{account_name}' not found in .env"
 
-                accounts_list = ", ".join(available_accounts) if available_accounts else "none"
-
-                return f"""
-❌ <b>Account Not Found</b>
-
-Account "{account_name}" not configured in .env
-
-Available accounts: {accounts_list}
-
-Add to .env:
-<code>{account_key_var}=your_key</code>
-<code>{account_secret_var}=your_secret</code>
-"""
-
-            # Get current account info
-            try:
-                old_balance = self.exchange.get_account_balance()
-            except:
-                old_balance = None
-
-            # Reinitialize exchange client with new credentials
             self.exchange = HyperLiquidClient(
                 api_key=new_api_key,
                 api_secret=new_api_secret,
@@ -575,52 +634,36 @@ Add to .env:
                 timeout=self.config['exchange']['request_timeout_seconds']
             )
 
-            # Get new account info
             new_balance = self.exchange.get_account_balance()
-
             self.logger.info(f"Switched to account: {account_name}")
 
-            return f"""
-✅ <b>Account Switched</b>
-
-<b>New Account:</b> {account_name}
-<b>Balance:</b> ${new_balance:,.2f} USDC
-
-{f"<b>Previous Balance:</b> ${old_balance:,.2f} USDC" if old_balance else ""}
-
-Account switch successful!
-"""
+            return f"Account switched to {account_name}\nBalance: ${new_balance:,.2f}"
 
         except Exception as e:
-            self.logger.error(f"Account switch failed: {e}", exc_info=True)
-            return f"❌ <b>Switch Failed</b>\n\n{str(e)}"
+            self.logger.error(f"Account switch failed: {e}")
+            return f"Switch failed: {str(e)}"
 
     def run(self):
-        """
-        Main bot loop - runs forever
-
-        Runs one iteration every 5 minutes.
-        Catches all exceptions to prevent crashes.
-        """
+        """Main bot loop - runs forever"""
         self.logger.info("=" * 70)
-        self.logger.info("TRADING BOT STARTED")
+        self.logger.info("MULTI-STRATEGY TRADING BOT STARTED")
         self.logger.info("=" * 70)
 
-        # Send startup notification
+        enabled = self.state_manager.get_enabled_strategies()
+        strategies_info = f"{len(enabled)} strategies enabled" if enabled else "No strategies enabled"
+
         self.notifier.send_message(
             "🤖 <b>Bot Started</b>\n\n"
-            f"Environment: {'TESTNET' if self.config['exchange']['testnet'] else '🔴 MAINNET'}\n"
-            f"Strategy: {self.strategy}\n"
+            f"Environment: {'TESTNET' if self.config['exchange']['testnet'] else 'MAINNET'}\n"
+            f"Strategies: {strategies_info}\n"
             f"State: {self.state_manager}\n\n"
-            "Monitoring for entry signals..."
+            "Use /strategy to configure strategies."
         )
 
         try:
             while self.is_running:
-                # Run one iteration
                 self.run_loop_iteration()
 
-                # Sleep until next check (5 minutes)
                 sleep_seconds = self.config['bot']['loop_interval_seconds']
                 self.logger.info(f"Sleeping {sleep_seconds}s until next check...\n")
                 time.sleep(sleep_seconds)
@@ -633,7 +676,6 @@ Account switch successful!
             self.logger.info("TRADING BOT STOPPED")
             self.logger.info("=" * 70)
 
-            # Send shutdown notification
             self.notifier.send_message(
                 "🛑 <b>Bot Stopped</b>\n\n"
                 f"Final state: {self.state_manager}\n\n"
@@ -646,23 +688,21 @@ if __name__ == '__main__':
     print("""
 ╔═══════════════════════════════════════════════════════════╗
 ║                                                           ║
-║        OVERNIGHT RECOVERY TRADING BOT                     ║
-║        Strategy: Buy 3PM EST (8PM GMT), Trailing Stop 1%  ║
+║        MULTI-STRATEGY TRADING BOT                         ║
 ║                                                           ║
-║        IMPORTANT: Review config.json before starting      ║
-║        - Check testnet vs mainnet setting                 ║
-║        - Verify Telegram credentials in .env              ║
-║        - Ensure HyperLiquid API keys are valid            ║
+║        Strategies:                                        ║
+║        - overnight: Buy 3PM EST, trailing stop            ║
+║        - oi: Open Interest signals, never sell loss       ║
+║                                                           ║
+║        Use /strategy in Telegram to configure             ║
 ║                                                           ║
 ╚═══════════════════════════════════════════════════════════╝
     """)
 
-    # Confirm before starting
     response = input("Start trading bot? (yes/no): ")
     if response.lower() != 'yes':
         print("Cancelled.")
         sys.exit(0)
 
-    # Create and run bot
     bot = TradingBot()
     bot.run()

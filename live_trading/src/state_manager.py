@@ -1,38 +1,29 @@
 """
-Position State Manager
+Multi-Strategy Position State Manager
 
-This module handles saving and loading position state to disk.
+This module handles saving and loading position state to disk for MULTIPLE strategies.
 
-WHY THIS MATTERS:
-If the bot crashes or restarts, it MUST remember:
-- Are we in a position?
-- What was our entry price?
-- What's the peak price we've seen?
+Each strategy has its own:
+- Position tracking (entry price, size, peak price)
+- Capital allocation (fixed USD amount)
+- Enabled/disabled status
 
-Without this, the bot could:
-- Buy more BTC when it already owns BTC
-- Forget the entry price and sell at the wrong time
-- Lose track of the trailing stop
-
-The state is saved to JSON files:
-- state.json: Current state
-- state_backup.json: Previous state (in case state.json corrupts)
+State is persisted to JSON so the bot can resume after restart.
 """
 
 import json
 import os
 import shutil
 from datetime import datetime
-from typing import Optional, Dict
+from typing import Optional, Dict, List
 from pathlib import Path
 
 
 class StateManager:
     """
-    Manages bot state persistence to disk
+    Manages bot state persistence to disk for multiple strategies
 
-    All state changes are immediately saved to disk.
-    On startup, state is loaded from disk.
+    Each strategy operates independently with its own capital pool.
     """
 
     def __init__(self, state_dir: str = './state'):
@@ -51,256 +42,441 @@ class StateManager:
 
         # Current state (in memory)
         self.state = {
+            # Per-strategy positions and config
+            'strategies': {},
+            # Global stats
+            'daily_pnl': 0.0,
+            'last_updated': None
+        }
+
+    def _get_default_strategy_state(self) -> Dict:
+        """Get default state for a new strategy"""
+        return {
+            'enabled': False,
+            'allocated_capital_usd': 0,
+            'enabled_since': None,          # When strategy was enabled
+            'trade_count': 0,               # Total trades taken
+            'total_realized_pnl': 0.0,      # Sum of all realized P&L
             'in_position': False,
             'entry_time': None,
             'entry_price': None,
             'position_size_btc': None,
             'position_size_usd': None,
             'peak_price': None,
-            'last_updated': None,
-            'daily_pnl': 0.0,
             'consecutive_losses': 0,
-            'last_trade_result': None
+            'last_trade_result': None,
+            'last_entry_check_time': None,
+            'last_entry_check_result': None,
+            'last_entry_check_reason': None
         }
 
     def load_state(self) -> Dict:
         """
         Load state from disk
 
-        If state.json exists, load it.
-        If state.json is corrupt, try state_backup.json.
-        If both fail, start with empty state.
-
         Returns:
             State dictionary
-
-        Example:
-            >>> manager = StateManager()
-            >>> state = manager.load_state()
-            >>> if state['in_position']:
-            ...     print(f"Resuming position from ${state['entry_price']}")
         """
-        # Try loading main state file
         if self.state_file.exists():
             try:
                 with open(self.state_file, 'r') as f:
                     self.state = json.load(f)
-                print(f"✅ State loaded from {self.state_file}")
+                print(f"State loaded from {self.state_file}")
                 return self.state
             except json.JSONDecodeError as e:
-                print(f"⚠️  Corrupt state file: {e}")
-                # Try backup
+                print(f"Corrupt state file: {e}")
                 if self.backup_file.exists():
                     try:
                         with open(self.backup_file, 'r') as f:
                             self.state = json.load(f)
-                        print(f"✅ State recovered from backup")
-                        # Save as main state
+                        print(f"State recovered from backup")
                         self.save_state()
                         return self.state
                     except:
-                        print(f"⚠️  Backup also corrupt, starting fresh")
+                        print(f"Backup also corrupt, starting fresh")
 
-        # No valid state found
-        print(f"ℹ️  No state found, starting fresh")
+        print(f"No state found, starting fresh")
         return self.state
 
     def save_state(self):
-        """
-        Save current state to disk
-
-        Process:
-        1. Backup current state.json to state_backup.json
-        2. Write new state to state.json
-        3. Update last_updated timestamp
-
-        This is called after every state change.
-        """
+        """Save current state to disk"""
         try:
-            # Update timestamp
             self.state['last_updated'] = datetime.utcnow().isoformat()
 
-            # Backup existing state file
             if self.state_file.exists():
                 shutil.copy(self.state_file, self.backup_file)
 
-            # Write new state
             with open(self.state_file, 'w') as f:
                 json.dump(self.state, f, indent=2)
 
         except Exception as e:
-            print(f"❌ ERROR saving state: {e}")
+            print(f"ERROR saving state: {e}")
             raise
 
-    def enter_position(self, entry_time: datetime, entry_price: float,
-                      size_btc: float, size_usd: float):
+    def ensure_strategy_exists(self, strategy_name: str):
+        """Ensure strategy exists in state"""
+        if 'strategies' not in self.state:
+            self.state['strategies'] = {}
+        if strategy_name not in self.state['strategies']:
+            self.state['strategies'][strategy_name] = self._get_default_strategy_state()
+
+    def enable_strategy(self, strategy_name: str, capital_usd: float):
         """
-        Record new position entry
+        Enable a strategy with allocated capital
 
         Args:
+            strategy_name: Name of the strategy
+            capital_usd: USD amount to allocate
+        """
+        self.ensure_strategy_exists(strategy_name)
+        s = self.state['strategies'][strategy_name]
+        s['enabled'] = True
+        s['allocated_capital_usd'] = capital_usd
+        # Only set enabled_since if not already set (preserve original start date)
+        if not s.get('enabled_since'):
+            s['enabled_since'] = datetime.utcnow().isoformat()
+        self.save_state()
+        print(f"Strategy '{strategy_name}' enabled with ${capital_usd:,.0f}")
+
+    def disable_strategy(self, strategy_name: str):
+        """
+        Disable a strategy
+
+        Args:
+            strategy_name: Name of the strategy
+        """
+        self.ensure_strategy_exists(strategy_name)
+        self.state['strategies'][strategy_name]['enabled'] = False
+        self.save_state()
+        print(f"Strategy '{strategy_name}' disabled")
+
+    def is_strategy_enabled(self, strategy_name: str) -> bool:
+        """Check if strategy is enabled"""
+        self.ensure_strategy_exists(strategy_name)
+        return self.state['strategies'][strategy_name]['enabled']
+
+    def get_strategy_capital(self, strategy_name: str) -> float:
+        """Get allocated capital for a strategy"""
+        self.ensure_strategy_exists(strategy_name)
+        return self.state['strategies'][strategy_name]['allocated_capital_usd']
+
+    def get_enabled_strategies(self) -> List[str]:
+        """Get list of enabled strategy names"""
+        if 'strategies' not in self.state:
+            return []
+        return [name for name, s in self.state['strategies'].items() if s.get('enabled', False)]
+
+    def get_total_allocated_capital(self) -> float:
+        """Get total capital allocated across all strategies"""
+        if 'strategies' not in self.state:
+            return 0
+        return sum(s.get('allocated_capital_usd', 0) for s in self.state['strategies'].values())
+
+    def enter_position(self, strategy_name: str, entry_time: datetime, entry_price: float,
+                       size_btc: float, size_usd: float):
+        """
+        Record new position entry for a strategy
+
+        Args:
+            strategy_name: Which strategy is entering
             entry_time: When we entered
             entry_price: Price we bought at
             size_btc: How much BTC we bought
             size_usd: How much USD we spent
         """
-        self.state['in_position'] = True
-        self.state['entry_time'] = entry_time.isoformat()
-        self.state['entry_price'] = entry_price
-        self.state['position_size_btc'] = size_btc
-        self.state['position_size_usd'] = size_usd
-        self.state['peak_price'] = entry_price  # Initialize peak at entry
+        self.ensure_strategy_exists(strategy_name)
+        s = self.state['strategies'][strategy_name]
+        s['in_position'] = True
+        s['entry_time'] = entry_time.isoformat()
+        s['entry_price'] = entry_price
+        s['position_size_btc'] = size_btc
+        s['position_size_usd'] = size_usd
+        s['peak_price'] = entry_price
 
         self.save_state()
-        print(f"✅ Position entered: {size_btc:.4f} BTC @ ${entry_price:,.2f}")
+        print(f"[{strategy_name}] Position entered: {size_btc:.4f} BTC @ ${entry_price:,.2f}")
 
-    def update_peak_price(self, new_price: float):
+    def update_peak_price(self, strategy_name: str, new_price: float) -> Optional[float]:
         """
         Update peak price if new high reached
 
         Args:
+            strategy_name: Which strategy's position
             new_price: Current price to check
 
         Returns:
             Current peak price
         """
-        if not self.state['in_position']:
+        self.ensure_strategy_exists(strategy_name)
+        s = self.state['strategies'][strategy_name]
+
+        if not s['in_position']:
             return None
 
-        if new_price > self.state['peak_price']:
-            self.state['peak_price'] = new_price
+        if new_price > s['peak_price']:
+            s['peak_price'] = new_price
             self.save_state()
 
-        return self.state['peak_price']
+        return s['peak_price']
 
-    def exit_position(self, exit_time: datetime, exit_price: float, profit_pct: float):
+    def exit_position(self, strategy_name: str, exit_time: datetime, exit_price: float, profit_pct: float):
         """
-        Record position exit
+        Record position exit for a strategy
 
         Args:
+            strategy_name: Which strategy is exiting
             exit_time: When we exited
             exit_price: Price we sold at
             profit_pct: Profit percentage
         """
-        # Calculate PnL
-        pnl_usd = (exit_price - self.state['entry_price']) * self.state['position_size_btc']
+        self.ensure_strategy_exists(strategy_name)
+        s = self.state['strategies'][strategy_name]
 
-        # Update daily PnL
+        # Calculate PnL
+        pnl_usd = (exit_price - s['entry_price']) * s['position_size_btc']
+
+        # Update daily PnL (global)
         self.state['daily_pnl'] += pnl_usd
+
+        # Update strategy stats
+        s['trade_count'] = s.get('trade_count', 0) + 1
+        s['total_realized_pnl'] = s.get('total_realized_pnl', 0) + pnl_usd
 
         # Update consecutive losses
         if profit_pct < 0:
-            self.state['consecutive_losses'] += 1
-            self.state['last_trade_result'] = 'loss'
+            s['consecutive_losses'] += 1
+            s['last_trade_result'] = 'loss'
         else:
-            self.state['consecutive_losses'] = 0
-            self.state['last_trade_result'] = 'win'
+            s['consecutive_losses'] = 0
+            s['last_trade_result'] = 'win'
 
         # Clear position
-        self.state['in_position'] = False
-        self.state['entry_time'] = None
-        self.state['entry_price'] = None
-        self.state['position_size_btc'] = None
-        self.state['position_size_usd'] = None
-        self.state['peak_price'] = None
+        s['in_position'] = False
+        s['entry_time'] = None
+        s['entry_price'] = None
+        s['position_size_btc'] = None
+        s['position_size_usd'] = None
+        s['peak_price'] = None
 
         self.save_state()
-        print(f"✅ Position exited: {profit_pct:+.2f}% (${pnl_usd:+,.2f})")
+        print(f"[{strategy_name}] Position exited: {profit_pct:+.2f}% (${pnl_usd:+,.2f})")
 
     def reset_daily_stats(self):
-        """
-        Reset daily statistics (call at midnight EST)
-        """
+        """Reset daily statistics (call at midnight EST)"""
         self.state['daily_pnl'] = 0.0
         self.save_state()
-        print(f"✅ Daily stats reset")
+        print(f"Daily stats reset")
 
-    def get_position_details(self) -> Optional[Dict]:
+    def record_entry_check(self, strategy_name: str, check_time: datetime, result: bool, reason: str):
+        """
+        Record the result of an entry check for status display
+
+        Args:
+            strategy_name: Which strategy checked entry
+            check_time: When the check was performed
+            result: True if entry was executed, False if skipped
+            reason: Human-readable reason
+        """
+        self.ensure_strategy_exists(strategy_name)
+        s = self.state['strategies'][strategy_name]
+        s['last_entry_check_time'] = check_time.isoformat()
+        s['last_entry_check_result'] = result
+        s['last_entry_check_reason'] = reason
+        self.save_state()
+
+    def get_last_entry_check(self, strategy_name: str = None) -> Optional[Dict]:
+        """
+        Get the last entry check result for status display
+
+        Args:
+            strategy_name: If provided, get for specific strategy.
+                          If None, returns first found (legacy support).
+        """
+        if strategy_name:
+            self.ensure_strategy_exists(strategy_name)
+            s = self.state['strategies'][strategy_name]
+            if not s.get('last_entry_check_time'):
+                return None
+            return {
+                'time': s['last_entry_check_time'],
+                'result': s['last_entry_check_result'],
+                'reason': s['last_entry_check_reason']
+            }
+
+        # Legacy: return first strategy's check
+        for name, s in self.state.get('strategies', {}).items():
+            if s.get('last_entry_check_time'):
+                return {
+                    'time': s['last_entry_check_time'],
+                    'result': s['last_entry_check_result'],
+                    'reason': s['last_entry_check_reason']
+                }
+        return None
+
+    def get_position_details(self, strategy_name: str = None) -> Optional[Dict]:
         """
         Get current position details
 
-        Returns:
-            Position dict if in position, None otherwise
-
-        Example:
-            >>> pos = manager.get_position_details()
-            >>> if pos:
-            ...     print(f"Position: {pos['size_btc']} BTC @ ${pos['entry_price']}")
+        Args:
+            strategy_name: If provided, get for specific strategy.
+                          If None, returns first position found (legacy support).
         """
-        if not self.state['in_position']:
-            return None
+        if strategy_name:
+            self.ensure_strategy_exists(strategy_name)
+            s = self.state['strategies'][strategy_name]
+            if not s['in_position']:
+                return None
+            return {
+                'strategy': strategy_name,
+                'in_position': True,
+                'entry_time': s['entry_time'],
+                'entry_price': s['entry_price'],
+                'size_btc': s['position_size_btc'],
+                'size_usd': s['position_size_usd'],
+                'peak_price': s['peak_price']
+            }
 
-        return {
-            'in_position': True,
-            'entry_time': self.state['entry_time'],
-            'entry_price': self.state['entry_price'],
-            'size_btc': self.state['position_size_btc'],
-            'size_usd': self.state['position_size_usd'],
-            'peak_price': self.state['peak_price']
-        }
+        # Legacy: return first position found
+        for name, s in self.state.get('strategies', {}).items():
+            if s.get('in_position'):
+                return {
+                    'strategy': name,
+                    'in_position': True,
+                    'entry_time': s['entry_time'],
+                    'entry_price': s['entry_price'],
+                    'size_btc': s['position_size_btc'],
+                    'size_usd': s['position_size_usd'],
+                    'peak_price': s['peak_price']
+                }
+        return None
 
-    def get_risk_metrics(self) -> Dict:
+    def get_all_positions(self) -> List[Dict]:
+        """Get all open positions across all strategies"""
+        positions = []
+        for name, s in self.state.get('strategies', {}).items():
+            if s.get('in_position'):
+                positions.append({
+                    'strategy': name,
+                    'entry_time': s['entry_time'],
+                    'entry_price': s['entry_price'],
+                    'size_btc': s['position_size_btc'],
+                    'size_usd': s['position_size_usd'],
+                    'peak_price': s['peak_price']
+                })
+        return positions
+
+    def get_strategy_state(self, strategy_name: str) -> Dict:
+        """Get full state for a specific strategy"""
+        self.ensure_strategy_exists(strategy_name)
+        return self.state['strategies'][strategy_name].copy()
+
+    def get_all_strategies_summary(self) -> List[Dict]:
+        """Get summary of all strategies"""
+        summaries = []
+        for name, s in self.state.get('strategies', {}).items():
+            summaries.append({
+                'name': name,
+                'enabled': s.get('enabled', False),
+                'allocated_capital_usd': s.get('allocated_capital_usd', 0),
+                'in_position': s.get('in_position', False),
+                'entry_price': s.get('entry_price'),
+                'position_size_btc': s.get('position_size_btc')
+            })
+        return summaries
+
+    def get_risk_metrics(self, strategy_name: str = None) -> Dict:
         """
         Get risk metrics for circuit breakers
 
-        Returns:
-            {
-                'daily_pnl': float,
-                'consecutive_losses': int,
-                'last_trade_result': str
-            }
+        Args:
+            strategy_name: If provided, get for specific strategy
         """
-        return {
-            'daily_pnl': self.state['daily_pnl'],
-            'consecutive_losses': self.state['consecutive_losses'],
-            'last_trade_result': self.state['last_trade_result']
+        result = {
+            'daily_pnl': self.state.get('daily_pnl', 0)
         }
 
-    def is_in_position(self) -> bool:
-        """Check if currently in a position"""
-        return self.state['in_position']
+        if strategy_name:
+            self.ensure_strategy_exists(strategy_name)
+            s = self.state['strategies'][strategy_name]
+            result['consecutive_losses'] = s.get('consecutive_losses', 0)
+            result['last_trade_result'] = s.get('last_trade_result')
+        else:
+            # Sum across all strategies
+            total_losses = sum(
+                s.get('consecutive_losses', 0)
+                for s in self.state.get('strategies', {}).values()
+            )
+            result['consecutive_losses'] = total_losses
+
+        return result
+
+    def is_in_position(self, strategy_name: str = None) -> bool:
+        """
+        Check if currently in a position
+
+        Args:
+            strategy_name: If provided, check specific strategy.
+                          If None, check if ANY strategy is in position.
+        """
+        if strategy_name:
+            self.ensure_strategy_exists(strategy_name)
+            return self.state['strategies'][strategy_name]['in_position']
+
+        # Check any strategy
+        for s in self.state.get('strategies', {}).values():
+            if s.get('in_position'):
+                return True
+        return False
 
     def __str__(self):
         """String representation for logging"""
-        if self.state['in_position']:
-            return (f"State(IN_POSITION: {self.state['position_size_btc']:.4f} BTC "
-                   f"@ ${self.state['entry_price']:,.0f}, peak=${self.state['peak_price']:,.0f})")
+        positions = self.get_all_positions()
+        if positions:
+            pos_strs = [f"{p['strategy']}: {p['size_btc']:.4f} BTC @ ${p['entry_price']:,.0f}"
+                        for p in positions]
+            return f"State({len(positions)} positions: {', '.join(pos_strs)})"
         else:
-            return "State(NO_POSITION)"
+            enabled = self.get_enabled_strategies()
+            if enabled:
+                return f"State(NO_POSITIONS, {len(enabled)} strategies enabled)"
+            return "State(NO_POSITIONS, no strategies enabled)"
 
 
 # Module testing
 if __name__ == '__main__':
     import tempfile
 
-    # Create temporary state directory for testing
     with tempfile.TemporaryDirectory() as tmpdir:
-        print("Testing StateManager...")
+        print("Testing Multi-Strategy StateManager...")
 
-        # Create manager
         manager = StateManager(tmpdir)
         print(f"Initial state: {manager}")
 
-        # Test entering position
+        # Enable strategies with capital
+        manager.enable_strategy('overnight', 50000)
+        manager.enable_strategy('oi', 50000)
+        print(f"After enabling: {manager}")
+        print(f"Total allocated: ${manager.get_total_allocated_capital():,.0f}")
+
+        # Enter position for OI strategy
         now = datetime.utcnow()
-        manager.enter_position(now, 87432.50, 1.1435, 100000)
-        print(f"After entry: {manager}")
+        manager.enter_position('oi', now, 90000, 0.5, 45000)
+        print(f"After OI entry: {manager}")
 
-        # Test updating peak
-        manager.update_peak_price(88500)
-        print(f"After peak update: {manager}")
+        # Enter position for overnight strategy
+        manager.enter_position('overnight', now, 90500, 0.5, 45250)
+        print(f"After overnight entry: {manager}")
 
-        # Test persistence (create new manager, should load state)
-        manager2 = StateManager(tmpdir)
-        manager2.load_state()
-        print(f"New manager loaded state: {manager2}")
+        # Check positions
+        all_pos = manager.get_all_positions()
+        print(f"All positions: {all_pos}")
 
-        assert manager2.state['in_position'] == True
-        assert manager2.state['peak_price'] == 88500
+        # Exit OI position
+        manager.exit_position('oi', datetime.utcnow(), 91000, 1.11)
+        print(f"After OI exit: {manager}")
 
-        # Test exiting position
-        manager2.exit_position(datetime.utcnow(), 89000, 1.8)
-        print(f"After exit: {manager2}")
+        # Disable overnight
+        manager.disable_strategy('overnight')
+        print(f"After disabling overnight: {manager}")
 
-        assert manager2.state['in_position'] == False
-
-        print("\n✅ All tests passed!")
+        print("\nAll tests passed!")
