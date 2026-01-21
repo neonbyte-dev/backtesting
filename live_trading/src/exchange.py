@@ -198,9 +198,9 @@ class HyperLiquidClient:
             limit_price = round(limit_price, 1)
 
             # Place the order
-            # asset 0 = BTC for perpetuals
+            # SDK uses 'name' parameter for the trading pair
             result = self.exchange.order(
-                coin="BTC",
+                name="BTC",
                 is_buy=is_buy,
                 sz=size_btc,
                 limit_px=limit_price,
