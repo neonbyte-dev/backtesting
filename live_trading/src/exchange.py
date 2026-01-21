@@ -1,32 +1,31 @@
 """
 HyperLiquid Exchange Client
 
-This module handles all API interactions with HyperLiquid exchange.
-It provides methods to:
-- Fetch current BTC price
-- Get account balance
-- Place market orders
-- Check order status
-- Monitor positions
+This module handles all API interactions with HyperLiquid exchange
+using the official hyperliquid-python-sdk.
+
+The SDK handles:
+- EIP-712 typed data signing (blockchain authentication)
+- Proper request formatting
+- Connection management
 
 Error handling:
 - Automatic retries with exponential backoff
-- Timeout protection (30 seconds)
 - Detailed error logging
 """
 
-import requests
 import time
-import hmac
-import hashlib
-import json
 from typing import Dict, Optional, Tuple
-from datetime import datetime
+from eth_account import Account
+
+from hyperliquid.info import Info
+from hyperliquid.exchange import Exchange
+from hyperliquid.utils import constants
 
 
 class HyperLiquidClient:
     """
-    Client for interacting with HyperLiquid API
+    Client for interacting with HyperLiquid API using the official SDK.
 
     Supports both testnet and mainnet environments.
     All methods include error handling and retry logic.
@@ -38,100 +37,62 @@ class HyperLiquidClient:
         Initialize HyperLiquid client
 
         Args:
-            api_key: Your HyperLiquid API key
-            api_secret: Your HyperLiquid API secret
+            api_key: Your wallet address (0x...)
+            api_secret: Your API wallet private key (0x...)
             testnet: True for testnet, False for mainnet
             retry_attempts: Number of retries on failure
             timeout: Request timeout in seconds
         """
-        self.api_key = api_key
-        self.api_secret = api_secret
+        self.wallet_address = api_key  # Renamed for clarity
+        self.private_key = api_secret  # Renamed for clarity
         self.retry_attempts = retry_attempts
         self.timeout = timeout
+        self.testnet = testnet
 
-        # Set base URL based on environment
+        # Set API URL based on environment
         if testnet:
-            self.base_url = "https://api.hyperliquid-testnet.xyz"
+            self.api_url = constants.TESTNET_API_URL
         else:
-            self.base_url = "https://api.hyperliquid.xyz"
+            self.api_url = constants.MAINNET_API_URL
 
-        self.session = requests.Session()
-        self.session.headers.update({
-            'Content-Type': 'application/json'
-        })
+        # Initialize SDK clients
+        # Info client - for read-only operations (no signing needed)
+        self.info = Info(self.api_url, skip_ws=True)
 
-    def _generate_signature(self, timestamp: str, method: str, endpoint: str, body: str = "") -> str:
+        # Exchange client - for trading (requires signing)
+        # Create account from private key for signing
+        self.account = Account.from_key(self.private_key)
+        self.exchange = Exchange(
+            self.account,
+            self.api_url,
+            account_address=self.wallet_address
+        )
+
+    def _retry_operation(self, operation, operation_name: str):
         """
-        Generate HMAC signature for authenticated requests
-
-        HyperLiquid uses HMAC-SHA256 for request signing.
-        Format: timestamp + method + endpoint + body
-        """
-        message = f"{timestamp}{method}{endpoint}{body}"
-        signature = hmac.new(
-            self.api_secret.encode('utf-8'),
-            message.encode('utf-8'),
-            hashlib.sha256
-        ).hexdigest()
-        return signature
-
-    def _make_request(self, method: str, endpoint: str, data: Optional[Dict] = None,
-                      authenticated: bool = False) -> Dict:
-        """
-        Make HTTP request to HyperLiquid API with retry logic
+        Retry an operation with exponential backoff
 
         Args:
-            method: HTTP method (GET, POST)
-            endpoint: API endpoint path
-            data: Request payload (for POST)
-            authenticated: Whether to sign the request
+            operation: Callable to execute
+            operation_name: Name for error messages
 
         Returns:
-            API response as dictionary
+            Result of the operation
 
         Raises:
             Exception: If all retry attempts fail
         """
-        url = f"{self.base_url}{endpoint}"
-
+        last_error = None
         for attempt in range(self.retry_attempts):
             try:
-                # Add authentication if required
-                headers = {}
-                if authenticated:
-                    timestamp = str(int(time.time() * 1000))
-                    body = json.dumps(data) if data else ""
-                    signature = self._generate_signature(timestamp, method, endpoint, body)
+                return operation()
+            except Exception as e:
+                last_error = e
+                if attempt < self.retry_attempts - 1:
+                    sleep_time = 2 ** attempt  # 1s, 2s, 4s
+                    time.sleep(sleep_time)
 
-                    headers.update({
-                        'HX-ACCESS-KEY': self.api_key,
-                        'HX-ACCESS-SIGN': signature,
-                        'HX-ACCESS-TIMESTAMP': timestamp
-                    })
-
-                # Make request
-                if method == 'GET':
-                    response = self.session.get(url, headers=headers, timeout=self.timeout)
-                elif method == 'POST':
-                    response = self.session.post(url, json=data, headers=headers, timeout=self.timeout)
-                else:
-                    raise ValueError(f"Unsupported HTTP method: {method}")
-
-                # Check response
-                response.raise_for_status()
-                return response.json()
-
-            except requests.exceptions.Timeout:
-                if attempt == self.retry_attempts - 1:
-                    raise Exception(f"Request timeout after {self.retry_attempts} attempts")
-                time.sleep(2 ** attempt)  # Exponential backoff: 1s, 2s, 4s
-
-            except requests.exceptions.RequestException as e:
-                if attempt == self.retry_attempts - 1:
-                    raise Exception(f"Request failed after {self.retry_attempts} attempts: {str(e)}")
-                time.sleep(2 ** attempt)
-
-        raise Exception("Unexpected error in _make_request")
+        raise Exception(f"{operation_name} failed after {self.retry_attempts} attempts: {str(last_error)}")
 
     def get_btc_price(self) -> float:
         """
@@ -145,21 +106,16 @@ class HyperLiquidClient:
             >>> print(f"BTC: ${price:,.2f}")
             BTC: $87,432.50
         """
-        try:
-            # Use POST /info with allMids type to get all mid prices
-            payload = {
-                "type": "allMids"
-            }
-
-            response = self._make_request('POST', '/info', data=payload,
-                                         authenticated=False)
-
-            # Response is a dict with asset names as keys (e.g., {"BTC": "87432.5", "ETH": "3245.2"})
-            if isinstance(response, dict) and 'BTC' in response:
-                return float(response['BTC'])
+        def fetch_price():
+            # Get all mid prices
+            all_mids = self.info.all_mids()
+            if 'BTC' in all_mids:
+                return float(all_mids['BTC'])
             else:
-                raise Exception(f"BTC price not found in response: {response}")
+                raise Exception(f"BTC price not found in response: {all_mids}")
 
+        try:
+            return self._retry_operation(fetch_price, "Get BTC price")
         except Exception as e:
             raise Exception(f"Failed to get BTC price: {str(e)}")
 
@@ -171,49 +127,33 @@ class HyperLiquidClient:
         not the spot clearinghouse. This queries the perp account.
 
         Returns:
-            Available USDC balance
+            Available USDC balance (account value)
 
         Example:
             >>> balance = client.get_account_balance()
             >>> print(f"Balance: ${balance:,.2f}")
             Balance: $100,000.00
         """
-        try:
-            # Use POST /info with clearinghouseState type (perp, not spot)
-            # USDC is held in the perp clearinghouse on HyperLiquid
-            payload = {
-                "type": "clearinghouseState",
-                "user": self.api_key  # Wallet address (0x...)
-            }
+        def fetch_balance():
+            # Get user state from perp clearinghouse
+            user_state = self.info.user_state(self.wallet_address)
 
-            response = self._make_request('POST', '/info', data=payload,
-                                         authenticated=False)
-
-            # Extract withdrawable balance from margin summary
-            # Response format: {"marginSummary": {"accountValue": "...", "totalMarginUsed": "...", ...}, ...}
-            if 'marginSummary' in response:
-                margin = response['marginSummary']
-                # accountValue = total account value including unrealized P&L
-                # withdrawable = what you can actually withdraw (available margin)
+            if 'marginSummary' in user_state:
+                margin = user_state['marginSummary']
                 account_value = float(margin.get('accountValue', 0))
                 return account_value
 
-            # Fallback: try spot clearinghouse if perp is empty
-            spot_payload = {
-                "type": "spotClearinghouseState",
-                "user": self.api_key
-            }
-            spot_response = self._make_request('POST', '/info', data=spot_payload,
-                                              authenticated=False)
-
-            if 'balances' in spot_response:
-                for balance in spot_response['balances']:
+            # Fallback: try spot clearinghouse
+            spot_state = self.info.spot_user_state(self.wallet_address)
+            if 'balances' in spot_state:
+                for balance in spot_state['balances']:
                     if balance['coin'] == 'USDC':
                         return float(balance['total'])
 
-            # No balance found in either clearinghouse
             return 0.0
 
+        try:
+            return self._retry_operation(fetch_balance, "Get account balance")
         except Exception as e:
             raise Exception(f"Failed to get account balance: {str(e)}")
 
@@ -233,41 +173,67 @@ class HyperLiquidClient:
             >>> print(f"Bought {size:.4f} BTC at ${price:,.2f}")
             Bought 1.1435 BTC at $87,432.50
         """
-        try:
+        def execute_order():
             # Get current price to calculate BTC size
             current_price = self.get_btc_price()
             size_btc = size_usd / current_price
 
-            # Prepare order payload
-            order_data = {
-                'coin': 'BTC',
-                'is_buy': side == 'BUY',
-                'sz': round(size_btc, 8),  # 8 decimal places for BTC
-                'limit_px': None,  # Market order (no limit price)
-                'order_type': {'limit': {'tif': 'Ioc'}},  # Immediate or cancel
-                'reduce_only': False
-            }
+            # Round to appropriate precision (4 decimal places for BTC on HyperLiquid)
+            size_btc = round(size_btc, 4)
 
-            # Place order
-            response = self._make_request('POST', '/exchange/order',
-                                         data=order_data, authenticated=True)
+            # Determine if buy or sell
+            is_buy = side.upper() == 'BUY'
 
-            # Extract fill information
-            if response.get('status') == 'ok':
-                fill_info = response['response']['data']['statuses'][0]
-
-                if 'filled' in fill_info:
-                    filled = fill_info['filled']
-                    return (
-                        response['response']['data']['statuses'][0].get('oid', 'unknown'),
-                        float(filled['avgPx']),
-                        float(filled['totalSz'])
-                    )
-                else:
-                    raise Exception(f"Order not filled: {fill_info}")
+            # Place market order using SDK
+            # For market orders, we use a limit order with IOC (Immediate or Cancel)
+            # at a price that will definitely fill (slippage buffer)
+            if is_buy:
+                # For buys, use a price above market
+                limit_price = current_price * 1.01  # 1% slippage buffer
             else:
-                raise Exception(f"Order failed: {response}")
+                # For sells, use a price below market
+                limit_price = current_price * 0.99  # 1% slippage buffer
 
+            # Round price to appropriate precision
+            limit_price = round(limit_price, 1)
+
+            # Place the order
+            # asset 0 = BTC for perpetuals
+            result = self.exchange.order(
+                coin="BTC",
+                is_buy=is_buy,
+                sz=size_btc,
+                limit_px=limit_price,
+                order_type={"limit": {"tif": "Ioc"}},  # Immediate or Cancel
+                reduce_only=False
+            )
+
+            # Parse the response
+            if result.get('status') == 'ok':
+                response_data = result.get('response', {})
+                if response_data.get('type') == 'order':
+                    statuses = response_data.get('data', {}).get('statuses', [])
+                    if statuses:
+                        status = statuses[0]
+                        if 'filled' in status:
+                            filled = status['filled']
+                            return (
+                                str(status.get('oid', 'unknown')),
+                                float(filled['avgPx']),
+                                float(filled['totalSz'])
+                            )
+                        elif 'resting' in status:
+                            # Order is resting (not filled) - shouldn't happen with IOC
+                            raise Exception(f"Order not filled (resting): {status}")
+                        elif 'error' in status:
+                            raise Exception(f"Order error: {status['error']}")
+
+                raise Exception(f"Unexpected response format: {result}")
+            else:
+                raise Exception(f"Order failed: {result}")
+
+        try:
+            return self._retry_operation(execute_order, f"Place {side} order")
         except Exception as e:
             raise Exception(f"Failed to place {side} order: {str(e)}")
 
@@ -280,24 +246,30 @@ class HyperLiquidClient:
 
         Example:
             >>> positions = client.get_positions()
-            >>> if positions['BTC']:
+            >>> if positions.get('BTC'):
             ...     print(f"Position: {positions['BTC']['size']} BTC")
         """
-        try:
-            response = self._make_request('GET', '/info/userState', authenticated=True)
+        def fetch_positions():
+            user_state = self.info.user_state(self.wallet_address)
 
             positions = {}
-            if 'assetPositions' in response:
-                for pos in response['assetPositions']:
-                    if float(pos['position']['szi']) != 0:  # Only open positions
-                        positions[pos['position']['coin']] = {
-                            'size': float(pos['position']['szi']),
-                            'entry_price': float(pos['position']['entryPx']),
-                            'unrealized_pnl': float(pos['position']['unrealizedPnl'])
+            if 'assetPositions' in user_state:
+                for pos in user_state['assetPositions']:
+                    position_data = pos.get('position', {})
+                    size = float(position_data.get('szi', 0))
+                    if size != 0:  # Only open positions
+                        coin = position_data.get('coin', 'UNKNOWN')
+                        positions[coin] = {
+                            'size': size,
+                            'entry_price': float(position_data.get('entryPx', 0)),
+                            'unrealized_pnl': float(position_data.get('unrealizedPnl', 0)),
+                            'liquidation_price': float(position_data.get('liquidationPx', 0)) if position_data.get('liquidationPx') else None
                         }
 
             return positions
 
+        try:
+            return self._retry_operation(fetch_positions, "Get positions")
         except Exception as e:
             raise Exception(f"Failed to get positions: {str(e)}")
 
@@ -311,11 +283,23 @@ class HyperLiquidClient:
         Returns:
             Order status details
         """
-        try:
-            response = self._make_request('GET', f'/info/order/{order_id}',
-                                         authenticated=True)
-            return response
+        def fetch_order():
+            # Get open orders
+            open_orders = self.info.open_orders(self.wallet_address)
+            for order in open_orders:
+                if str(order.get('oid')) == order_id:
+                    return order
 
+            # Check user fills for completed orders
+            user_fills = self.info.user_fills(self.wallet_address)
+            for fill in user_fills:
+                if str(fill.get('oid')) == order_id:
+                    return {'status': 'filled', **fill}
+
+            return {'status': 'not_found', 'order_id': order_id}
+
+        try:
+            return self._retry_operation(fetch_order, "Get order status")
         except Exception as e:
             raise Exception(f"Failed to get order status: {str(e)}")
 
@@ -336,7 +320,8 @@ class HyperLiquidClient:
                 side = 'SELL' if pos['size'] > 0 else 'BUY'
 
                 # Close position
-                self.place_market_order(side, size * self.get_btc_price())
+                current_price = self.get_btc_price()
+                self.place_market_order(side, size * current_price)
                 print(f"Closed {coin} position: {side} {size}")
 
             return True
@@ -353,18 +338,18 @@ if __name__ == '__main__':
 
     # Load credentials
     load_dotenv()
-    api_key = os.getenv('HYPERLIQUID_API_KEY')
-    api_secret = os.getenv('HYPERLIQUID_API_SECRET')
+    wallet_address = os.getenv('HYPERLIQUID_API_KEY')
+    private_key = os.getenv('HYPERLIQUID_API_SECRET')
 
-    if not api_key or not api_secret:
+    if not wallet_address or not private_key:
         print("ERROR: Set HYPERLIQUID_API_KEY and HYPERLIQUID_API_SECRET in .env file")
         exit(1)
 
-    # Create client
-    client = HyperLiquidClient(api_key, api_secret, testnet=True)
+    # Create client (testnet for safety)
+    client = HyperLiquidClient(wallet_address, private_key, testnet=True)
 
     # Test methods
-    print("Testing HyperLiquid Client...")
+    print("Testing HyperLiquid Client with SDK...")
     print(f"BTC Price: ${client.get_btc_price():,.2f}")
     print(f"Account Balance: ${client.get_account_balance():,.2f}")
     print(f"Positions: {client.get_positions()}")
