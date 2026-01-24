@@ -72,6 +72,10 @@ class HyperLiquidClient:
         """
         Retry an operation with exponential backoff
 
+        Special handling for rate limits (429 errors):
+        - Wait 30-60 seconds before retrying
+        - More attempts for rate limits (they're transient)
+
         Args:
             operation: Callable to execute
             operation_name: Name for error messages
@@ -83,16 +87,30 @@ class HyperLiquidClient:
             Exception: If all retry attempts fail
         """
         last_error = None
-        for attempt in range(self.retry_attempts):
+        max_attempts = self.retry_attempts
+
+        for attempt in range(max_attempts):
             try:
                 return operation()
             except Exception as e:
                 last_error = e
-                if attempt < self.retry_attempts - 1:
-                    sleep_time = 2 ** attempt  # 1s, 2s, 4s
+                error_str = str(e)
+
+                # Check if this is a rate limit error (429)
+                is_rate_limit = '429' in error_str or 'rate' in error_str.lower()
+
+                if attempt < max_attempts - 1:
+                    if is_rate_limit:
+                        # Rate limit: wait longer (30s, 60s, 120s)
+                        sleep_time = 30 * (2 ** attempt)
+                        print(f"Rate limited, waiting {sleep_time}s before retry...")
+                    else:
+                        # Normal error: standard backoff (2s, 4s, 8s)
+                        sleep_time = 2 * (2 ** attempt)
+
                     time.sleep(sleep_time)
 
-        raise Exception(f"{operation_name} failed after {self.retry_attempts} attempts: {str(last_error)}")
+        raise Exception(f"{operation_name} failed after {max_attempts} attempts: {str(last_error)}")
 
     def get_btc_price(self) -> float:
         """
