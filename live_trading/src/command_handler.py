@@ -86,6 +86,8 @@ class CommandHandler:
                 return (self._positions_message(), None)
             elif command == '/balance':
                 return (self._balance_message(), None)
+            elif command == '/history':
+                return (self._history_message(parts[1:]), None)
             elif command == '/strategy':
                 return self._strategy_list()
             elif command == '/auth':
@@ -244,6 +246,7 @@ Send /help for all commands."""
 <b>Status</b>
 /status - Bot status & environment
 /positions - View all positions & P&L
+/history - Trade history
 /balance - Quick balance check
 
 <b>Trading</b>
@@ -340,25 +343,25 @@ Send /help for all commands."""
 
                     msg += f"   Trades: {trade_count}\n"
 
-                    # Last signal (when entry conditions were met - backtest style)
-                    last_signal_time = state.get('last_signal_time')
-                    if last_signal_time:
+                    # Last trade time
+                    last_trade_time = state.get('last_trade_time')
+                    if last_trade_time:
                         try:
-                            last_signal = datetime.fromisoformat(last_signal_time)
-                            time_ago = datetime.utcnow() - last_signal
+                            last_trade = datetime.fromisoformat(last_trade_time)
+                            time_ago = datetime.utcnow() - last_trade
                             hours_ago = int(time_ago.total_seconds() // 3600)
                             if hours_ago < 1:
                                 mins_ago = int(time_ago.total_seconds() // 60)
-                                msg += f"   Last signal: {mins_ago}m ago (backtest)\n"
+                                msg += f"   Last trade: {mins_ago}m ago\n"
                             elif hours_ago < 24:
-                                msg += f"   Last signal: {hours_ago}h ago (backtest)\n"
+                                msg += f"   Last trade: {hours_ago}h ago\n"
                             else:
                                 days_ago = hours_ago // 24
-                                msg += f"   Last signal: {days_ago}d ago (backtest)\n"
+                                msg += f"   Last trade: {days_ago}d ago\n"
                         except:
                             pass
                     else:
-                        msg += f"   Last signal: Never (backtest)\n"
+                        msg += f"   Last trade: None yet\n"
 
                     # Position & P&L
                     if in_position:
@@ -423,6 +426,59 @@ Send /help for all commands."""
 <b>Total:</b> ${balance:,.2f}
 <b>Allocated:</b> ${allocated:,.2f}
 <b>Available:</b> ${available:,.2f}"""
+
+        except Exception as e:
+            return f"Error: {str(e)}"
+
+    def _history_message(self, args: list) -> str:
+        """Show trade history"""
+        try:
+            # Optional: filter by strategy name
+            strategy_filter = args[0].lower() if args else None
+
+            trades = self.bot.state_manager.get_trade_history(
+                strategy_name=strategy_filter,
+                limit=20
+            )
+
+            if not trades:
+                if strategy_filter:
+                    return f"📜 No trade history for <b>{strategy_filter}</b>"
+                return "📜 No trade history yet"
+
+            msg = "📜 <b>TRADE HISTORY</b>\n"
+            if strategy_filter:
+                msg += f"<i>Filter: {strategy_filter}</i>\n"
+
+            total_pnl = 0
+            wins = 0
+
+            for t in trades:
+                emoji = "🟢" if t['profit_pct'] >= 0 else "🔴"
+                if t['profit_pct'] >= 0:
+                    wins += 1
+                total_pnl += t.get('profit_usd', 0)
+
+                # Format exit time
+                try:
+                    exit_dt = datetime.fromisoformat(t['exit_time'])
+                    date_str = exit_dt.strftime('%b %d %H:%M')
+                except:
+                    date_str = "?"
+
+                msg += f"\n{emoji} <b>[{t['strategy'].upper()}]</b> {date_str}\n"
+                msg += f"   ${t['entry_price']:,.0f} → ${t['exit_price']:,.0f}"
+                msg += f"  {t['profit_pct']:+.2f}% (${t.get('profit_usd', 0):+,.0f})\n"
+
+            # Summary
+            msg += f"\n{'─'*25}\n"
+            msg += f"<b>Trades:</b> {len(trades)}"
+            if trades:
+                msg += f" | <b>Win Rate:</b> {wins}/{len(trades)} ({wins/len(trades)*100:.0f}%)"
+            msg += f"\n<b>Total P&L:</b> ${total_pnl:+,.2f}\n"
+            msg += f"\n<i>Usage: /history or /history oi</i>"
+
+            return msg
 
         except Exception as e:
             return f"Error: {str(e)}"

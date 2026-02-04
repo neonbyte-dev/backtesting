@@ -69,7 +69,8 @@ class StateManager:
             'last_signal_time': None,           # When entry conditions were last TRUE (backtest-style)
             'last_entry_check_time': None,
             'last_entry_check_result': None,
-            'last_entry_check_reason': None
+            'last_entry_check_reason': None,
+            'trade_history': []                 # List of completed trades
         }
 
     def load_state(self) -> Dict:
@@ -253,6 +254,20 @@ class StateManager:
             s['consecutive_losses'] = 0
             s['last_trade_result'] = 'win'
 
+        # Record trade in history
+        if 'trade_history' not in s:
+            s['trade_history'] = []
+        s['trade_history'].append({
+            'entry_time': s['entry_time'],
+            'exit_time': exit_time.isoformat(),
+            'entry_price': s['entry_price'],
+            'exit_price': exit_price,
+            'size': s['position_size_btc'],
+            'profit_pct': round(profit_pct, 2),
+            'profit_usd': round(pnl_usd, 2),
+            'result': 'win' if profit_pct >= 0 else 'loss'
+        })
+
         # Clear position
         s['in_position'] = False
         s['entry_time'] = None
@@ -377,6 +392,37 @@ class StateManager:
         """Get full state for a specific strategy"""
         self.ensure_strategy_exists(strategy_name)
         return self.state['strategies'][strategy_name].copy()
+
+    def get_trade_history(self, strategy_name: str = None, limit: int = 20) -> List[Dict]:
+        """
+        Get trade history, newest first
+
+        Args:
+            strategy_name: If provided, get for specific strategy only.
+                          If None, get all trades across all strategies.
+            limit: Max number of trades to return
+
+        Returns:
+            List of trade dicts with strategy name included
+        """
+        trades = []
+        if strategy_name:
+            self.ensure_strategy_exists(strategy_name)
+            history = self.state['strategies'][strategy_name].get('trade_history', [])
+            for t in history:
+                trade = t.copy()
+                trade['strategy'] = strategy_name
+                trades.append(trade)
+        else:
+            for name, s in self.state.get('strategies', {}).items():
+                for t in s.get('trade_history', []):
+                    trade = t.copy()
+                    trade['strategy'] = name
+                    trades.append(trade)
+
+        # Sort by exit time, newest first
+        trades.sort(key=lambda t: t.get('exit_time', ''), reverse=True)
+        return trades[:limit]
 
     def get_all_strategies_summary(self) -> List[Dict]:
         """Get summary of all strategies"""
