@@ -38,7 +38,7 @@ class CommandHandler:
         self.conversation_state: Dict[str, dict] = {}
 
         # Protected commands
-        self.protected_commands = ['/disable', '/close']
+        self.protected_commands = ['/disable', '/close', '/withdraw']
 
     def is_authorized_chat(self, chat_id: str) -> bool:
         if not self.allowed_chat_ids:
@@ -76,11 +76,13 @@ class CommandHandler:
                 return ("🔒 <b>Authentication Required</b>\n\nSend: /auth <pin>", None)
 
         try:
-            if command == '/help':
+            if command == '/start':
+                return (self._start_message(), None)
+            elif command == '/help':
                 return (self._help_message(), None)
             elif command == '/status':
                 return (self._bot_status_message(), None)
-            elif command == '/positions':
+            elif command == '/positions' or command == '/position':
                 return (self._positions_message(), None)
             elif command == '/balance':
                 return (self._balance_message(), None)
@@ -94,6 +96,10 @@ class CommandHandler:
                 return (self._handle_disable(), None)
             elif command == '/close':
                 return (self._handle_close(), None)
+            elif command == '/deposit':
+                return (self._deposit_message(), None)
+            elif command == '/withdraw':
+                return (self._handle_withdraw(parts[1:]), None)
             else:
                 return (f"Unknown command. Send /help", None)
 
@@ -188,18 +194,36 @@ class CommandHandler:
         del self.conversation_state[chat_id]
         return ("", None)
 
+    def _start_message(self) -> str:
+        return """🤖 <b>TRADING BOT</b>
+
+Multi-strategy BTC trading bot on HyperLiquid.
+
+<b>Quick Start:</b>
+• /status - Check bot status
+• /strategy - Deploy a strategy
+• /positions - View P&amp;L
+
+Send /help for all commands."""
+
     def _help_message(self) -> str:
         return """
 📚 <b>COMMANDS</b>
 
+<b>Status</b>
 /status - Bot status & environment
 /positions - View all positions & P&L
 /balance - Quick balance check
-/strategy - Manage strategies
 
+<b>Trading</b>
+/strategy - Manage strategies
 /enable - Unpause bot
 /disable - Pause bot 🔒
 /close - Close all positions 🔒
+
+<b>Funds</b>
+/deposit - Get deposit address
+/withdraw &lt;amount&gt; - Withdraw USDC 🔒
 
 /auth &lt;pin&gt; - Authenticate
 
@@ -211,7 +235,7 @@ class CommandHandler:
         try:
             is_paused = self.bot.is_paused
             status = "🛑 PAUSED" if is_paused else "✅ RUNNING"
-            env = "🖥️ Local" if platform.system() == "Darwin" else "☁️ Server"
+            env = "🖥️ Local" if platform.system() == "Darwin" else "☁️ Railway"
 
             enabled = self.bot.state_manager.get_enabled_strategies()
             strategies = ", ".join(enabled) if enabled else "None"
@@ -285,6 +309,26 @@ class CommandHandler:
 
                     msg += f"   Trades: {trade_count}\n"
 
+                    # Last signal (when entry conditions were met - backtest style)
+                    last_signal_time = state.get('last_signal_time')
+                    if last_signal_time:
+                        try:
+                            last_signal = datetime.fromisoformat(last_signal_time)
+                            time_ago = datetime.utcnow() - last_signal
+                            hours_ago = int(time_ago.total_seconds() // 3600)
+                            if hours_ago < 1:
+                                mins_ago = int(time_ago.total_seconds() // 60)
+                                msg += f"   Last signal: {mins_ago}m ago (backtest)\n"
+                            elif hours_ago < 24:
+                                msg += f"   Last signal: {hours_ago}h ago (backtest)\n"
+                            else:
+                                days_ago = hours_ago // 24
+                                msg += f"   Last signal: {days_ago}d ago (backtest)\n"
+                        except:
+                            pass
+                    else:
+                        msg += f"   Last signal: Never (backtest)\n"
+
                     # Position & P&L
                     if in_position:
                         entry = state.get('entry_price', 0)
@@ -304,7 +348,7 @@ class CommandHandler:
                         if strategy_name == 'overnight':
                             params = self.config.get('strategies', {}).get('overnight', {}).get('params', {})
                             max_price = params.get('max_entry_price_usd', 90000)
-                            msg += f"   ⏳ Waiting: 20:00 GMT + BTC < ${max_price:,.0f}\n"
+                            msg += f"   ⏳ Waiting: 20:00 GMT + BTC &lt; ${max_price:,.0f}\n"
                         elif strategy_name == 'oi':
                             params = self.config.get('strategies', {}).get('oi', {}).get('params', {})
                             oi_thresh = abs(params.get('oi_drop_threshold', 0.15))
@@ -591,3 +635,102 @@ class CommandHandler:
 
     def _handle_close(self) -> str:
         return self.bot.emergency_close_position()
+
+    def _deposit_message(self) -> str:
+        """Show deposit information"""
+        try:
+            info = self.bot.exchange.get_deposit_info()
+
+            msg = "💰 <b>DEPOSIT USDC</b>\n\n"
+
+            msg += f"<b>Network:</b> {info['chain']}\n"
+            msg += f"<b>Token:</b> {info['token']}\n\n"
+
+            msg += f"<b>Deposit Address:</b>\n"
+            msg += f"<code>{info['address']}</code>\n\n"
+
+            msg += f"<b>USDC Contract (Arbitrum):</b>\n"
+            msg += f"<code>{info['token_contract']}</code>\n\n"
+
+            msg += "⚠️ <b>IMPORTANT:</b>\n"
+            for note in info['notes']:
+                msg += f"• {note}\n"
+
+            msg += f"\n<i>Environment: {info['network']}</i>"
+
+            return msg
+
+        except Exception as e:
+            return f"Error getting deposit info: {str(e)}"
+
+    def _handle_withdraw(self, args: list) -> str:
+        """Handle withdraw command"""
+        try:
+            if not args:
+                # Show current balance and usage
+                balance = self.bot.exchange.get_account_balance()
+                allocated = self.bot.state_manager.get_total_allocated_capital()
+                available = balance - allocated
+
+                return f"""💸 <b>WITHDRAW USDC</b>
+
+<b>Balance:</b> ${balance:,.2f}
+<b>Allocated:</b> ${allocated:,.2f}
+<b>Available:</b> ${available:,.2f}
+
+<b>Usage:</b>
+<code>/withdraw &lt;amount&gt;</code>
+
+<b>Example:</b>
+<code>/withdraw 100</code>
+
+⚠️ Withdrawals go to your connected wallet on Arbitrum.
+Processing time: 1-10 minutes."""
+
+            # Parse amount
+            try:
+                amount = float(args[0].replace(',', '').replace('$', '').strip())
+            except ValueError:
+                return f"❌ Invalid amount: {args[0]}\n\nUsage: /withdraw 100"
+
+            if amount <= 0:
+                return "❌ Amount must be greater than 0"
+
+            # Check available balance
+            balance = self.bot.exchange.get_account_balance()
+            allocated = self.bot.state_manager.get_total_allocated_capital()
+            available = balance - allocated
+
+            if amount > available:
+                return f"""❌ <b>Insufficient funds</b>
+
+<b>Requested:</b> ${amount:,.2f}
+<b>Available:</b> ${available:,.2f}
+
+You can only withdraw unallocated funds.
+Disable strategies first to free up capital."""
+
+            # Execute withdrawal
+            result = self.bot.exchange.withdraw(amount)
+
+            if result.get('success'):
+                return f"""✅ <b>WITHDRAWAL INITIATED</b>
+
+<b>Amount:</b> ${amount:,.2f} USDC
+<b>Network:</b> Arbitrum One
+<b>Destination:</b> Your connected wallet
+
+⏳ Processing time: 1-10 minutes
+
+Check your wallet for the funds."""
+            else:
+                error = result.get('error', 'Unknown error')
+                return f"""❌ <b>WITHDRAWAL FAILED</b>
+
+<b>Amount:</b> ${amount:,.2f}
+<b>Error:</b> {error}
+
+Please try again or check HyperLiquid status."""
+
+        except Exception as e:
+            return f"Error: {str(e)}"

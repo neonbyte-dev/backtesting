@@ -14,6 +14,7 @@ Error handling:
 - Detailed error logging
 """
 
+import math
 import time
 from typing import Dict, Optional, Tuple
 from eth_account import Account
@@ -68,13 +69,63 @@ class HyperLiquidClient:
             account_address=self.wallet_address
         )
 
+        # Cache asset metadata (szDecimals) from the exchange
+        self._sz_decimals = {}
+        self._load_asset_metadata()
+
+    def _load_asset_metadata(self):
+        """
+        Fetch asset metadata from HyperLiquid (szDecimals for each asset).
+
+        szDecimals tells us how many decimal places to use for ORDER SIZE.
+        This is fetched once at startup and cached.
+        """
+        try:
+            meta = self.info.meta()
+            for asset_info in meta.get('universe', []):
+                name = asset_info.get('name', '')
+                sz_decimals = asset_info.get('szDecimals', 2)
+                self._sz_decimals[name] = sz_decimals
+        except Exception as e:
+            print(f"Warning: Could not fetch asset metadata: {e}")
+            # Fallback defaults if API fails
+            self._sz_decimals = {
+                'BTC': 4, 'ETH': 3, 'SOL': 2, 'HYPE': 1, 'DOGE': 0, 'PEPE': 0
+            }
+
+    @staticmethod
+    def _get_price_decimals(price: float, sig_figs: int = 5) -> int:
+        """
+        Calculate allowed decimal places for a price on HyperLiquid.
+
+        HyperLiquid uses a 5 significant figures rule for prices.
+        The tick size is determined by how many integer digits the price has.
+
+        Examples:
+            $100,000 (6 digits) → 0 decimals (tick = $1)
+            $3,000   (4 digits) → 1 decimal  (tick = $0.1)
+            $200     (3 digits) → 2 decimals (tick = $0.01)
+            $0.30    (0 digits) → 5 decimals (tick = $0.00001)
+
+        Args:
+            price: Current asset price
+            sig_figs: Number of significant figures allowed (default 5)
+
+        Returns:
+            Number of decimal places to round the price to
+        """
+        if price <= 0:
+            return 2
+        integer_digits = math.floor(math.log10(price)) + 1
+        return max(0, sig_figs - integer_digits)
+
     def _retry_operation(self, operation, operation_name: str):
         """
         Retry an operation with exponential backoff
 
         Special handling for rate limits (429 errors):
-        - Wait 30-60 seconds before retrying
-        - More attempts for rate limits (they're transient)
+        - Wait 60-240 seconds before retrying (CloudFront rate limits can be long)
+        - More attempts for rate limits (5 instead of 3)
 
         Args:
             operation: Callable to execute
@@ -87,9 +138,9 @@ class HyperLiquidClient:
             Exception: If all retry attempts fail
         """
         last_error = None
-        max_attempts = self.retry_attempts
+        base_attempts = self.retry_attempts
 
-        for attempt in range(max_attempts):
+        for attempt in range(base_attempts):
             try:
                 return operation()
             except Exception as e:
@@ -99,18 +150,24 @@ class HyperLiquidClient:
                 # Check if this is a rate limit error (429)
                 is_rate_limit = '429' in error_str or 'rate' in error_str.lower()
 
-                if attempt < max_attempts - 1:
-                    if is_rate_limit:
-                        # Rate limit: wait longer (30s, 60s, 120s)
-                        sleep_time = 30 * (2 ** attempt)
-                        print(f"Rate limited, waiting {sleep_time}s before retry...")
+                if is_rate_limit:
+                    # Rate limits get MORE attempts (up to 5 total)
+                    max_rate_limit_attempts = 5
+                    if attempt < max_rate_limit_attempts - 1:
+                        # Longer backoff: 60s, 120s, 180s, 240s
+                        sleep_time = 60 + (60 * attempt)
+                        print(f"Rate limited (429), waiting {sleep_time}s before retry {attempt + 2}/{max_rate_limit_attempts}...")
+                        time.sleep(sleep_time)
+                        continue
                     else:
-                        # Normal error: standard backoff (2s, 4s, 8s)
+                        break  # Exhausted rate limit retries
+                else:
+                    # Normal error: standard backoff (2s, 4s, 8s)
+                    if attempt < base_attempts - 1:
                         sleep_time = 2 * (2 ** attempt)
+                        time.sleep(sleep_time)
 
-                    time.sleep(sleep_time)
-
-        raise Exception(f"{operation_name} failed after {max_attempts} attempts: {str(last_error)}")
+        raise Exception(f"{operation_name} failed after retries: {str(last_error)}")
 
     def get_btc_price(self) -> float:
         """
@@ -124,18 +181,35 @@ class HyperLiquidClient:
             >>> print(f"BTC: ${price:,.2f}")
             BTC: $87,432.50
         """
+        return self.get_price('BTC')
+
+    def get_price(self, asset: str = 'BTC') -> float:
+        """
+        Get current market price for any asset
+
+        Args:
+            asset: Asset symbol (e.g., 'BTC', 'ETH', 'SOL')
+
+        Returns:
+            Current price in USDC
+
+        Example:
+            >>> price = client.get_price('ETH')
+            >>> print(f"ETH: ${price:,.2f}")
+            ETH: $3,432.50
+        """
         def fetch_price():
             # Get all mid prices
             all_mids = self.info.all_mids()
-            if 'BTC' in all_mids:
-                return float(all_mids['BTC'])
+            if asset in all_mids:
+                return float(all_mids[asset])
             else:
-                raise Exception(f"BTC price not found in response: {all_mids}")
+                raise Exception(f"{asset} price not found in response: {list(all_mids.keys())[:10]}")
 
         try:
-            return self._retry_operation(fetch_price, "Get BTC price")
+            return self._retry_operation(fetch_price, f"Get {asset} price")
         except Exception as e:
-            raise Exception(f"Failed to get BTC price: {str(e)}")
+            raise Exception(f"Failed to get {asset} price: {str(e)}")
 
     def get_account_balance(self) -> float:
         """
@@ -175,29 +249,32 @@ class HyperLiquidClient:
         except Exception as e:
             raise Exception(f"Failed to get account balance: {str(e)}")
 
-    def place_market_order(self, side: str, size_usd: float) -> Tuple[str, float, float]:
+    def place_market_order(self, side: str, size_usd: float, asset: str = 'BTC') -> Tuple[str, float, float]:
         """
-        Place a market order for BTC
+        Place a market order for any asset
 
         Args:
             side: 'BUY' or 'SELL'
             size_usd: Order size in USDC
+            asset: Asset symbol (default: 'BTC')
 
         Returns:
-            Tuple of (order_id, fill_price, fill_size_btc)
+            Tuple of (order_id, fill_price, fill_size)
 
         Example:
-            >>> order_id, price, size = client.place_market_order('BUY', 100000)
-            >>> print(f"Bought {size:.4f} BTC at ${price:,.2f}")
-            Bought 1.1435 BTC at $87,432.50
+            >>> order_id, price, size = client.place_market_order('BUY', 100000, 'ETH')
+            >>> print(f"Bought {size:.4f} ETH at ${price:,.2f}")
         """
-        def execute_order():
-            # Get current price to calculate BTC size
-            current_price = self.get_btc_price()
-            size_btc = size_usd / current_price
+        # Size precision from exchange metadata (fetched at startup)
+        size_precision = self._sz_decimals.get(asset, 2)
 
-            # Round to appropriate precision (4 decimal places for BTC on HyperLiquid)
-            size_btc = round(size_btc, 4)
+        def execute_order():
+            # Get current price to calculate size
+            current_price = self.get_price(asset)
+            size = size_usd / current_price
+
+            # Round to appropriate precision
+            size = round(size, size_precision)
 
             # Determine if buy or sell
             is_buy = side.upper() == 'BUY'
@@ -212,15 +289,16 @@ class HyperLiquidClient:
                 # For sells, use a price below market
                 limit_price = current_price * 0.99  # 1% slippage buffer
 
-            # Round price to appropriate precision
-            limit_price = round(limit_price, 1)
+            # Calculate price precision dynamically based on current price
+            # HyperLiquid uses 5 significant figures for prices
+            price_precision = self._get_price_decimals(limit_price)
+            limit_price = round(limit_price, price_precision)
 
             # Place the order
-            # SDK uses 'name' parameter for the trading pair
             result = self.exchange.order(
-                name="BTC",
+                name=asset,
                 is_buy=is_buy,
-                sz=size_btc,
+                sz=size,
                 limit_px=limit_price,
                 order_type={"limit": {"tif": "Ioc"}},  # Immediate or Cancel
                 reduce_only=False
@@ -251,9 +329,9 @@ class HyperLiquidClient:
                 raise Exception(f"Order failed: {result}")
 
         try:
-            return self._retry_operation(execute_order, f"Place {side} order")
+            return self._retry_operation(execute_order, f"Place {side} {asset} order")
         except Exception as e:
-            raise Exception(f"Failed to place {side} order: {str(e)}")
+            raise Exception(f"Failed to place {side} {asset} order: {str(e)}")
 
     def get_positions(self) -> Dict:
         """
@@ -347,6 +425,74 @@ class HyperLiquidClient:
         except Exception as e:
             print(f"Failed to close positions: {str(e)}")
             return False
+
+    def get_deposit_info(self) -> Dict:
+        """
+        Get deposit information for funding the account
+
+        HyperLiquid deposits are made by sending USDC on Arbitrum
+        to your wallet address.
+
+        Returns:
+            Dictionary with deposit details
+        """
+        return {
+            'address': self.wallet_address,
+            'chain': 'Arbitrum One',
+            'chain_id': 42161,
+            'token': 'USDC',
+            'token_contract': '0xaf88d065e77c8cC2239327C5EDb3A432268e5831',
+            'network': 'MAINNET' if not self.testnet else 'TESTNET',
+            'notes': [
+                'Send USDC on Arbitrum network only',
+                'Do NOT send from other chains (will be lost)',
+                'Minimum deposit: 1 USDC',
+                'Deposits typically confirm in 1-5 minutes'
+            ]
+        }
+
+    def withdraw(self, amount: float, destination: str = None) -> Dict:
+        """
+        Withdraw USDC from HyperLiquid
+
+        Args:
+            amount: Amount of USDC to withdraw
+            destination: Destination address (defaults to wallet address)
+
+        Returns:
+            Dictionary with withdrawal result
+
+        Example:
+            >>> result = client.withdraw(100.0, '0x...')
+            >>> print(f"Withdrew {result['amount']} USDC")
+        """
+        if destination is None:
+            destination = self.wallet_address
+
+        def execute_withdrawal():
+            # HyperLiquid SDK withdraw method
+            # Withdraws from perp account to L1 (Arbitrum)
+            result = self.exchange.withdraw(amount)
+
+            if result.get('status') == 'ok':
+                return {
+                    'success': True,
+                    'amount': amount,
+                    'destination': destination,
+                    'response': result
+                }
+            else:
+                raise Exception(f"Withdrawal failed: {result}")
+
+        try:
+            return self._retry_operation(execute_withdrawal, "Withdraw USDC")
+        except Exception as e:
+            return {
+                'success': False,
+                'error': str(e),
+                'amount': amount,
+                'destination': destination
+            }
 
 
 # Module testing (only runs if script executed directly)

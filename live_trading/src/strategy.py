@@ -89,8 +89,8 @@ class OvernightRecoveryStrategy:
         if current_hour != self.entry_hour:
             return False, f"Not entry hour (current: {current_hour}:00, target: {self.entry_hour}:00)"
 
-        if current_minute > 5:
-            return False, f"Entry window closed (current: {current_hour}:{current_minute})"
+        if current_minute > 30:
+            return False, f"Entry window closed (current: {current_hour}:{current_minute:02d})"
 
         # Check 2: Already entered today?
         if self.last_entry_date == current_date:

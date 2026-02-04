@@ -34,6 +34,7 @@ sys.path.append(str(Path(__file__).parent / 'src'))
 from src.exchange import HyperLiquidClient
 from src.strategy import OvernightRecoveryStrategy
 from src.oi_strategy import OIStrategy
+from src.bh_strategy import BHInsightsStrategy
 from src.state_manager import StateManager
 from src.notifier import TelegramNotifier
 from src.risk_manager import RiskManager
@@ -43,12 +44,14 @@ from src.command_handler import CommandHandler
 # Strategy registry - maps names to classes
 STRATEGY_CLASSES = {
     'overnight': OvernightRecoveryStrategy,
-    'oi': OIStrategy
+    'oi': OIStrategy,
+    'bh': BHInsightsStrategy
 }
 
 STRATEGY_DESCRIPTIONS = {
     'overnight': 'Buy at 3 PM EST, trailing stop 1%',
-    'oi': 'Open Interest signals, never sell at loss'
+    'oi': 'Open Interest signals, never sell at loss',
+    'bh': 'BH Insights Discord signals (multi-asset)'
 }
 
 
@@ -139,7 +142,12 @@ class TradingBot:
         for name, strategy_config in self.config.get('strategies', {}).items():
             if name in STRATEGY_CLASSES:
                 strategy_class = STRATEGY_CLASSES[name]
-                params = strategy_config.get('params', {})
+                params = strategy_config.get('params', {}).copy()
+
+                # Special handling for BH strategy - inject Clickhouse password from env
+                if name == 'bh':
+                    params['clickhouse_password'] = os.getenv('CLICKHOUSE_PASSWORD', '')
+
                 self.strategies[name] = strategy_class(params)
                 self.logger.info(f"Strategy loaded: {name}")
 
@@ -164,6 +172,9 @@ class TradingBot:
         self.command_handler = CommandHandler(self, self.config)
         self.logger.info("Command handler initialized")
 
+        # Register bot commands with Telegram (for dropdown menu)
+        self.notifier.set_bot_commands()
+
         # Start listening for Telegram commands in background
         self.notifier.start_listening_for_commands(self.command_handler)
         self.logger.info("Telegram command listener started")
@@ -180,6 +191,162 @@ class TradingBot:
             self.logger.warning("STOP file detected - shutting down")
             return True
         return False
+
+    def _handle_bh_strategy(self, current_time: datetime):
+        """
+        Handle BH Insights strategy specially - it monitors Clickhouse for signals
+        and can trade multiple assets.
+
+        Called each loop iteration to:
+        1. Check Clickhouse for new messages
+        2. Parse signals from new messages
+        3. Execute any pending signals
+        """
+        strategy = self.strategies.get('bh')
+        if not strategy:
+            return
+
+        # Check for new signals from Clickhouse
+        try:
+            new_signals = strategy.check_for_signals()
+            if new_signals:
+                strategy.process_new_signals(new_signals)
+        except Exception as e:
+            self.logger.error(f"[BH] Error checking signals: {e}")
+
+        # Get pending signals
+        pending = strategy.get_pending_signals()
+
+        for asset, signal in pending.items():
+            action = signal['action']
+
+            # Create position key for this asset under BH strategy
+            position_key = f"bh_{asset.lower()}"
+
+            if action in ['LONG', 'SHORT']:
+                # Check if already in position for this asset
+                if self.state_manager.is_in_position(position_key):
+                    self.logger.info(f"[BH] Already in {asset} position, ignoring signal")
+                    strategy.clear_signal(asset)
+                    continue
+
+                # Get allocated capital for BH strategy
+                allocated_capital = self.state_manager.get_strategy_capital('bh')
+                if allocated_capital <= 0:
+                    self.logger.warning(f"[BH] No capital allocated")
+                    continue
+
+                # Calculate per-asset capital (divide by number of tracked assets)
+                per_asset_capital = allocated_capital / len(strategy.tracked_assets)
+                position_size_usd = per_asset_capital * 0.999  # Leave 0.1% for fees
+
+                # Place order
+                self.logger.info(f"[BH] Placing {action} order on {asset} for ${position_size_usd:,.0f}")
+
+                try:
+                    # Get current price
+                    current_price = self.exchange.get_price(asset)
+
+                    # Place order (LONG = BUY, SHORT = SELL to open)
+                    side = 'BUY' if action == 'LONG' else 'SELL'
+                    order_id, fill_price, fill_size = self.exchange.place_market_order(
+                        side, position_size_usd, asset
+                    )
+
+                    # Ensure position key exists
+                    self.state_manager.ensure_strategy_exists(position_key)
+                    self.state_manager.enable_strategy(position_key, per_asset_capital)
+
+                    # Store position type (long/short) in state
+                    self.state_manager.state['strategies'][position_key]['position_type'] = action.lower()
+
+                    # Record entry
+                    self.state_manager.enter_position(
+                        strategy_name=position_key,
+                        entry_time=current_time,
+                        entry_price=fill_price,
+                        size_btc=fill_size,  # Actually asset size, not BTC
+                        size_usd=position_size_usd
+                    )
+
+                    # Clear the pending signal
+                    strategy.clear_signal(asset)
+
+                    # Send notification
+                    emoji = "📈" if action == 'LONG' else "📉"
+                    self.notifier.send_message(
+                        f"{emoji} <b>[BH] {action} {asset}</b>\n\n"
+                        f"<b>Price:</b> ${fill_price:,.2f}\n"
+                        f"<b>Size:</b> {fill_size:.4f} {asset} (${position_size_usd:,.0f})\n"
+                        f"<b>Signal:</b> {signal['raw_text'][:100]}..."
+                    )
+
+                    self.logger.info(f"[BH] {action} {asset}: {fill_size:.4f} @ ${fill_price:,.2f}")
+
+                except Exception as e:
+                    self.logger.error(f"[BH] Failed to place {action} order on {asset}: {e}")
+                    self.notifier.send_error_alert(f"[BH] {action} {asset} failed: {str(e)}", None)
+
+            elif action == 'EXIT':
+                # Check if in position for this asset
+                position_key = f"bh_{asset.lower()}"
+                if not self.state_manager.is_in_position(position_key):
+                    self.logger.info(f"[BH] No {asset} position to exit")
+                    strategy.clear_signal(asset)
+                    continue
+
+                # Get position details
+                position = self.state_manager.get_position_details(position_key)
+                entry_price = position['entry_price']
+                size = position['size_btc']  # Actually asset size
+                position_type = self.state_manager.state['strategies'][position_key].get('position_type', 'long')
+
+                # Place exit order
+                try:
+                    current_price = self.exchange.get_price(asset)
+
+                    # EXIT: reverse of position (LONG exit = SELL, SHORT exit = BUY)
+                    side = 'SELL' if position_type == 'long' else 'BUY'
+                    order_id, fill_price, fill_size = self.exchange.place_market_order(
+                        side, size * current_price, asset
+                    )
+
+                    # Calculate profit
+                    if position_type == 'long':
+                        profit_pct = ((fill_price - entry_price) / entry_price) * 100
+                    else:
+                        profit_pct = ((entry_price - fill_price) / entry_price) * 100
+
+                    profit_usd = (fill_price - entry_price) * size
+                    if position_type == 'short':
+                        profit_usd = -profit_usd
+
+                    # Record exit
+                    self.state_manager.exit_position(
+                        strategy_name=position_key,
+                        exit_time=current_time,
+                        exit_price=fill_price,
+                        profit_pct=profit_pct
+                    )
+
+                    # Clear the pending signal
+                    strategy.clear_signal(asset)
+
+                    # Send notification
+                    emoji = "🟢" if profit_pct >= 0 else "🔴"
+                    self.notifier.send_message(
+                        f"{emoji} <b>[BH] EXIT {asset}</b>\n\n"
+                        f"<b>Entry:</b> ${entry_price:,.2f}\n"
+                        f"<b>Exit:</b> ${fill_price:,.2f}\n"
+                        f"<b>P&L:</b> {profit_pct:+.2f}% (${profit_usd:+,.2f})\n"
+                        f"<b>Signal:</b> {signal['raw_text'][:100]}..."
+                    )
+
+                    self.logger.info(f"[BH] EXIT {asset}: ${fill_price:,.2f} ({profit_pct:+.2f}%)")
+
+                except Exception as e:
+                    self.logger.error(f"[BH] Failed to exit {asset}: {e}")
+                    self.notifier.send_error_alert(f"[BH] EXIT {asset} failed: {str(e)}", None)
 
     def _handle_strategy_entry(self, strategy_name: str, strategy, current_price: float, current_time: datetime):
         """
@@ -417,8 +584,15 @@ class TradingBot:
             else:
                 self.logger.info(f"Enabled strategies: {', '.join(enabled_strategies)}")
 
-            # Process each enabled strategy
+            # Handle BH strategy specially (if enabled) - it has its own signal loop
+            if 'bh' in enabled_strategies and 'bh' in self.strategies:
+                self._handle_bh_strategy(current_time)
+
+            # Process each enabled strategy (except BH which is handled above)
             for strategy_name in enabled_strategies:
+                if strategy_name == 'bh':
+                    continue  # Handled above
+
                 if strategy_name not in self.strategies:
                     self.logger.warning(f"Strategy {strategy_name} enabled but not loaded")
                     continue
@@ -699,10 +873,12 @@ if __name__ == '__main__':
 ╚═══════════════════════════════════════════════════════════╝
     """)
 
-    response = input("Start trading bot? (yes/no): ")
-    if response.lower() != 'yes':
-        print("Cancelled.")
-        sys.exit(0)
+    # Skip confirmation on Railway (non-interactive environment)
+    if not os.getenv('RAILWAY_ENVIRONMENT'):
+        response = input("Start trading bot? (yes/no): ")
+        if response.lower() != 'yes':
+            print("Cancelled.")
+            sys.exit(0)
 
     bot = TradingBot()
     bot.run()

@@ -1,0 +1,40 @@
+signal_date,token,ticker,chain,address,entry_mc,ath_mc,ath_multiple,ath_source,exited,note
+2025-03-11,SPX6900,SPX,ethereum,,1170000000.0,2100000000.0,1.794871794871795,"CoinMarketCap: ATH $2.27 / ~$2.1B MC (Jul 28, 2025)",False,I've bought some SPX here (~$1.17B MC est.)
+2025-03-11,Pepe,PEPE,ethereum,,,,,ATH $11B was Dec 2024 (before entry). Post-entry ATH unknown.,False,may grab some PEPE and MOG too
+2025-03-11,Mog Coin,MOG,ethereum,,,,,ATH $1.5B was Dec 2024 (before entry). Post-entry ATH unknown.,False,may grab some PEPE and MOG too
+2025-04-10,TITCOIN,TITCOIN,solana,,25000000.0,89000000.0,3.56,CoinMarketCap/CoinGecko: ATH ~$89M,False,sized into TITCOIN at 20-30M
+2025-04-14,Fartcoin,FARTCOIN,solana,,,,,,True,"Re-entered FARTCOIN, think it's ready for 1B+"
+2025-05-02,Boop,BOOP,solana,,282000000.0,460000000.0,1.6312056737588652,"CoinMarketCap: ATH ~$0.49 / ~$460M MC (May 2, 2025). Entry ~$0.30",True,bought some BOOP @ .3~
+2025-05-09,Fartcoin (re-enter),FARTCOIN2,solana,,1200000000.0,1200000000.0,1.0,Overall ATH $2.5B was Jan 2025. Post-entry never reclaimed $1.2B.,True,"large spot position in FARTCOIN @ 1.2B, target 2B+ and new ATHs"
+2025-06-17,Cupsey,CUPSEY,solana,5PsnNwPmMtsGZgG6ZqMoDJJi28BR5xpAotXHHiQhpump,4900000.0,20500000.0,4.183673469387755,Rick bot (ATH $20.5M),True,$CUPSEY is a great front run
+2025-06-28,GET RICH QUICK,RICH,solana,5oUzkFsCFMJJ23Z6Ghev5m7FjE6TtrqZJXUS7V5Smoon,4500000.0,15000000.0,3.3333333333333335,"JS said ""15M ATH"" on Jun 30",False,$RICH is a very free bid on any dips
+2025-06-29,Startup,STARTUP,solana,97PVGU2DzFqsAWaYU17ZBqGvQFmkqtdMywYBNPAfy8vy,,49600000.0,,"Rick bot ATH $49.6M (Jul 6); JS: ""tapping ATHs @ 43M""",False,$STARTUP is the next liquid 10-20x+
+2025-09-02,Collector Crypt CARDS,CARDS,solana,CARDSccUMFKoPRZxt5vt3ksUbxEFEcnZ3H2pd3dKxYjp,115000000.0,350000000.0,3.0434782608695654,"JS: ""Holy shit 350M"" on Sep 3",False,Sized some into CARDS @ 110M-120M~
+2025-09-12,Pepe (long),PEPE_LONG,ethereum,,,,,,False,Went long on PEPE here @ 0.010644
+2025-09-14,Bagwork,BAGWORK,solana,,23000000.0,40000000.0,1.7391304347826086,CoinGecko: ATH ~$33-48M (Sep 2025). Using ~$40M midpoint.,False,sized in with about a 23M~ average
+2025-09-14,streamdotfun,STREAM,solana,2EYvskXTncMS11vejJcWHh8fPaCFy6bzDcVnmofEpump,1500000.0,9000000.0,6.0,Rick bot: FDV $1.5M → $9M [4d],False,bought some STREAM as an infra play
+2025-09-17,Aster,ASTER,bnb,,300000000.0,3500000000.0,11.666666666666666,"CoinMarketCap: ATH $2.42 / ~$3.5B MC (Sep 24, 2025). Trimmed early.",True,"MC is 300M, FDV 1.1B. Trimmed $750K initials"
+2025-09-18,SUN,SUN,tron,,,,,,False,"bought some SUN @ .026, betting on crime"
+2025-09-26,XPL,XPL,unknown,,,,,,True,liking what I'm seeing $XPL
+2025-10-02,LaunchCoin,LAUNCHCOIN,solana,,110000000.0,110000000.0,1.0,Overall ATH $350M was May 2025 (before entry). Token died/rebranded.,True,$500k initial with 110M~ avg
+2025-10-05,4 (Believe eco),4,solana,,150000000.0,,,,True,rebought a large position in 4
+2025-10-09,8,8,solana,8ZEfp4PkEMoGFgphvxKJrDySfS3T73DBfxKCdAsPpump,7000000.0,,,,True,"Gambling some 8 here at 7M, aiming for 2-3x"
+2025-10-13,BNBet,BNBET,bnb,0xCfafECD0b8E866A0626166667Bb652beC9D14444,4300000.0,6800000.0,1.5813953488372092,Rick bot: FDV $6.7M → $6.8M,True,I just top blasted this and it instantly 2x'd
+2025-10-16,LAB,LAB,bnb,0x7ec43Cf65F1663F820427C62A5780b8f2E25593A,152000000.0,218000000.0,1.4342105263157894,Rick bot: FDV $217M → ATH $218M. JS bought 30% dip → ~$152M,True,Started taking a position on this 30% dip
+2025-10-25,Virtual Protocol,VIRTUAL,base,,,,,,True,longing VIRTUAL @ 1.0404 (perp)
+2025-10-25,AIXBT,AIXBT,base,,,,,,True,Longed AIXBT at 0.069048 (perp)
+2025-10-25,standwithcrypto,SWC,base,0xf34B779C350A39E15DB4CD9754364b9f846fF088,1250000.0,1600000.0,1.28,"Rick bot: FDV $1.4M → ATH $1.6M (Oct 25, 2025)",True,"aped this at 1-1.5M, GIGGLE type narrative"
+2025-10-26,Paluhaan,PALU,bnb,,30000000.0,,,,False,bought semi-decent amount of PALU @ 30M
+2025-10-29,1x_tech,1XTECH,solana,8fdBKZq7wo9fJbsZEZhq6omCgvKzLt97HY9XaGgqpump,2100000.0,,,,True,Gambled on this coin @ 2.1M avg
+2025-11-12,Oobit,OOB,solana,oobQ3oX6ubRYMNMahG7VSCe8Z73uaQbAWFn6f22XTgo,355000000.0,426000000.0,1.2,Rick bot: FDV $355M → ATH $426M,True,I aped
+2026-01-10,rainbowfish,FISH,solana,CmgJ1PobhUqB7MEa8qDkiG2TUpMTskWj8d9JeZWSpump,6800000.0,13000000.0,1.911764705882353,Rick bot: FDV $8.3M → ATH $13M,False,buying FISH today (avg entry 6.8M)
+2026-01-16,GAS,GAS,solana,,20000000.0,50000000.0,2.5,"CoinGecko: ATH ~$44-60M (Jan 15, 2026). JS: ""got rekt"" later.",False,$200k twap into GAS near 20M~
+2026-01-26,CLAWD,CLAWD,solana,,10000000.0,16000000.0,1.6,"CoinGecko: ATH ~$16M (Jan 25, 2026). Scam token, collapsed.",True,Bought a bunch of CLAWD from 8-12M
+2026-01-26,ShrimpCoin,SHRIMP,solana,,1500000.0,,,,False,bought a bunch of ShrimpCoin at 1.5M
+2026-02-01,Flufy,FLUFY,solana,43uGwcykUgmtQYrgsSDk7VkFhgN3kH9aThYeyWnBpump,1200000.0,1200000.0,1.0,Rick bot: FDV $1.2M → $1.2M [1s] (just launched),False,"Aped this. Giga gamble, trim on the way up"
+2026-02-02,Buttcoin,BUTTCOIN,solana,Cm6fNnMk7NfzStP9CZpsQA2v3jjzbcYGAxdJySmHpump,20000000.0,25800000.0,1.29,Rick bot: FDV $21M → ATH $25.8M,False,Sized a bit of Butt Coin @ 20M
+2026-02-02,Goyim,GOYIM,solana,9S8edqWxoWz5LYLnxWUmWBJnePg35WfdYQp7HQkUpump,1300000.0,2700000.0,2.076923076923077,"Rick bot FDV $1.3M, ATH $1.7M; JS: ""Hit 2.7M""",True,"tried a bit, purely a gamble"
+2026-02-02,BANKR,BANKR,solana,,60000000.0,62000000.0,1.0333333333333334,"Overall ATH $100M+ (Jul 2025, before entry). Post-entry ~$62M.",True,BANKR seems cheap here. Sized some @ 60M~
+2026-02-02,MysticDAO,MYSTIC,solana,mysticrSzUfD2pz4RayXF5oEHGfNNAFsSY3z5hTQZSN,27500000.0,55800000.0,2.0290909090909093,Rick bot: FDV $35.2M → ATH $55.8M. JS entry 25-30M~,False,Bought a bit of this at 25-30M~
+2026-02-02,GOY,GOY,solana,FYtP5AiiB4eUjVA88EeZS73PDpi7RPLusdqtXizYpump,1400000.0,1600000.0,1.1428571428571428,Rick bot: FDV $1.4M → ATH $1.6M,False,buying the original GOY
+2026-02-03,BLM (Block Lives Matter),BLM,solana,6QBjp4h115hvHsWjisRCRKrfECGKFMdSkx1giYCjpump,6100000.0,7000000.0,1.1475409836065573,"JS: ""$55k worth at 6.1M AVG"", ""7M from 1M share""",False,"Rebought a lot, really good people pushing it"

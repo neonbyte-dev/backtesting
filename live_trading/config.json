@@ -6,7 +6,7 @@
       "description": "Buy at 3 PM EST, trailing stop 1%",
       "params": {
         "entry_hour": 15,
-        "max_entry_price_usd": 90000,
+        "max_entry_price_usd": 120000,
         "trailing_stop_pct": 1.0,
         "timezone": "America/New_York"
       }
@@ -23,6 +23,19 @@
         "oi_lookback_hours": 4,
         "sma_hours": 24,
         "min_hours_between_trades": 8
+      }
+    },
+    "bh": {
+      "enabled": false,
+      "allocated_capital_usd": 100.0,
+      "description": "BH Insights Discord signals (multi-asset)",
+      "params": {
+        "clickhouse_host": "ch.ops.xexlab.com",
+        "clickhouse_port": 443,
+        "clickhouse_user": "dev_ado",
+        "clickhouse_database": "crush_ats",
+        "tracked_assets": ["BTC", "ETH", "SOL", "HYPE"],
+        "poll_interval_seconds": 30
       }
     }
   },

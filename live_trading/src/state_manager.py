@@ -65,6 +65,8 @@ class StateManager:
             'peak_price': None,
             'consecutive_losses': 0,
             'last_trade_result': None,
+            'last_trade_time': None,            # When last trade was triggered (persists after exit)
+            'last_signal_time': None,           # When entry conditions were last TRUE (backtest-style)
             'last_entry_check_time': None,
             'last_entry_check_result': None,
             'last_entry_check_reason': None
@@ -188,6 +190,7 @@ class StateManager:
         s = self.state['strategies'][strategy_name]
         s['in_position'] = True
         s['entry_time'] = entry_time.isoformat()
+        s['last_trade_time'] = entry_time.isoformat()  # Persists after exit
         s['entry_price'] = entry_price
         s['position_size_btc'] = size_btc
         s['position_size_usd'] = size_usd
@@ -282,6 +285,11 @@ class StateManager:
         s['last_entry_check_time'] = check_time.isoformat()
         s['last_entry_check_result'] = result
         s['last_entry_check_reason'] = reason
+
+        # Track when conditions were last TRUE (backtest-style signal)
+        if result:
+            s['last_signal_time'] = check_time.isoformat()
+
         self.save_state()
 
     def get_last_entry_check(self, strategy_name: str = None) -> Optional[Dict]:

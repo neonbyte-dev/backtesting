@@ -1,0 +1,273 @@
+/Users/chrisl/Library/Python/3.9/lib/python/site-packages/urllib3/__init__.py:35: NotOpenSSLWarning: urllib3 v2 only supports OpenSSL 1.1.1+, currently the 'ssl' module is compiled with 'LibreSSL 2.8.3'. See: https://github.com/urllib3/urllib3/issues/3020
+  warnings.warn(
+
+╔═══════════════════════════════════════════════════════════╗
+║                                                           ║
+║        OVERNIGHT RECOVERY TRADING BOT                     ║
+║        Strategy: Buy 3PM EST, Trailing Stop 1%            ║
+║                                                           ║
+║        IMPORTANT: Review config.json before starting      ║
+║        - Check testnet vs mainnet setting                 ║
+║        - Verify Telegram credentials in .env              ║
+║        - Ensure HyperLiquid API keys are valid            ║
+║                                                           ║
+╚═══════════════════════════════════════════════════════════╝
+    
+Start trading bot? (yes/no): 2026-01-02 21:40:16 - TradingBot - INFO - Exchange: MAINNET
+2026-01-02 21:40:16 - TradingBot - INFO - Strategy: OvernightRecovery(entry=15:00 EST, max_price=$90,000, trail_stop=1.0%)
+2026-01-02 21:40:16 - TradingBot - INFO - State: State(NO_POSITION)
+2026-01-02 21:40:16 - TradingBot - INFO - Telegram notifier initialized
+2026-01-02 21:40:16 - TradingBot - INFO - Risk Manager: RiskManager(daily_loss_limit=5.0%, max_consecutive_losses=3, max_data_age=10min)
+2026-01-02 21:40:16 - TradingBot - INFO - Command handler initialized
+2026-01-02 21:40:16 - TradingBot - INFO - Telegram command listener started
+2026-01-02 21:40:16 - TradingBot - INFO - Bot initialized successfully
+2026-01-02 21:40:16 - TradingBot - INFO - ======================================================================
+2026-01-02 21:40:16 - TradingBot - INFO - TRADING BOT STARTED
+2026-01-02 21:40:16 - TradingBot - INFO - ======================================================================
+2026-01-02 21:40:16 - TradingBot - INFO - === Loop 1 - 2026-01-02 21:40:16 UTC ===
+2026-01-02 21:40:17 - TradingBot - INFO - BTC Price: $89,834.50
+2026-01-02 21:40:17 - TradingBot - INFO - Entry check: False - Not entry hour (current: 16:00, target: 15:00)
+2026-01-02 21:40:17 - TradingBot - INFO - Sleeping 300s until next check...
+
+2026-01-02 21:45:17 - TradingBot - INFO - === Loop 2 - 2026-01-02 21:45:17 UTC ===
+2026-01-02 21:45:17 - TradingBot - INFO - BTC Price: $89,905.50
+2026-01-02 21:45:17 - TradingBot - INFO - Entry check: False - Not entry hour (current: 16:00, target: 15:00)
+2026-01-02 21:45:18 - TradingBot - INFO - Sleeping 300s until next check...
+
+Loading configuration...
+Initializing components...
+ℹ️  No state found, starting fresh
+📱 Telegram command listener started
+✅ Daily risk limits reset. Starting balance: $0.00
+❌ Error getting Telegram updates: 409 Client Error: Conflict for url: https://api.telegram.org/bot8584198593:AAGpvteSbzR6g0AL0wkoxzzv0yfxPwO0wBk/getUpdates?timeout=30&allowed_updates=message&allowed_updates=callback_query
+❌ Error getting Telegram updates: 409 Client Error: Conflict for url: https://api.telegram.org/bot8584198593:AAGpvteSbzR6g0AL0wkoxzzv0yfxPwO0wBk/getUpdates?timeout=30&allowed_updates=message&allowed_updates=callback_query
+❌ Error getting Telegram updates: 409 Client Error: Conflict for url: https://api.telegram.org/bot8584198593:AAGpvteSbzR6g0AL0wkoxzzv0yfxPwO0wBk/getUpdates?timeout=30&allowed_updates=message&allowed_updates=callback_query
+❌ Error getting Telegram updates: 409 Client Error: Conflict for url: https://api.telegram.org/bot8584198593:AAGpvteSbzR6g0AL0wkoxzzv0yfxPwO0wBk/getUpdates?timeout=30&allowed_updates=message&allowed_updates=callback_query
+❌ Error getting Telegram updates: 409 Client Error: Conflict for url: https://api.telegram.org/bot8584198593:AAGpvteSbzR6g0AL0wkoxzzv0yfxPwO0wBk/getUpdates?timeout=30&allowed_updates=message&allowed_updates=callback_query
+❌ Error getting Telegram updates: 409 Client Error: Conflict for url: https://api.telegram.org/bot8584198593:AAGpvteSbzR6g0AL0wkoxzzv0yfxPwO0wBk/getUpdates?timeout=30&allowed_updates=message&allowed_updates=callback_query
+❌ Error getting Telegram updates: 409 Client Error: Conflict for url: https://api.telegram.org/bot8584198593:AAGpvteSbzR6g0AL0wkoxzzv0yfxPwO0wBk/getUpdates?timeout=30&allowed_updates=message&allowed_updates=callback_query
+❌ Error getting Telegram updates: 409 Client Error: Conflict for url: https://api.telegram.org/bot8584198593:AAGpvteSbzR6g0AL0wkoxzzv0yfxPwO0wBk/getUpdates?timeout=30&allowed_updates=message&allowed_updates=callback_query
+❌ Error getting Telegram updates: 409 Client Error: Conflict for url: https://api.telegram.org/bot8584198593:AAGpvteSbzR6g0AL0wkoxzzv0yfxPwO0wBk/getUpdates?timeout=30&allowed_updates=message&allowed_updates=callback_query
+❌ Error getting Telegram updates: 409 Client Error: Conflict for url: https://api.telegram.org/bot8584198593:AAGpvteSbzR6g0AL0wkoxzzv0yfxPwO0wBk/getUpdates?timeout=30&allowed_updates=message&allowed_updates=callback_query
+❌ Error getting Telegram updates: 409 Client Error: Conflict for url: https://api.telegram.org/bot8584198593:AAGpvteSbzR6g0AL0wkoxzzv0yfxPwO0wBk/getUpdates?timeout=30&allowed_updates=message&allowed_updates=callback_query
+❌ Error getting Telegram updates: 409 Client Error: Conflict for url: https://api.telegram.org/bot8584198593:AAGpvteSbzR6g0AL0wkoxzzv0yfxPwO0wBk/getUpdates?timeout=30&allowed_updates=message&allowed_updates=callback_query
+❌ Error getting Telegram updates: 409 Client Error: Conflict for url: https://api.telegram.org/bot8584198593:AAGpvteSbzR6g0AL0wkoxzzv0yfxPwO0wBk/getUpdates?timeout=30&allowed_updates=message&allowed_updates=callback_query
+❌ Error getting Telegram updates: 409 Client Error: Conflict for url: https://api.telegram.org/bot8584198593:AAGpvteSbzR6g0AL0wkoxzzv0yfxPwO0wBk/getUpdates?timeout=30&allowed_updates=message&allowed_updates=callback_query
+❌ Error getting Telegram updates: 409 Client Error: Conflict for url: https://api.telegram.org/bot8584198593:AAGpvteSbzR6g0AL0wkoxzzv0yfxPwO0wBk/getUpdates?timeout=30&allowed_updates=message&allowed_updates=callback_query
+❌ Error getting Telegram updates: 409 Client Error: Conflict for url: https://api.telegram.org/bot8584198593:AAGpvteSbzR6g0AL0wkoxzzv0yfxPwO0wBk/getUpdates?timeout=30&allowed_updates=message&allowed_updates=callback_query
+❌ Error getting Telegram updates: 409 Client Error: Conflict for url: https://api.telegram.org/bot8584198593:AAGpvteSbzR6g0AL0wkoxzzv0yfxPwO0wBk/getUpdates?timeout=30&allowed_updates=message&allowed_updates=callback_query
+❌ Error getting Telegram updates: 409 Client Error: Conflict for url: https://api.telegram.org/bot8584198593:AAGpvteSbzR6g0AL0wkoxzzv0yfxPwO0wBk/getUpdates?timeout=30&allowed_updates=message&allowed_updates=callback_query
+❌ Error getting Telegram updates: 409 Client Error: Conflict for url: https://api.telegram.org/bot8584198593:AAGpvteSbzR6g0AL0wkoxzzv0yfxPwO0wBk/getUpdates?timeout=30&allowed_updates=message&allowed_updates=callback_query
+❌ Error getting Telegram updates: 409 Client Error: Conflict for url: https://api.telegram.org/bot8584198593:AAGpvteSbzR6g0AL0wkoxzzv0yfxPwO0wBk/getUpdates?timeout=30&allowed_updates=message&allowed_updates=callback_query
+❌ Error getting Telegram updates: 409 Client Error: Conflict for url: https://api.telegram.org/bot8584198593:AAGpvteSbzR6g0AL0wkoxzzv0yfxPwO0wBk/getUpdates?timeout=30&allowed_updates=message&allowed_updates=callback_query
+❌ Error getting Telegram updates: 409 Client Error: Conflict for url: https://api.telegram.org/bot8584198593:AAGpvteSbzR6g0AL0wkoxzzv0yfxPwO0wBk/getUpdates?timeout=30&allowed_updates=message&allowed_updates=callback_query
+❌ Error getting Telegram updates: 409 Client Error: Conflict for url: https://api.telegram.org/bot8584198593:AAGpvteSbzR6g0AL0wkoxzzv0yfxPwO0wBk/getUpdates?timeout=30&allowed_updates=message&allowed_updates=callback_query
+❌ Error getting Telegram updates: 409 Client Error: Conflict for url: https://api.telegram.org/bot8584198593:AAGpvteSbzR6g0AL0wkoxzzv0yfxPwO0wBk/getUpdates?timeout=30&allowed_updates=message&allowed_updates=callback_query
+❌ Error getting Telegram updates: 409 Client Error: Conflict for url: https://api.telegram.org/bot8584198593:AAGpvteSbzR6g0AL0wkoxzzv0yfxPwO0wBk/getUpdates?timeout=30&allowed_updates=message&allowed_updates=callback_query
+❌ Error getting Telegram updates: 409 Client Error: Conflict for url: https://api.telegram.org/bot8584198593:AAGpvteSbzR6g0AL0wkoxzzv0yfxPwO0wBk/getUpdates?timeout=30&allowed_updates=message&allowed_updates=callback_query
+❌ Error getting Telegram updates: 409 Client Error: Conflict for url: https://api.telegram.org/bot8584198593:AAGpvteSbzR6g0AL0wkoxzzv0yfxPwO0wBk/getUpdates?timeout=30&allowed_updates=message&allowed_updates=callback_query
+❌ Error getting Telegram updates: 409 Client Error: Conflict for url: https://api.telegram.org/bot8584198593:AAGpvteSbzR6g0AL0wkoxzzv0yfxPwO0wBk/getUpdates?timeout=30&allowed_updates=message&allowed_updates=callback_query
+❌ Error getting Telegram updates: 409 Client Error: Conflict for url: https://api.telegram.org/bot8584198593:AAGpvteSbzR6g0AL0wkoxzzv0yfxPwO0wBk/getUpdates?timeout=30&allowed_updates=message&allowed_updates=callback_query
+❌ Error getting Telegram updates: 409 Client Error: Conflict for url: https://api.telegram.org/bot8584198593:AAGpvteSbzR6g0AL0wkoxzzv0yfxPwO0wBk/getUpdates?timeout=30&allowed_updates=message&allowed_updates=callback_query
+❌ Error getting Telegram updates: 409 Client Error: Conflict for url: https://api.telegram.org/bot8584198593:AAGpvteSbzR6g0AL0wkoxzzv0yfxPwO0wBk/getUpdates?timeout=30&allowed_updates=message&allowed_updates=callback_query
+❌ Error getting Telegram updates: 409 Client Error: Conflict for url: https://api.telegram.org/bot8584198593:AAGpvteSbzR6g0AL0wkoxzzv0yfxPwO0wBk/getUpdates?timeout=30&allowed_updates=message&allowed_updates=callback_query
+❌ Error getting Telegram updates: 409 Client Error: Conflict for url: https://api.telegram.org/bot8584198593:AAGpvteSbzR6g0AL0wkoxzzv0yfxPwO0wBk/getUpdates?timeout=30&allowed_updates=message&allowed_updates=callback_query
+❌ Error getting Telegram updates: 409 Client Error: Conflict for url: https://api.telegram.org/bot8584198593:AAGpvteSbzR6g0AL0wkoxzzv0yfxPwO0wBk/getUpdates?timeout=30&allowed_updates=message&allowed_updates=callback_query
+❌ Error getting Telegram updates: 409 Client Error: Conflict for url: https://api.telegram.org/bot8584198593:AAGpvteSbzR6g0AL0wkoxzzv0yfxPwO0wBk/getUpdates?timeout=30&allowed_updates=message&allowed_updates=callback_query
+❌ Error getting Telegram updates: 409 Client Error: Conflict for url: https://api.telegram.org/bot8584198593:AAGpvteSbzR6g0AL0wkoxzzv0yfxPwO0wBk/getUpdates?timeout=30&allowed_updates=message&allowed_updates=callback_query
+❌ Error getting Telegram updates: 409 Client Error: Conflict for url: https://api.telegram.org/bot8584198593:AAGpvteSbzR6g0AL0wkoxzzv0yfxPwO0wBk/getUpdates?timeout=30&allowed_updates=message&allowed_updates=callback_query
+❌ Error getting Telegram updates: 409 Client Error: Conflict for url: https://api.telegram.org/bot8584198593:AAGpvteSbzR6g0AL0wkoxzzv0yfxPwO0wBk/getUpdates?timeout=30&allowed_updates=message&allowed_updates=callback_query
+❌ Error getting Telegram updates: 409 Client Error: Conflict for url: https://api.telegram.org/bot8584198593:AAGpvteSbzR6g0AL0wkoxzzv0yfxPwO0wBk/getUpdates?timeout=30&allowed_updates=message&allowed_updates=callback_query
+❌ Error getting Telegram updates: 409 Client Error: Conflict for url: https://api.telegram.org/bot8584198593:AAGpvteSbzR6g0AL0wkoxzzv0yfxPwO0wBk/getUpdates?timeout=30&allowed_updates=message&allowed_updates=callback_query
+❌ Error getting Telegram updates: 409 Client Error: Conflict for url: https://api.telegram.org/bot8584198593:AAGpvteSbzR6g0AL0wkoxzzv0yfxPwO0wBk/getUpdates?timeout=30&allowed_updates=message&allowed_updates=callback_query
+❌ Error getting Telegram updates: 409 Client Error: Conflict for url: https://api.telegram.org/bot8584198593:AAGpvteSbzR6g0AL0wkoxzzv0yfxPwO0wBk/getUpdates?timeout=30&allowed_updates=message&allowed_updates=callback_query
+❌ Error getting Telegram updates: 409 Client Error: Conflict for url: https://api.telegram.org/bot8584198593:AAGpvteSbzR6g0AL0wkoxzzv0yfxPwO0wBk/getUpdates?timeout=30&allowed_updates=message&allowed_updates=callback_query
+❌ Error getting Telegram updates: 409 Client Error: Conflict for url: https://api.telegram.org/bot8584198593:AAGpvteSbzR6g0AL0wkoxzzv0yfxPwO0wBk/getUpdates?timeout=30&allowed_updates=message&allowed_updates=callback_query
+❌ Error getting Telegram updates: 409 Client Error: Conflict for url: https://api.telegram.org/bot8584198593:AAGpvteSbzR6g0AL0wkoxzzv0yfxPwO0wBk/getUpdates?timeout=30&allowed_updates=message&allowed_updates=callback_query
+❌ Error getting Telegram updates: 409 Client Error: Conflict for url: https://api.telegram.org/bot8584198593:AAGpvteSbzR6g0AL0wkoxzzv0yfxPwO0wBk/getUpdates?timeout=30&allowed_updates=message&allowed_updates=callback_query
+❌ Error getting Telegram updates: 409 Client Error: Conflict for url: https://api.telegram.org/bot8584198593:AAGpvteSbzR6g0AL0wkoxzzv0yfxPwO0wBk/getUpdates?timeout=30&allowed_updates=message&allowed_updates=callback_query
+❌ Error getting Telegram updates: 409 Client Error: Conflict for url: https://api.telegram.org/bot8584198593:AAGpvteSbzR6g0AL0wkoxzzv0yfxPwO0wBk/getUpdates?timeout=30&allowed_updates=message&allowed_updates=callback_query
+❌ Error getting Telegram updates: 409 Client Error: Conflict for url: https://api.telegram.org/bot8584198593:AAGpvteSbzR6g0AL0wkoxzzv0yfxPwO0wBk/getUpdates?timeout=30&allowed_updates=message&allowed_updates=callback_query
+❌ Error getting Telegram updates: 409 Client Error: Conflict for url: https://api.telegram.org/bot8584198593:AAGpvteSbzR6g0AL0wkoxzzv0yfxPwO0wBk/getUpdates?timeout=30&allowed_updates=message&allowed_updates=callback_query
+❌ Error getting Telegram updates: 409 Client Error: Conflict for url: https://api.telegram.org/bot8584198593:AAGpvteSbzR6g0AL0wkoxzzv0yfxPwO0wBk/getUpdates?timeout=30&allowed_updates=message&allowed_updates=callback_query
+❌ Error getting Telegram updates: 409 Client Error: Conflict for url: https://api.telegram.org/bot8584198593:AAGpvteSbzR6g0AL0wkoxzzv0yfxPwO0wBk/getUpdates?timeout=30&allowed_updates=message&allowed_updates=callback_query
+❌ Error getting Telegram updates: 409 Client Error: Conflict for url: https://api.telegram.org/bot8584198593:AAGpvteSbzR6g0AL0wkoxzzv0yfxPwO0wBk/getUpdates?timeout=30&allowed_updates=message&allowed_updates=callback_query
+❌ Error getting Telegram updates: 409 Client Error: Conflict for url: https://api.telegram.org/bot8584198593:AAGpvteSbzR6g0AL0wkoxzzv0yfxPwO0wBk/getUpdates?timeout=30&allowed_updates=message&allowed_updates=callback_query
+❌ Error getting Telegram updates: 409 Client Error: Conflict for url: https://api.telegram.org/bot8584198593:AAGpvteSbzR6g0AL0wkoxzzv0yfxPwO0wBk/getUpdates?timeout=30&allowed_updates=message&allowed_updates=callback_query
+❌ Error getting Telegram updates: 409 Client Error: Conflict for url: https://api.telegram.org/bot8584198593:AAGpvteSbzR6g0AL0wkoxzzv0yfxPwO0wBk/getUpdates?timeout=30&allowed_updates=message&allowed_updates=callback_query
+❌ Error getting Telegram updates: 409 Client Error: Conflict for url: https://api.telegram.org/bot8584198593:AAGpvteSbzR6g0AL0wkoxzzv0yfxPwO0wBk/getUpdates?timeout=30&allowed_updates=message&allowed_updates=callback_query
+❌ Error getting Telegram updates: 409 Client Error: Conflict for url: https://api.telegram.org/bot8584198593:AAGpvteSbzR6g0AL0wkoxzzv0yfxPwO0wBk/getUpdates?timeout=30&allowed_updates=message&allowed_updates=callback_query
+❌ Error getting Telegram updates: 409 Client Error: Conflict for url: https://api.telegram.org/bot8584198593:AAGpvteSbzR6g0AL0wkoxzzv0yfxPwO0wBk/getUpdates?timeout=30&allowed_updates=message&allowed_updates=callback_query
+❌ Error getting Telegram updates: 409 Client Error: Conflict for url: https://api.telegram.org/bot8584198593:AAGpvteSbzR6g0AL0wkoxzzv0yfxPwO0wBk/getUpdates?timeout=30&allowed_updates=message&allowed_updates=callback_query
+❌ Error getting Telegram updates: 409 Client Error: Conflict for url: https://api.telegram.org/bot8584198593:AAGpvteSbzR6g0AL0wkoxzzv0yfxPwO0wBk/getUpdates?timeout=30&allowed_updates=message&allowed_updates=callback_query
+❌ Error getting Telegram updates: 409 Client Error: Conflict for url: https://api.telegram.org/bot8584198593:AAGpvteSbzR6g0AL0wkoxzzv0yfxPwO0wBk/getUpdates?timeout=30&allowed_updates=message&allowed_updates=callback_query
+❌ Error getting Telegram updates: 409 Client Error: Conflict for url: https://api.telegram.org/bot8584198593:AAGpvteSbzR6g0AL0wkoxzzv0yfxPwO0wBk/getUpdates?timeout=30&allowed_updates=message&allowed_updates=callback_query
+❌ Error getting Telegram updates: 409 Client Error: Conflict for url: https://api.telegram.org/bot8584198593:AAGpvteSbzR6g0AL0wkoxzzv0yfxPwO0wBk/getUpdates?timeout=30&allowed_updates=message&allowed_updates=callback_query
+❌ Error getting Telegram updates: 409 Client Error: Conflict for url: https://api.telegram.org/bot8584198593:AAGpvteSbzR6g0AL0wkoxzzv0yfxPwO0wBk/getUpdates?timeout=30&allowed_updates=message&allowed_updates=callback_query
+❌ Error getting Telegram updates: 409 Client Error: Conflict for url: https://api.telegram.org/bot8584198593:AAGpvteSbzR6g0AL0wkoxzzv0yfxPwO0wBk/getUpdates?timeout=30&allowed_updates=message&allowed_updates=callback_query
+❌ Error getting Telegram updates: 409 Client Error: Conflict for url: https://api.telegram.org/bot8584198593:AAGpvteSbzR6g0AL0wkoxzzv0yfxPwO0wBk/getUpdates?timeout=30&allowed_updates=message&allowed_updates=callback_query
+❌ Error getting Telegram updates: 409 Client Error: Conflict for url: https://api.telegram.org/bot8584198593:AAGpvteSbzR6g0AL0wkoxzzv0yfxPwO0wBk/getUpdates?timeout=30&allowed_updates=message&allowed_updates=callback_query
+❌ Error getting Telegram updates: 409 Client Error: Conflict for url: https://api.telegram.org/bot8584198593:AAGpvteSbzR6g0AL0wkoxzzv0yfxPwO0wBk/getUpdates?timeout=30&allowed_updates=message&allowed_updates=callback_query
+❌ Error getting Telegram updates: 409 Client Error: Conflict for url: https://api.telegram.org/bot8584198593:AAGpvteSbzR6g0AL0wkoxzzv0yfxPwO0wBk/getUpdates?timeout=30&allowed_updates=message&allowed_updates=callback_query
+❌ Error getting Telegram updates: 409 Client Error: Conflict for url: https://api.telegram.org/bot8584198593:AAGpvteSbzR6g0AL0wkoxzzv0yfxPwO0wBk/getUpdates?timeout=30&allowed_updates=message&allowed_updates=callback_query
+❌ Error getting Telegram updates: 409 Client Error: Conflict for url: https://api.telegram.org/bot8584198593:AAGpvteSbzR6g0AL0wkoxzzv0yfxPwO0wBk/getUpdates?timeout=30&allowed_updates=message&allowed_updates=callback_query
+❌ Error getting Telegram updates: 409 Client Error: Conflict for url: https://api.telegram.org/bot8584198593:AAGpvteSbzR6g0AL0wkoxzzv0yfxPwO0wBk/getUpdates?timeout=30&allowed_updates=message&allowed_updates=callback_query
+❌ Error getting Telegram updates: 409 Client Error: Conflict for url: https://api.telegram.org/bot8584198593:AAGpvteSbzR6g0AL0wkoxzzv0yfxPwO0wBk/getUpdates?timeout=30&allowed_updates=message&allowed_updates=callback_query
+❌ Error getting Telegram updates: 409 Client Error: Conflict for url: https://api.telegram.org/bot8584198593:AAGpvteSbzR6g0AL0wkoxzzv0yfxPwO0wBk/getUpdates?timeout=30&allowed_updates=message&allowed_updates=callback_query
+❌ Error getting Telegram updates: 409 Client Error: Conflict for url: https://api.telegram.org/bot8584198593:AAGpvteSbzR6g0AL0wkoxzzv0yfxPwO0wBk/getUpdates?timeout=30&allowed_updates=message&allowed_updates=callback_query
+❌ Error getting Telegram updates: 409 Client Error: Conflict for url: https://api.telegram.org/bot8584198593:AAGpvteSbzR6g0AL0wkoxzzv0yfxPwO0wBk/getUpdates?timeout=30&allowed_updates=message&allowed_updates=callback_query
+❌ Error getting Telegram updates: 409 Client Error: Conflict for url: https://api.telegram.org/bot8584198593:AAGpvteSbzR6g0AL0wkoxzzv0yfxPwO0wBk/getUpdates?timeout=30&allowed_updates=message&allowed_updates=callback_query
+❌ Error getting Telegram updates: 409 Client Error: Conflict for url: https://api.telegram.org/bot8584198593:AAGpvteSbzR6g0AL0wkoxzzv0yfxPwO0wBk/getUpdates?timeout=30&allowed_updates=message&allowed_updates=callback_query
+❌ Error getting Telegram updates: 409 Client Error: Conflict for url: https://api.telegram.org/bot8584198593:AAGpvteSbzR6g0AL0wkoxzzv0yfxPwO0wBk/getUpdates?timeout=30&allowed_updates=message&allowed_updates=callback_query
+❌ Error getting Telegram updates: 409 Client Error: Conflict for url: https://api.telegram.org/bot8584198593:AAGpvteSbzR6g0AL0wkoxzzv0yfxPwO0wBk/getUpdates?timeout=30&allowed_updates=message&allowed_updates=callback_query
+❌ Error getting Telegram updates: 409 Client Error: Conflict for url: https://api.telegram.org/bot8584198593:AAGpvteSbzR6g0AL0wkoxzzv0yfxPwO0wBk/getUpdates?timeout=30&allowed_updates=message&allowed_updates=callback_query
+❌ Error getting Telegram updates: 409 Client Error: Conflict for url: https://api.telegram.org/bot8584198593:AAGpvteSbzR6g0AL0wkoxzzv0yfxPwO0wBk/getUpdates?timeout=30&allowed_updates=message&allowed_updates=callback_query
+❌ Error getting Telegram updates: 409 Client Error: Conflict for url: https://api.telegram.org/bot8584198593:AAGpvteSbzR6g0AL0wkoxzzv0yfxPwO0wBk/getUpdates?timeout=30&allowed_updates=message&allowed_updates=callback_query
+❌ Error getting Telegram updates: 409 Client Error: Conflict for url: https://api.telegram.org/bot8584198593:AAGpvteSbzR6g0AL0wkoxzzv0yfxPwO0wBk/getUpdates?timeout=30&allowed_updates=message&allowed_updates=callback_query
+❌ Error getting Telegram updates: 409 Client Error: Conflict for url: https://api.telegram.org/bot8584198593:AAGpvteSbzR6g0AL0wkoxzzv0yfxPwO0wBk/getUpdates?timeout=30&allowed_updates=message&allowed_updates=callback_query
+❌ Error getting Telegram updates: 409 Client Error: Conflict for url: https://api.telegram.org/bot8584198593:AAGpvteSbzR6g0AL0wkoxzzv0yfxPwO0wBk/getUpdates?timeout=30&allowed_updates=message&allowed_updates=callback_query
+❌ Error getting Telegram updates: 409 Client Error: Conflict for url: https://api.telegram.org/bot8584198593:AAGpvteSbzR6g0AL0wkoxzzv0yfxPwO0wBk/getUpdates?timeout=30&allowed_updates=message&allowed_updates=callback_query
+❌ Error getting Telegram updates: 409 Client Error: Conflict for url: https://api.telegram.org/bot8584198593:AAGpvteSbzR6g0AL0wkoxzzv0yfxPwO0wBk/getUpdates?timeout=30&allowed_updates=message&allowed_updates=callback_query
+❌ Error getting Telegram updates: 409 Client Error: Conflict for url: https://api.telegram.org/bot8584198593:AAGpvteSbzR6g0AL0wkoxzzv0yfxPwO0wBk/getUpdates?timeout=30&allowed_updates=message&allowed_updates=callback_query
+❌ Error getting Telegram updates: 409 Client Error: Conflict for url: https://api.telegram.org/bot8584198593:AAGpvteSbzR6g0AL0wkoxzzv0yfxPwO0wBk/getUpdates?timeout=30&allowed_updates=message&allowed_updates=callback_query
+❌ Error getting Telegram updates: 409 Client Error: Conflict for url: https://api.telegram.org/bot8584198593:AAGpvteSbzR6g0AL0wkoxzzv0yfxPwO0wBk/getUpdates?timeout=30&allowed_updates=message&allowed_updates=callback_query
+❌ Error getting Telegram updates: 409 Client Error: Conflict for url: https://api.telegram.org/bot8584198593:AAGpvteSbzR6g0AL0wkoxzzv0yfxPwO0wBk/getUpdates?timeout=30&allowed_updates=message&allowed_updates=callback_query
+❌ Error getting Telegram updates: 409 Client Error: Conflict for url: https://api.telegram.org/bot8584198593:AAGpvteSbzR6g0AL0wkoxzzv0yfxPwO0wBk/getUpdates?timeout=30&allowed_updates=message&allowed_updates=callback_query
+❌ Error getting Telegram updates: 409 Client Error: Conflict for url: https://api.telegram.org/bot8584198593:AAGpvteSbzR6g0AL0wkoxzzv0yfxPwO0wBk/getUpdates?timeout=30&allowed_updates=message&allowed_updates=callback_query
+❌ Error getting Telegram updates: 409 Client Error: Conflict for url: https://api.telegram.org/bot8584198593:AAGpvteSbzR6g0AL0wkoxzzv0yfxPwO0wBk/getUpdates?timeout=30&allowed_updates=message&allowed_updates=callback_query
+❌ Error getting Telegram updates: 409 Client Error: Conflict for url: https://api.telegram.org/bot8584198593:AAGpvteSbzR6g0AL0wkoxzzv0yfxPwO0wBk/getUpdates?timeout=30&allowed_updates=message&allowed_updates=callback_query
+❌ Error getting Telegram updates: 409 Client Error: Conflict for url: https://api.telegram.org/bot8584198593:AAGpvteSbzR6g0AL0wkoxzzv0yfxPwO0wBk/getUpdates?timeout=30&allowed_updates=message&allowed_updates=callback_query
+❌ Error getting Telegram updates: 409 Client Error: Conflict for url: https://api.telegram.org/bot8584198593:AAGpvteSbzR6g0AL0wkoxzzv0yfxPwO0wBk/getUpdates?timeout=30&allowed_updates=message&allowed_updates=callback_query
+❌ Error getting Telegram updates: 409 Client Error: Conflict for url: https://api.telegram.org/bot8584198593:AAGpvteSbzR6g0AL0wkoxzzv0yfxPwO0wBk/getUpdates?timeout=30&allowed_updates=message&allowed_updates=callback_query
+❌ Error getting Telegram updates: 409 Client Error: Conflict for url: https://api.telegram.org/bot8584198593:AAGpvteSbzR6g0AL0wkoxzzv0yfxPwO0wBk/getUpdates?timeout=30&allowed_updates=message&allowed_updates=callback_query
+❌ Error getting Telegram updates: 409 Client Error: Conflict for url: https://api.telegram.org/bot8584198593:AAGpvteSbzR6g0AL0wkoxzzv0yfxPwO0wBk/getUpdates?timeout=30&allowed_updates=message&allowed_updates=callback_query
+❌ Error getting Telegram updates: 409 Client Error: Conflict for url: https://api.telegram.org/bot8584198593:AAGpvteSbzR6g0AL0wkoxzzv0yfxPwO0wBk/getUpdates?timeout=30&allowed_updates=message&allowed_updates=callback_query
+❌ Error getting Telegram updates: 409 Client Error: Conflict for url: https://api.telegram.org/bot8584198593:AAGpvteSbzR6g0AL0wkoxzzv0yfxPwO0wBk/getUpdates?timeout=30&allowed_updates=message&allowed_updates=callback_query
+❌ Error getting Telegram updates: 409 Client Error: Conflict for url: https://api.telegram.org/bot8584198593:AAGpvteSbzR6g0AL0wkoxzzv0yfxPwO0wBk/getUpdates?timeout=30&allowed_updates=message&allowed_updates=callback_query
+❌ Error getting Telegram updates: 409 Client Error: Conflict for url: https://api.telegram.org/bot8584198593:AAGpvteSbzR6g0AL0wkoxzzv0yfxPwO0wBk/getUpdates?timeout=30&allowed_updates=message&allowed_updates=callback_query
+❌ Error getting Telegram updates: 409 Client Error: Conflict for url: https://api.telegram.org/bot8584198593:AAGpvteSbzR6g0AL0wkoxzzv0yfxPwO0wBk/getUpdates?timeout=30&allowed_updates=message&allowed_updates=callback_query
+❌ Error getting Telegram updates: 409 Client Error: Conflict for url: https://api.telegram.org/bot8584198593:AAGpvteSbzR6g0AL0wkoxzzv0yfxPwO0wBk/getUpdates?timeout=30&allowed_updates=message&allowed_updates=callback_query
+❌ Error getting Telegram updates: 409 Client Error: Conflict for url: https://api.telegram.org/bot8584198593:AAGpvteSbzR6g0AL0wkoxzzv0yfxPwO0wBk/getUpdates?timeout=30&allowed_updates=message&allowed_updates=callback_query
+❌ Error getting Telegram updates: 409 Client Error: Conflict for url: https://api.telegram.org/bot8584198593:AAGpvteSbzR6g0AL0wkoxzzv0yfxPwO0wBk/getUpdates?timeout=30&allowed_updates=message&allowed_updates=callback_query
+❌ Error getting Telegram updates: 409 Client Error: Conflict for url: https://api.telegram.org/bot8584198593:AAGpvteSbzR6g0AL0wkoxzzv0yfxPwO0wBk/getUpdates?timeout=30&allowed_updates=message&allowed_updates=callback_query
+❌ Error getting Telegram updates: 409 Client Error: Conflict for url: https://api.telegram.org/bot8584198593:AAGpvteSbzR6g0AL0wkoxzzv0yfxPwO0wBk/getUpdates?timeout=30&allowed_updates=message&allowed_updates=callback_query
+❌ Error getting Telegram updates: 409 Client Error: Conflict for url: https://api.telegram.org/bot8584198593:AAGpvteSbzR6g0AL0wkoxzzv0yfxPwO0wBk/getUpdates?timeout=30&allowed_updates=message&allowed_updates=callback_query
+❌ Error getting Telegram updates: 409 Client Error: Conflict for url: https://api.telegram.org/bot8584198593:AAGpvteSbzR6g0AL0wkoxzzv0yfxPwO0wBk/getUpdates?timeout=30&allowed_updates=message&allowed_updates=callback_query
+❌ Error getting Telegram updates: 409 Client Error: Conflict for url: https://api.telegram.org/bot8584198593:AAGpvteSbzR6g0AL0wkoxzzv0yfxPwO0wBk/getUpdates?timeout=30&allowed_updates=message&allowed_updates=callback_query
+❌ Error getting Telegram updates: 409 Client Error: Conflict for url: https://api.telegram.org/bot8584198593:AAGpvteSbzR6g0AL0wkoxzzv0yfxPwO0wBk/getUpdates?timeout=30&allowed_updates=message&allowed_updates=callback_query
+❌ Error getting Telegram updates: 409 Client Error: Conflict for url: https://api.telegram.org/bot8584198593:AAGpvteSbzR6g0AL0wkoxzzv0yfxPwO0wBk/getUpdates?timeout=30&allowed_updates=message&allowed_updates=callback_query
+❌ Error getting Telegram updates: 409 Client Error: Conflict for url: https://api.telegram.org/bot8584198593:AAGpvteSbzR6g0AL0wkoxzzv0yfxPwO0wBk/getUpdates?timeout=30&allowed_updates=message&allowed_updates=callback_query
+❌ Error getting Telegram updates: 409 Client Error: Conflict for url: https://api.telegram.org/bot8584198593:AAGpvteSbzR6g0AL0wkoxzzv0yfxPwO0wBk/getUpdates?timeout=30&allowed_updates=message&allowed_updates=callback_query
+❌ Error getting Telegram updates: 409 Client Error: Conflict for url: https://api.telegram.org/bot8584198593:AAGpvteSbzR6g0AL0wkoxzzv0yfxPwO0wBk/getUpdates?timeout=30&allowed_updates=message&allowed_updates=callback_query
+❌ Error getting Telegram updates: 409 Client Error: Conflict for url: https://api.telegram.org/bot8584198593:AAGpvteSbzR6g0AL0wkoxzzv0yfxPwO0wBk/getUpdates?timeout=30&allowed_updates=message&allowed_updates=callback_query
+❌ Error getting Telegram updates: 409 Client Error: Conflict for url: https://api.telegram.org/bot8584198593:AAGpvteSbzR6g0AL0wkoxzzv0yfxPwO0wBk/getUpdates?timeout=30&allowed_updates=message&allowed_updates=callback_query
+❌ Error getting Telegram updates: 409 Client Error: Conflict for url: https://api.telegram.org/bot8584198593:AAGpvteSbzR6g0AL0wkoxzzv0yfxPwO0wBk/getUpdates?timeout=30&allowed_updates=message&allowed_updates=callback_query
+❌ Error getting Telegram updates: 409 Client Error: Conflict for url: https://api.telegram.org/bot8584198593:AAGpvteSbzR6g0AL0wkoxzzv0yfxPwO0wBk/getUpdates?timeout=30&allowed_updates=message&allowed_updates=callback_query
+❌ Error getting Telegram updates: 409 Client Error: Conflict for url: https://api.telegram.org/bot8584198593:AAGpvteSbzR6g0AL0wkoxzzv0yfxPwO0wBk/getUpdates?timeout=30&allowed_updates=message&allowed_updates=callback_query
+❌ Error getting Telegram updates: 409 Client Error: Conflict for url: https://api.telegram.org/bot8584198593:AAGpvteSbzR6g0AL0wkoxzzv0yfxPwO0wBk/getUpdates?timeout=30&allowed_updates=message&allowed_updates=callback_query
+❌ Error getting Telegram updates: 409 Client Error: Conflict for url: https://api.telegram.org/bot8584198593:AAGpvteSbzR6g0AL0wkoxzzv0yfxPwO0wBk/getUpdates?timeout=30&allowed_updates=message&allowed_updates=callback_query
+❌ Error getting Telegram updates: 409 Client Error: Conflict for url: https://api.telegram.org/bot8584198593:AAGpvteSbzR6g0AL0wkoxzzv0yfxPwO0wBk/getUpdates?timeout=30&allowed_updates=message&allowed_updates=callback_query
+❌ Error getting Telegram updates: 409 Client Error: Conflict for url: https://api.telegram.org/bot8584198593:AAGpvteSbzR6g0AL0wkoxzzv0yfxPwO0wBk/getUpdates?timeout=30&allowed_updates=message&allowed_updates=callback_query
+❌ Error getting Telegram updates: 409 Client Error: Conflict for url: https://api.telegram.org/bot8584198593:AAGpvteSbzR6g0AL0wkoxzzv0yfxPwO0wBk/getUpdates?timeout=30&allowed_updates=message&allowed_updates=callback_query
+❌ Error getting Telegram updates: 409 Client Error: Conflict for url: https://api.telegram.org/bot8584198593:AAGpvteSbzR6g0AL0wkoxzzv0yfxPwO0wBk/getUpdates?timeout=30&allowed_updates=message&allowed_updates=callback_query
+❌ Error getting Telegram updates: 409 Client Error: Conflict for url: https://api.telegram.org/bot8584198593:AAGpvteSbzR6g0AL0wkoxzzv0yfxPwO0wBk/getUpdates?timeout=30&allowed_updates=message&allowed_updates=callback_query
+❌ Error getting Telegram updates: 409 Client Error: Conflict for url: https://api.telegram.org/bot8584198593:AAGpvteSbzR6g0AL0wkoxzzv0yfxPwO0wBk/getUpdates?timeout=30&allowed_updates=message&allowed_updates=callback_query
+❌ Error getting Telegram updates: 409 Client Error: Conflict for url: https://api.telegram.org/bot8584198593:AAGpvteSbzR6g0AL0wkoxzzv0yfxPwO0wBk/getUpdates?timeout=30&allowed_updates=message&allowed_updates=callback_query
+❌ Error getting Telegram updates: 409 Client Error: Conflict for url: https://api.telegram.org/bot8584198593:AAGpvteSbzR6g0AL0wkoxzzv0yfxPwO0wBk/getUpdates?timeout=30&allowed_updates=message&allowed_updates=callback_query
+❌ Error getting Telegram updates: 409 Client Error: Conflict for url: https://api.telegram.org/bot8584198593:AAGpvteSbzR6g0AL0wkoxzzv0yfxPwO0wBk/getUpdates?timeout=30&allowed_updates=message&allowed_updates=callback_query
+❌ Error getting Telegram updates: 409 Client Error: Conflict for url: https://api.telegram.org/bot8584198593:AAGpvteSbzR6g0AL0wkoxzzv0yfxPwO0wBk/getUpdates?timeout=30&allowed_updates=message&allowed_updates=callback_query
+❌ Error getting Telegram updates: 409 Client Error: Conflict for url: https://api.telegram.org/bot8584198593:AAGpvteSbzR6g0AL0wkoxzzv0yfxPwO0wBk/getUpdates?timeout=30&allowed_updates=message&allowed_updates=callback_query
+❌ Error getting Telegram updates: 409 Client Error: Conflict for url: https://api.telegram.org/bot8584198593:AAGpvteSbzR6g0AL0wkoxzzv0yfxPwO0wBk/getUpdates?timeout=30&allowed_updates=message&allowed_updates=callback_query
+❌ Error getting Telegram updates: 409 Client Error: Conflict for url: https://api.telegram.org/bot8584198593:AAGpvteSbzR6g0AL0wkoxzzv0yfxPwO0wBk/getUpdates?timeout=30&allowed_updates=message&allowed_updates=callback_query
+❌ Error getting Telegram updates: 409 Client Error: Conflict for url: https://api.telegram.org/bot8584198593:AAGpvteSbzR6g0AL0wkoxzzv0yfxPwO0wBk/getUpdates?timeout=30&allowed_updates=message&allowed_updates=callback_query
+❌ Error getting Telegram updates: 409 Client Error: Conflict for url: https://api.telegram.org/bot8584198593:AAGpvteSbzR6g0AL0wkoxzzv0yfxPwO0wBk/getUpdates?timeout=30&allowed_updates=message&allowed_updates=callback_query
+❌ Error getting Telegram updates: 409 Client Error: Conflict for url: https://api.telegram.org/bot8584198593:AAGpvteSbzR6g0AL0wkoxzzv0yfxPwO0wBk/getUpdates?timeout=30&allowed_updates=message&allowed_updates=callback_query
+2026-01-02 21:50:18 - TradingBot - INFO - === Loop 3 - 2026-01-02 21:50:18 UTC ===
+2026-01-02 21:50:18 - TradingBot - INFO - BTC Price: $89,931.50
+2026-01-02 21:50:18 - TradingBot - INFO - Entry check: False - Not entry hour (current: 16:00, target: 15:00)
+2026-01-02 21:50:18 - TradingBot - INFO - Sleeping 300s until next check...
+
+❌ Error getting Telegram updates: 409 Client Error: Conflict for url: https://api.telegram.org/bot8584198593:AAGpvteSbzR6g0AL0wkoxzzv0yfxPwO0wBk/getUpdates?timeout=30&allowed_updates=message&allowed_updates=callback_query
+❌ Error getting Telegram updates: 409 Client Error: Conflict for url: https://api.telegram.org/bot8584198593:AAGpvteSbzR6g0AL0wkoxzzv0yfxPwO0wBk/getUpdates?timeout=30&allowed_updates=message&allowed_updates=callback_query
+❌ Error getting Telegram updates: 409 Client Error: Conflict for url: https://api.telegram.org/bot8584198593:AAGpvteSbzR6g0AL0wkoxzzv0yfxPwO0wBk/getUpdates?timeout=30&allowed_updates=message&allowed_updates=callback_query
+❌ Error getting Telegram updates: 409 Client Error: Conflict for url: https://api.telegram.org/bot8584198593:AAGpvteSbzR6g0AL0wkoxzzv0yfxPwO0wBk/getUpdates?timeout=30&allowed_updates=message&allowed_updates=callback_query
+❌ Error getting Telegram updates: 409 Client Error: Conflict for url: https://api.telegram.org/bot8584198593:AAGpvteSbzR6g0AL0wkoxzzv0yfxPwO0wBk/getUpdates?timeout=30&allowed_updates=message&allowed_updates=callback_query
+❌ Error getting Telegram updates: 409 Client Error: Conflict for url: https://api.telegram.org/bot8584198593:AAGpvteSbzR6g0AL0wkoxzzv0yfxPwO0wBk/getUpdates?timeout=30&allowed_updates=message&allowed_updates=callback_query
+❌ Error getting Telegram updates: 409 Client Error: Conflict for url: https://api.telegram.org/bot8584198593:AAGpvteSbzR6g0AL0wkoxzzv0yfxPwO0wBk/getUpdates?timeout=30&allowed_updates=message&allowed_updates=callback_query
+❌ Error getting Telegram updates: 409 Client Error: Conflict for url: https://api.telegram.org/bot8584198593:AAGpvteSbzR6g0AL0wkoxzzv0yfxPwO0wBk/getUpdates?timeout=30&allowed_updates=message&allowed_updates=callback_query
+❌ Error getting Telegram updates: 409 Client Error: Conflict for url: https://api.telegram.org/bot8584198593:AAGpvteSbzR6g0AL0wkoxzzv0yfxPwO0wBk/getUpdates?timeout=30&allowed_updates=message&allowed_updates=callback_query
+❌ Error getting Telegram updates: 409 Client Error: Conflict for url: https://api.telegram.org/bot8584198593:AAGpvteSbzR6g0AL0wkoxzzv0yfxPwO0wBk/getUpdates?timeout=30&allowed_updates=message&allowed_updates=callback_query
+❌ Error getting Telegram updates: 409 Client Error: Conflict for url: https://api.telegram.org/bot8584198593:AAGpvteSbzR6g0AL0wkoxzzv0yfxPwO0wBk/getUpdates?timeout=30&allowed_updates=message&allowed_updates=callback_query
+❌ Error getting Telegram updates: 409 Client Error: Conflict for url: https://api.telegram.org/bot8584198593:AAGpvteSbzR6g0AL0wkoxzzv0yfxPwO0wBk/getUpdates?timeout=30&allowed_updates=message&allowed_updates=callback_query
+❌ Error getting Telegram updates: 409 Client Error: Conflict for url: https://api.telegram.org/bot8584198593:AAGpvteSbzR6g0AL0wkoxzzv0yfxPwO0wBk/getUpdates?timeout=30&allowed_updates=message&allowed_updates=callback_query
+❌ Error getting Telegram updates: 409 Client Error: Conflict for url: https://api.telegram.org/bot8584198593:AAGpvteSbzR6g0AL0wkoxzzv0yfxPwO0wBk/getUpdates?timeout=30&allowed_updates=message&allowed_updates=callback_query
+❌ Error getting Telegram updates: 409 Client Error: Conflict for url: https://api.telegram.org/bot8584198593:AAGpvteSbzR6g0AL0wkoxzzv0yfxPwO0wBk/getUpdates?timeout=30&allowed_updates=message&allowed_updates=callback_query
+📨 Received command: /start from 1644767408
+❌ Error getting Telegram updates: 409 Client Error: Conflict for url: https://api.telegram.org/bot8584198593:AAGpvteSbzR6g0AL0wkoxzzv0yfxPwO0wBk/getUpdates?timeout=30&allowed_updates=message&allowed_updates=callback_query&offset=293642590
+❌ Error getting Telegram updates: 409 Client Error: Conflict for url: https://api.telegram.org/bot8584198593:AAGpvteSbzR6g0AL0wkoxzzv0yfxPwO0wBk/getUpdates?timeout=30&allowed_updates=message&allowed_updates=callback_query&offset=293642590
+❌ Error getting Telegram updates: 409 Client Error: Conflict for url: https://api.telegram.org/bot8584198593:AAGpvteSbzR6g0AL0wkoxzzv0yfxPwO0wBk/getUpdates?timeout=30&allowed_updates=message&allowed_updates=callback_query&offset=293642590
+❌ Error getting Telegram updates: 409 Client Error: Conflict for url: https://api.telegram.org/bot8584198593:AAGpvteSbzR6g0AL0wkoxzzv0yfxPwO0wBk/getUpdates?timeout=30&allowed_updates=message&allowed_updates=callback_query&offset=293642590
+❌ Error getting Telegram updates: 409 Client Error: Conflict for url: https://api.telegram.org/bot8584198593:AAGpvteSbzR6g0AL0wkoxzzv0yfxPwO0wBk/getUpdates?timeout=30&allowed_updates=message&allowed_updates=callback_query&offset=293642590
+❌ Error getting Telegram updates: 409 Client Error: Conflict for url: https://api.telegram.org/bot8584198593:AAGpvteSbzR6g0AL0wkoxzzv0yfxPwO0wBk/getUpdates?timeout=30&allowed_updates=message&allowed_updates=callback_query&offset=293642590
+❌ Error getting Telegram updates: 409 Client Error: Conflict for url: https://api.telegram.org/bot8584198593:AAGpvteSbzR6g0AL0wkoxzzv0yfxPwO0wBk/getUpdates?timeout=30&allowed_updates=message&allowed_updates=callback_query&offset=293642590
+❌ Error getting Telegram updates: 409 Client Error: Conflict for url: https://api.telegram.org/bot8584198593:AAGpvteSbzR6g0AL0wkoxzzv0yfxPwO0wBk/getUpdates?timeout=30&allowed_updates=message&allowed_updates=callback_query&offset=293642590
+❌ Error getting Telegram updates: 409 Client Error: Conflict for url: https://api.telegram.org/bot8584198593:AAGpvteSbzR6g0AL0wkoxzzv0yfxPwO0wBk/getUpdates?timeout=30&allowed_updates=message&allowed_updates=callback_query&offset=293642590
+❌ Error getting Telegram updates: 409 Client Error: Conflict for url: https://api.telegram.org/bot8584198593:AAGpvteSbzR6g0AL0wkoxzzv0yfxPwO0wBk/getUpdates?timeout=30&allowed_updates=message&allowed_updates=callback_query&offset=293642590
+❌ Error getting Telegram updates: 409 Client Error: Conflict for url: https://api.telegram.org/bot8584198593:AAGpvteSbzR6g0AL0wkoxzzv0yfxPwO0wBk/getUpdates?timeout=30&allowed_updates=message&allowed_updates=callback_query&offset=293642590
+❌ Error getting Telegram updates: 409 Client Error: Conflict for url: https://api.telegram.org/bot8584198593:AAGpvteSbzR6g0AL0wkoxzzv0yfxPwO0wBk/getUpdates?timeout=30&allowed_updates=message&allowed_updates=callback_query&offset=293642590
+❌ Error getting Telegram updates: 409 Client Error: Conflict for url: https://api.telegram.org/bot8584198593:AAGpvteSbzR6g0AL0wkoxzzv0yfxPwO0wBk/getUpdates?timeout=30&allowed_updates=message&allowed_updates=callback_query&offset=293642590
+❌ Error getting Telegram updates: 409 Client Error: Conflict for url: https://api.telegram.org/bot8584198593:AAGpvteSbzR6g0AL0wkoxzzv0yfxPwO0wBk/getUpdates?timeout=30&allowed_updates=message&allowed_updates=callback_query&offset=293642590
+❌ Error getting Telegram updates: 409 Client Error: Conflict for url: https://api.telegram.org/bot8584198593:AAGpvteSbzR6g0AL0wkoxzzv0yfxPwO0wBk/getUpdates?timeout=30&allowed_updates=message&allowed_updates=callback_query&offset=293642590
+❌ Error getting Telegram updates: 409 Client Error: Conflict for url: https://api.telegram.org/bot8584198593:AAGpvteSbzR6g0AL0wkoxzzv0yfxPwO0wBk/getUpdates?timeout=30&allowed_updates=message&allowed_updates=callback_query&offset=293642590
+❌ Error getting Telegram updates: 409 Client Error: Conflict for url: https://api.telegram.org/bot8584198593:AAGpvteSbzR6g0AL0wkoxzzv0yfxPwO0wBk/getUpdates?timeout=30&allowed_updates=message&allowed_updates=callback_query&offset=293642590
+❌ Error getting Telegram updates: 409 Client Error: Conflict for url: https://api.telegram.org/bot8584198593:AAGpvteSbzR6g0AL0wkoxzzv0yfxPwO0wBk/getUpdates?timeout=30&allowed_updates=message&allowed_updates=callback_query&offset=293642590
+❌ Error getting Telegram updates: 409 Client Error: Conflict for url: https://api.telegram.org/bot8584198593:AAGpvteSbzR6g0AL0wkoxzzv0yfxPwO0wBk/getUpdates?timeout=30&allowed_updates=message&allowed_updates=callback_query&offset=293642590
+❌ Error getting Telegram updates: 409 Client Error: Conflict for url: https://api.telegram.org/bot8584198593:AAGpvteSbzR6g0AL0wkoxzzv0yfxPwO0wBk/getUpdates?timeout=30&allowed_updates=message&allowed_updates=callback_query&offset=293642590
+❌ Error getting Telegram updates: 409 Client Error: Conflict for url: https://api.telegram.org/bot8584198593:AAGpvteSbzR6g0AL0wkoxzzv0yfxPwO0wBk/getUpdates?timeout=30&allowed_updates=message&allowed_updates=callback_query&offset=293642590
+❌ Error getting Telegram updates: 409 Client Error: Conflict for url: https://api.telegram.org/bot8584198593:AAGpvteSbzR6g0AL0wkoxzzv0yfxPwO0wBk/getUpdates?timeout=30&allowed_updates=message&allowed_updates=callback_query&offset=293642590
+❌ Error getting Telegram updates: 409 Client Error: Conflict for url: https://api.telegram.org/bot8584198593:AAGpvteSbzR6g0AL0wkoxzzv0yfxPwO0wBk/getUpdates?timeout=30&allowed_updates=message&allowed_updates=callback_query&offset=293642590
+❌ Error getting Telegram updates: 409 Client Error: Conflict for url: https://api.telegram.org/bot8584198593:AAGpvteSbzR6g0AL0wkoxzzv0yfxPwO0wBk/getUpdates?timeout=30&allowed_updates=message&allowed_updates=callback_query&offset=293642590
+📨 Received command: /strategy from 1644767408
+❌ Error getting Telegram updates: 409 Client Error: Conflict for url: https://api.telegram.org/bot8584198593:AAGpvteSbzR6g0AL0wkoxzzv0yfxPwO0wBk/getUpdates?timeout=30&allowed_updates=message&allowed_updates=callback_query&offset=293642591
+❌ Error getting Telegram updates: 409 Client Error: Conflict for url: https://api.telegram.org/bot8584198593:AAGpvteSbzR6g0AL0wkoxzzv0yfxPwO0wBk/getUpdates?timeout=30&allowed_updates=message&allowed_updates=callback_query&offset=293642591
+📨 Received command: /balance from 1644767408
+DEBUG: handle_balance() called
+DEBUG: Fetching account balance...
+DEBUG: Balance fetched: $0.00
+DEBUG: Fetching BTC price...
+DEBUG: BTC price fetched: $89,931.50
+DEBUG: Returning message: 💰 <b>ACCOUNT BALANCE</b>
+
+<b>Balance:</b> $0.00 USDC
+<b>BTC Price:</b> $89,931.50
+...
+❌ Error getting Telegram updates: 409 Client Error: Conflict for url: https://api.telegram.org/bot8584198593:AAGpvteSbzR6g0AL0wkoxzzv0yfxPwO0wBk/getUpdates?timeout=30&allowed_updates=message&allowed_updates=callback_query&offset=293642592
+❌ Error getting Telegram updates: 409 Client Error: Conflict for url: https://api.telegram.org/bot8584198593:AAGpvteSbzR6g0AL0wkoxzzv0yfxPwO0wBk/getUpdates?timeout=30&allowed_updates=message&allowed_updates=callback_query&offset=293642592
+❌ Error getting Telegram updates: 409 Client Error: Conflict for url: https://api.telegram.org/bot8584198593:AAGpvteSbzR6g0AL0wkoxzzv0yfxPwO0wBk/getUpdates?timeout=30&allowed_updates=message&allowed_updates=callback_query&offset=293642592
+❌ Error getting Telegram updates: 409 Client Error: Conflict for url: https://api.telegram.org/bot8584198593:AAGpvteSbzR6g0AL0wkoxzzv0yfxPwO0wBk/getUpdates?timeout=30&allowed_updates=message&allowed_updates=callback_query&offset=293642592
+❌ Error getting Telegram updates: 409 Client Error: Conflict for url: https://api.telegram.org/bot8584198593:AAGpvteSbzR6g0AL0wkoxzzv0yfxPwO0wBk/getUpdates?timeout=30&allowed_updates=message&allowed_updates=callback_query&offset=293642592
+❌ Error getting Telegram updates: 409 Client Error: Conflict for url: https://api.telegram.org/bot8584198593:AAGpvteSbzR6g0AL0wkoxzzv0yfxPwO0wBk/getUpdates?timeout=30&allowed_updates=message&allowed_updates=callback_query&offset=293642592
+❌ Error getting Telegram updates: 409 Client Error: Conflict for url: https://api.telegram.org/bot8584198593:AAGpvteSbzR6g0AL0wkoxzzv0yfxPwO0wBk/getUpdates?timeout=30&allowed_updates=message&allowed_updates=callback_query&offset=293642592
+❌ Error getting Telegram updates: 409 Client Error: Conflict for url: https://api.telegram.org/bot8584198593:AAGpvteSbzR6g0AL0wkoxzzv0yfxPwO0wBk/getUpdates?timeout=30&allowed_updates=message&allowed_updates=callback_query&offset=293642592
+❌ Error getting Telegram updates: 409 Client Error: Conflict for url: https://api.telegram.org/bot8584198593:AAGpvteSbzR6g0AL0wkoxzzv0yfxPwO0wBk/getUpdates?timeout=30&allowed_updates=message&allowed_updates=callback_query&offset=293642592
+❌ Error getting Telegram updates: 409 Client Error: Conflict for url: https://api.telegram.org/bot8584198593:AAGpvteSbzR6g0AL0wkoxzzv0yfxPwO0wBk/getUpdates?timeout=30&allowed_updates=message&allowed_updates=callback_query&offset=293642592
+❌ Error getting Telegram updates: 409 Client Error: Conflict for url: https://api.telegram.org/bot8584198593:AAGpvteSbzR6g0AL0wkoxzzv0yfxPwO0wBk/getUpdates?timeout=30&allowed_updates=message&allowed_updates=callback_query&offset=293642592
+❌ Error getting Telegram updates: 409 Client Error: Conflict for url: https://api.telegram.org/bot8584198593:AAGpvteSbzR6g0AL0wkoxzzv0yfxPwO0wBk/getUpdates?timeout=30&allowed_updates=message&allowed_updates=callback_query&offset=293642592
+❌ Error getting Telegram updates: 409 Client Error: Conflict for url: https://api.telegram.org/bot8584198593:AAGpvteSbzR6g0AL0wkoxzzv0yfxPwO0wBk/getUpdates?timeout=30&allowed_updates=message&allowed_updates=callback_query&offset=293642592
+❌ Error getting Telegram updates: 409 Client Error: Conflict for url: https://api.telegram.org/bot8584198593:AAGpvteSbzR6g0AL0wkoxzzv0yfxPwO0wBk/getUpdates?timeout=30&allowed_updates=message&allowed_updates=callback_query&offset=293642592
+❌ Error getting Telegram updates: 409 Client Error: Conflict for url: https://api.telegram.org/bot8584198593:AAGpvteSbzR6g0AL0wkoxzzv0yfxPwO0wBk/getUpdates?timeout=30&allowed_updates=message&allowed_updates=callback_query&offset=293642592
+❌ Error getting Telegram updates: 409 Client Error: Conflict for url: https://api.telegram.org/bot8584198593:AAGpvteSbzR6g0AL0wkoxzzv0yfxPwO0wBk/getUpdates?timeout=30&allowed_updates=message&allowed_updates=callback_query&offset=293642592
+❌ Error getting Telegram updates: 409 Client Error: Conflict for url: https://api.telegram.org/bot8584198593:AAGpvteSbzR6g0AL0wkoxzzv0yfxPwO0wBk/getUpdates?timeout=30&allowed_updates=message&allowed_updates=callback_query&offset=293642592
+❌ Error getting Telegram updates: 409 Client Error: Conflict for url: https://api.telegram.org/bot8584198593:AAGpvteSbzR6g0AL0wkoxzzv0yfxPwO0wBk/getUpdates?timeout=30&allowed_updates=message&allowed_updates=callback_query&offset=293642592
+❌ Error getting Telegram updates: 409 Client Error: Conflict for url: https://api.telegram.org/bot8584198593:AAGpvteSbzR6g0AL0wkoxzzv0yfxPwO0wBk/getUpdates?timeout=30&allowed_updates=message&allowed_updates=callback_query&offset=293642592
+❌ Error getting Telegram updates: 409 Client Error: Conflict for url: https://api.telegram.org/bot8584198593:AAGpvteSbzR6g0AL0wkoxzzv0yfxPwO0wBk/getUpdates?timeout=30&allowed_updates=message&allowed_updates=callback_query&offset=293642592
+❌ Error getting Telegram updates: 409 Client Error: Conflict for url: https://api.telegram.org/bot8584198593:AAGpvteSbzR6g0AL0wkoxzzv0yfxPwO0wBk/getUpdates?timeout=30&allowed_updates=message&allowed_updates=callback_query&offset=293642592
+❌ Error getting Telegram updates: 409 Client Error: Conflict for url: https://api.telegram.org/bot8584198593:AAGpvteSbzR6g0AL0wkoxzzv0yfxPwO0wBk/getUpdates?timeout=30&allowed_updates=message&allowed_updates=callback_query&offset=293642592
+❌ Error getting Telegram updates: 409 Client Error: Conflict for url: https://api.telegram.org/bot8584198593:AAGpvteSbzR6g0AL0wkoxzzv0yfxPwO0wBk/getUpdates?timeout=30&allowed_updates=message&allowed_updates=callback_query&offset=293642592
+❌ Error getting Telegram updates: 409 Client Error: Conflict for url: https://api.telegram.org/bot8584198593:AAGpvteSbzR6g0AL0wkoxzzv0yfxPwO0wBk/getUpdates?timeout=30&allowed_updates=message&allowed_updates=callback_query&offset=293642592
+❌ Error getting Telegram updates: 409 Client Error: Conflict for url: https://api.telegram.org/bot8584198593:AAGpvteSbzR6g0AL0wkoxzzv0yfxPwO0wBk/getUpdates?timeout=30&allowed_updates=message&allowed_updates=callback_query&offset=293642592
+2026-01-02 21:55:18 - TradingBot - INFO - === Loop 4 - 2026-01-02 21:55:18 UTC ===
+2026-01-02 21:55:18 - TradingBot - INFO - BTC Price: $90,067.50
+2026-01-02 21:55:18 - TradingBot - INFO - Entry check: False - Not entry hour (current: 16:00, target: 15:00)
+2026-01-02 21:55:18 - TradingBot - INFO - Sleeping 300s until next check...
+

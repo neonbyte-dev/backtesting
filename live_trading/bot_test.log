@@ -1,0 +1,322 @@
+/Users/chrisl/Library/Python/3.9/lib/python/site-packages/urllib3/__init__.py:35: NotOpenSSLWarning: urllib3 v2 only supports OpenSSL 1.1.1+, currently the 'ssl' module is compiled with 'LibreSSL 2.8.3'. See: https://github.com/urllib3/urllib3/issues/3020
+  warnings.warn(
+
+╔═══════════════════════════════════════════════════════════╗
+║                                                           ║
+║        MULTI-STRATEGY TRADING BOT                         ║
+║                                                           ║
+║        Strategies:                                        ║
+║        - overnight: Buy 3PM EST, trailing stop            ║
+║        - oi: Open Interest signals, never sell loss       ║
+║                                                           ║
+║        Use /strategy in Telegram to configure             ║
+║                                                           ║
+╚═══════════════════════════════════════════════════════════╝
+    
+Start trading bot? (yes/no): 2026-01-04 14:52:04 - TradingBot - INFO - Exchange: MAINNET
+2026-01-04 14:52:05 - TradingBot - INFO - Strategy loaded: overnight
+2026-01-04 14:52:05 - TradingBot - INFO - Strategy loaded: oi
+2026-01-04 14:52:05 - TradingBot - INFO - State: State(NO_POSITIONS, 2 strategies enabled)
+2026-01-04 14:52:05 - TradingBot - INFO - Telegram notifier initialized
+2026-01-04 14:52:05 - TradingBot - INFO - Risk Manager: RiskManager(daily_loss_limit=5.0%, max_consecutive_losses=3, max_data_age=10min)
+2026-01-04 14:52:05 - TradingBot - INFO - Command handler initialized
+2026-01-04 14:52:05 - TradingBot - INFO - Telegram polling loop started
+2026-01-04 14:52:05 - TradingBot - INFO - Telegram command listener started
+2026-01-04 14:52:05 - TradingBot - INFO - Bot initialized successfully
+2026-01-04 14:52:05 - TradingBot - INFO - ======================================================================
+2026-01-04 14:52:05 - TradingBot - INFO - MULTI-STRATEGY TRADING BOT STARTED
+2026-01-04 14:52:05 - TradingBot - INFO - ======================================================================
+2026-01-04 14:52:05 - TradingBot - INFO - === Loop 1 - 2026-01-04 14:52:05 UTC ===
+2026-01-04 14:52:05 - TradingBot - INFO - BTC Price: $91,237.50
+2026-01-04 14:52:05 - TradingBot - INFO - Enabled strategies: overnight, oi
+2026-01-04 14:52:05 - TradingBot - INFO - [overnight] Entry check: False - Not entry hour (current: 9:00, target: 15:00)
+2026-01-04 14:52:06 - TradingBot - INFO - [oi] Entry check: False - Price not far enough below SMA (+0.38% > -0.5%)
+2026-01-04 14:52:06 - TradingBot - INFO - Sleeping 300s until next check...
+
+2026-01-04 14:57:06 - TradingBot - INFO - === Loop 2 - 2026-01-04 14:57:06 UTC ===
+2026-01-04 14:57:07 - TradingBot - INFO - BTC Price: $91,303.50
+2026-01-04 14:57:07 - TradingBot - INFO - Enabled strategies: overnight, oi
+2026-01-04 14:57:07 - TradingBot - INFO - [overnight] Entry check: False - Not entry hour (current: 9:00, target: 15:00)
+2026-01-04 14:57:07 - TradingBot - INFO - [oi] Entry check: False - Price not dropping enough (-0.28% > -0.3%)
+2026-01-04 14:57:07 - TradingBot - INFO - Sleeping 300s until next check...
+
+2026-01-04 15:02:07 - TradingBot - INFO - === Loop 3 - 2026-01-04 15:02:07 UTC ===
+2026-01-04 15:02:08 - TradingBot - INFO - BTC Price: $91,336.50
+2026-01-04 15:02:08 - TradingBot - INFO - Enabled strategies: overnight, oi
+2026-01-04 15:02:08 - TradingBot - INFO - [overnight] Entry check: False - Not entry hour (current: 10:00, target: 15:00)
+2026-01-04 15:02:09 - TradingBot - INFO - [oi] Entry check: False - Price not dropping enough (+0.08% > -0.3%)
+2026-01-04 15:02:09 - TradingBot - INFO - Sleeping 300s until next check...
+
+2026-01-04 15:07:09 - TradingBot - INFO - === Loop 4 - 2026-01-04 15:07:09 UTC ===
+2026-01-04 15:07:09 - TradingBot - INFO - BTC Price: $91,289.50
+2026-01-04 15:07:09 - TradingBot - INFO - Enabled strategies: overnight, oi
+2026-01-04 15:07:09 - TradingBot - INFO - [overnight] Entry check: False - Not entry hour (current: 10:00, target: 15:00)
+2026-01-04 15:07:10 - TradingBot - INFO - [oi] Entry check: False - Price not dropping enough (+0.04% > -0.3%)
+2026-01-04 15:07:10 - TradingBot - INFO - Sleeping 300s until next check...
+
+2026-01-04 15:12:10 - TradingBot - INFO - === Loop 5 - 2026-01-04 15:12:10 UTC ===
+2026-01-04 15:12:10 - TradingBot - INFO - BTC Price: $91,289.50
+2026-01-04 15:12:10 - TradingBot - INFO - Enabled strategies: overnight, oi
+2026-01-04 15:12:10 - TradingBot - INFO - [overnight] Entry check: False - Not entry hour (current: 10:00, target: 15:00)
+2026-01-04 15:12:11 - TradingBot - INFO - [oi] Entry check: False - Price not dropping enough (+0.04% > -0.3%)
+2026-01-04 15:12:11 - TradingBot - INFO - Sleeping 300s until next check...
+
+2026-01-04 15:17:11 - TradingBot - INFO - === Loop 6 - 2026-01-04 15:17:11 UTC ===
+2026-01-04 15:17:11 - TradingBot - INFO - BTC Price: $91,242.50
+2026-01-04 15:17:11 - TradingBot - INFO - Enabled strategies: overnight, oi
+2026-01-04 15:17:11 - TradingBot - INFO - [overnight] Entry check: False - Not entry hour (current: 10:00, target: 15:00)
+2026-01-04 15:17:12 - TradingBot - INFO - [oi] Entry check: False - Price not dropping enough (-0.01% > -0.3%)
+2026-01-04 15:17:12 - TradingBot - INFO - Sleeping 300s until next check...
+
+2026-01-04 15:22:12 - TradingBot - INFO - === Loop 7 - 2026-01-04 15:22:12 UTC ===
+2026-01-04 15:22:13 - TradingBot - INFO - BTC Price: $91,241.50
+2026-01-04 15:22:13 - TradingBot - INFO - Enabled strategies: overnight, oi
+2026-01-04 15:22:13 - TradingBot - INFO - [overnight] Entry check: False - Not entry hour (current: 10:00, target: 15:00)
+2026-01-04 15:22:13 - TradingBot - INFO - [oi] Entry check: False - Price not dropping enough (+0.00% > -0.3%)
+2026-01-04 15:22:13 - TradingBot - INFO - Sleeping 300s until next check...
+
+2026-01-04 15:27:13 - TradingBot - INFO - === Loop 8 - 2026-01-04 15:27:13 UTC ===
+2026-01-04 15:27:14 - TradingBot - INFO - BTC Price: $91,187.50
+2026-01-04 15:27:14 - TradingBot - INFO - Enabled strategies: overnight, oi
+2026-01-04 15:27:14 - TradingBot - INFO - [overnight] Entry check: False - Not entry hour (current: 10:00, target: 15:00)
+2026-01-04 15:27:14 - TradingBot - INFO - [oi] Entry check: False - Price not dropping enough (-0.06% > -0.3%)
+2026-01-04 15:27:14 - TradingBot - INFO - Sleeping 300s until next check...
+
+2026-01-04 15:32:14 - TradingBot - INFO - === Loop 9 - 2026-01-04 15:32:14 UTC ===
+2026-01-04 15:32:15 - TradingBot - INFO - BTC Price: $91,187.50
+2026-01-04 15:32:15 - TradingBot - INFO - Enabled strategies: overnight, oi
+2026-01-04 15:32:15 - TradingBot - INFO - [overnight] Entry check: False - Not entry hour (current: 10:00, target: 15:00)
+2026-01-04 15:32:15 - TradingBot - INFO - [oi] Entry check: False - Price not dropping enough (-0.07% > -0.3%)
+2026-01-04 15:32:15 - TradingBot - INFO - Sleeping 300s until next check...
+
+2026-01-04 15:37:15 - TradingBot - INFO - === Loop 10 - 2026-01-04 15:37:15 UTC ===
+2026-01-04 15:37:16 - TradingBot - INFO - BTC Price: $91,200.50
+2026-01-04 15:37:16 - TradingBot - INFO - Enabled strategies: overnight, oi
+2026-01-04 15:37:16 - TradingBot - INFO - [overnight] Entry check: False - Not entry hour (current: 10:00, target: 15:00)
+2026-01-04 15:37:16 - TradingBot - INFO - [oi] Entry check: False - Price not dropping enough (-0.06% > -0.3%)
+2026-01-04 15:37:16 - TradingBot - INFO - Sleeping 300s until next check...
+
+2026-01-04 15:42:16 - TradingBot - INFO - === Loop 11 - 2026-01-04 15:42:16 UTC ===
+2026-01-04 15:42:17 - TradingBot - INFO - BTC Price: $91,196.50
+2026-01-04 15:42:17 - TradingBot - INFO - Enabled strategies: overnight, oi
+2026-01-04 15:42:17 - TradingBot - INFO - [overnight] Entry check: False - Not entry hour (current: 10:00, target: 15:00)
+2026-01-04 15:42:17 - TradingBot - INFO - [oi] Entry check: False - Price not dropping enough (-0.06% > -0.3%)
+2026-01-04 15:42:17 - TradingBot - INFO - Sleeping 300s until next check...
+
+2026-01-04 15:47:17 - TradingBot - INFO - === Loop 12 - 2026-01-04 15:47:17 UTC ===
+2026-01-04 15:47:17 - TradingBot - INFO - BTC Price: $91,115.50
+2026-01-04 15:47:17 - TradingBot - INFO - Enabled strategies: overnight, oi
+2026-01-04 15:47:17 - TradingBot - INFO - [overnight] Entry check: False - Not entry hour (current: 10:00, target: 15:00)
+2026-01-04 15:47:18 - TradingBot - INFO - [oi] Entry check: False - Price not dropping enough (-0.15% > -0.3%)
+2026-01-04 15:47:18 - TradingBot - INFO - Sleeping 300s until next check...
+
+2026-01-04 15:52:18 - TradingBot - INFO - === Loop 13 - 2026-01-04 15:52:18 UTC ===
+2026-01-04 15:52:19 - TradingBot - INFO - BTC Price: $91,255.50
+2026-01-04 15:52:19 - TradingBot - INFO - Enabled strategies: overnight, oi
+2026-01-04 15:52:19 - TradingBot - INFO - [overnight] Entry check: False - Not entry hour (current: 10:00, target: 15:00)
+2026-01-04 15:52:19 - TradingBot - INFO - [oi] Entry check: False - Price not dropping enough (-0.00% > -0.3%)
+2026-01-04 15:52:19 - TradingBot - INFO - Sleeping 300s until next check...
+
+2026-01-04 15:57:19 - TradingBot - INFO - === Loop 14 - 2026-01-04 15:57:19 UTC ===
+2026-01-04 15:57:20 - TradingBot - INFO - BTC Price: $91,256.50
+2026-01-04 15:57:20 - TradingBot - INFO - Enabled strategies: overnight, oi
+2026-01-04 15:57:20 - TradingBot - INFO - [overnight] Entry check: False - Not entry hour (current: 10:00, target: 15:00)
+2026-01-04 15:57:20 - TradingBot - INFO - [oi] Entry check: False - Price not dropping enough (-0.00% > -0.3%)
+2026-01-04 15:57:20 - TradingBot - INFO - Sleeping 300s until next check...
+
+2026-01-04 16:02:20 - TradingBot - INFO - === Loop 15 - 2026-01-04 16:02:20 UTC ===
+2026-01-04 16:02:20 - TradingBot - INFO - BTC Price: $91,320.50
+2026-01-04 16:02:20 - TradingBot - INFO - Enabled strategies: overnight, oi
+2026-01-04 16:02:20 - TradingBot - INFO - [overnight] Entry check: False - Not entry hour (current: 11:00, target: 15:00)
+2026-01-04 16:02:21 - TradingBot - INFO - [oi] Entry check: False - OI not dropping enough (-0.07% > -0.15%)
+2026-01-04 16:02:21 - TradingBot - INFO - Sleeping 300s until next check...
+
+2026-01-04 16:07:21 - TradingBot - INFO - === Loop 16 - 2026-01-04 16:07:21 UTC ===
+2026-01-04 16:07:21 - TradingBot - INFO - BTC Price: $91,359.50
+2026-01-04 16:07:21 - TradingBot - INFO - Enabled strategies: overnight, oi
+2026-01-04 16:07:21 - TradingBot - INFO - [overnight] Entry check: False - Not entry hour (current: 11:00, target: 15:00)
+2026-01-04 16:07:22 - TradingBot - INFO - [oi] Entry check: False - OI not dropping enough (-0.07% > -0.15%)
+2026-01-04 16:07:22 - TradingBot - INFO - Sleeping 300s until next check...
+
+2026-01-04 16:09:39 - TradingBot - INFO - Received command: '/status' from chat 1644767408
+2026-01-04 16:09:39 - TradingBot - INFO - Sending response to chat 1644767408
+2026-01-04 16:12:22 - TradingBot - INFO - === Loop 17 - 2026-01-04 16:12:22 UTC ===
+2026-01-04 16:12:22 - TradingBot - INFO - BTC Price: $91,237.50
+2026-01-04 16:12:22 - TradingBot - INFO - Enabled strategies: overnight, oi
+2026-01-04 16:12:22 - TradingBot - INFO - [overnight] Entry check: False - Not entry hour (current: 11:00, target: 15:00)
+2026-01-04 16:12:23 - TradingBot - INFO - [oi] Entry check: False - OI not dropping enough (-0.07% > -0.15%)
+2026-01-04 16:12:23 - TradingBot - INFO - Sleeping 300s until next check...
+
+2026-01-04 16:17:23 - TradingBot - INFO - === Loop 18 - 2026-01-04 16:17:23 UTC ===
+2026-01-04 16:17:24 - TradingBot - INFO - BTC Price: $91,255.50
+2026-01-04 16:17:24 - TradingBot - INFO - Enabled strategies: overnight, oi
+2026-01-04 16:17:24 - TradingBot - INFO - [overnight] Entry check: False - Not entry hour (current: 11:00, target: 15:00)
+2026-01-04 16:17:24 - TradingBot - INFO - [oi] Entry check: False - OI not dropping enough (-0.07% > -0.15%)
+2026-01-04 16:17:24 - TradingBot - INFO - Sleeping 300s until next check...
+
+2026-01-04 16:22:24 - TradingBot - INFO - === Loop 19 - 2026-01-04 16:22:24 UTC ===
+2026-01-04 16:22:25 - TradingBot - INFO - BTC Price: $91,319.50
+2026-01-04 16:22:25 - TradingBot - INFO - Enabled strategies: overnight, oi
+2026-01-04 16:22:25 - TradingBot - INFO - [overnight] Entry check: False - Not entry hour (current: 11:00, target: 15:00)
+2026-01-04 16:22:26 - TradingBot - INFO - [oi] Entry check: False - OI not dropping enough (-0.07% > -0.15%)
+2026-01-04 16:22:26 - TradingBot - INFO - Sleeping 300s until next check...
+
+2026-01-04 16:27:26 - TradingBot - INFO - === Loop 20 - 2026-01-04 16:27:26 UTC ===
+2026-01-04 16:27:26 - TradingBot - INFO - BTC Price: $91,270.50
+2026-01-04 16:27:26 - TradingBot - INFO - Enabled strategies: overnight, oi
+2026-01-04 16:27:26 - TradingBot - INFO - [overnight] Entry check: False - Not entry hour (current: 11:00, target: 15:00)
+2026-01-04 16:27:27 - TradingBot - INFO - [oi] Entry check: False - OI not dropping enough (-0.07% > -0.15%)
+2026-01-04 16:27:27 - TradingBot - INFO - Sleeping 300s until next check...
+
+2026-01-04 16:32:27 - TradingBot - INFO - === Loop 21 - 2026-01-04 16:32:27 UTC ===
+2026-01-04 16:32:27 - TradingBot - INFO - BTC Price: $91,281.50
+2026-01-04 16:32:27 - TradingBot - INFO - Enabled strategies: overnight, oi
+2026-01-04 16:32:27 - TradingBot - INFO - [overnight] Entry check: False - Not entry hour (current: 11:00, target: 15:00)
+2026-01-04 16:32:28 - TradingBot - INFO - [oi] Entry check: False - OI not dropping enough (-0.07% > -0.15%)
+2026-01-04 16:32:28 - TradingBot - INFO - Sleeping 300s until next check...
+
+2026-01-04 16:37:28 - TradingBot - INFO - === Loop 22 - 2026-01-04 16:37:28 UTC ===
+2026-01-04 16:37:28 - TradingBot - INFO - BTC Price: $91,356.50
+2026-01-04 16:37:28 - TradingBot - INFO - Enabled strategies: overnight, oi
+2026-01-04 16:37:28 - TradingBot - INFO - [overnight] Entry check: False - Not entry hour (current: 11:00, target: 15:00)
+2026-01-04 16:37:29 - TradingBot - INFO - [oi] Entry check: False - OI not dropping enough (-0.07% > -0.15%)
+2026-01-04 16:37:29 - TradingBot - INFO - Sleeping 300s until next check...
+
+2026-01-04 16:42:29 - TradingBot - INFO - === Loop 23 - 2026-01-04 16:42:29 UTC ===
+2026-01-04 16:42:29 - TradingBot - INFO - BTC Price: $91,254.50
+2026-01-04 16:42:29 - TradingBot - INFO - Enabled strategies: overnight, oi
+2026-01-04 16:42:29 - TradingBot - INFO - [overnight] Entry check: False - Not entry hour (current: 11:00, target: 15:00)
+2026-01-04 16:42:30 - TradingBot - INFO - [oi] Entry check: False - OI not dropping enough (-0.07% > -0.15%)
+2026-01-04 16:42:30 - TradingBot - INFO - Sleeping 300s until next check...
+
+2026-01-04 16:47:30 - TradingBot - INFO - === Loop 24 - 2026-01-04 16:47:30 UTC ===
+2026-01-04 16:47:30 - TradingBot - INFO - BTC Price: $91,274.50
+2026-01-04 16:47:30 - TradingBot - INFO - Enabled strategies: overnight, oi
+2026-01-04 16:47:30 - TradingBot - INFO - [overnight] Entry check: False - Not entry hour (current: 11:00, target: 15:00)
+2026-01-04 16:47:31 - TradingBot - INFO - [oi] Entry check: False - OI not dropping enough (-0.07% > -0.15%)
+2026-01-04 16:47:31 - TradingBot - INFO - Sleeping 300s until next check...
+
+2026-01-04 16:52:31 - TradingBot - INFO - === Loop 25 - 2026-01-04 16:52:31 UTC ===
+2026-01-04 16:52:31 - TradingBot - INFO - BTC Price: $91,268.50
+2026-01-04 16:52:31 - TradingBot - INFO - Enabled strategies: overnight, oi
+2026-01-04 16:52:31 - TradingBot - INFO - [overnight] Entry check: False - Not entry hour (current: 11:00, target: 15:00)
+2026-01-04 16:52:32 - TradingBot - INFO - [oi] Entry check: False - OI not dropping enough (-0.07% > -0.15%)
+2026-01-04 16:52:32 - TradingBot - INFO - Sleeping 300s until next check...
+
+2026-01-04 16:57:32 - TradingBot - INFO - === Loop 26 - 2026-01-04 16:57:32 UTC ===
+2026-01-04 16:57:32 - TradingBot - INFO - BTC Price: $91,287.50
+2026-01-04 16:57:32 - TradingBot - INFO - Enabled strategies: overnight, oi
+2026-01-04 16:57:32 - TradingBot - INFO - [overnight] Entry check: False - Not entry hour (current: 11:00, target: 15:00)
+2026-01-04 16:57:33 - TradingBot - INFO - [oi] Entry check: False - OI not dropping enough (-0.07% > -0.15%)
+2026-01-04 16:57:33 - TradingBot - INFO - Sleeping 300s until next check...
+
+2026-01-04 17:02:33 - TradingBot - INFO - === Loop 27 - 2026-01-04 17:02:33 UTC ===
+2026-01-04 17:02:33 - TradingBot - INFO - BTC Price: $91,384.50
+2026-01-04 17:02:33 - TradingBot - INFO - Enabled strategies: overnight, oi
+2026-01-04 17:02:33 - TradingBot - INFO - [overnight] Entry check: False - Not entry hour (current: 12:00, target: 15:00)
+2026-01-04 17:02:34 - TradingBot - INFO - [oi] Entry check: False - OI not dropping enough (+0.04% > -0.15%)
+2026-01-04 17:02:34 - TradingBot - INFO - Sleeping 300s until next check...
+
+2026-01-04 17:07:34 - TradingBot - INFO - === Loop 28 - 2026-01-04 17:07:34 UTC ===
+2026-01-04 17:07:34 - TradingBot - INFO - BTC Price: $91,311.50
+2026-01-04 17:07:34 - TradingBot - INFO - Enabled strategies: overnight, oi
+2026-01-04 17:07:34 - TradingBot - INFO - [overnight] Entry check: False - Not entry hour (current: 12:00, target: 15:00)
+2026-01-04 17:07:35 - TradingBot - INFO - [oi] Entry check: False - OI not dropping enough (+0.04% > -0.15%)
+2026-01-04 17:07:35 - TradingBot - INFO - Sleeping 300s until next check...
+
+2026-01-04 17:12:35 - TradingBot - INFO - === Loop 29 - 2026-01-04 17:12:35 UTC ===
+2026-01-04 17:12:35 - TradingBot - INFO - BTC Price: $91,321.50
+2026-01-04 17:12:35 - TradingBot - INFO - Enabled strategies: overnight, oi
+2026-01-04 17:12:35 - TradingBot - INFO - [overnight] Entry check: False - Not entry hour (current: 12:00, target: 15:00)
+2026-01-04 17:12:35 - TradingBot - INFO - [oi] Entry check: False - OI not dropping enough (+0.04% > -0.15%)
+2026-01-04 17:12:35 - TradingBot - INFO - Sleeping 300s until next check...
+
+2026-01-04 17:17:36 - TradingBot - INFO - === Loop 30 - 2026-01-04 17:17:36 UTC ===
+2026-01-04 17:17:36 - TradingBot - INFO - BTC Price: $91,291.50
+2026-01-04 17:17:36 - TradingBot - INFO - Enabled strategies: overnight, oi
+2026-01-04 17:17:36 - TradingBot - INFO - [overnight] Entry check: False - Not entry hour (current: 12:00, target: 15:00)
+2026-01-04 17:17:36 - TradingBot - INFO - [oi] Entry check: False - OI not dropping enough (+0.04% > -0.15%)
+2026-01-04 17:17:36 - TradingBot - INFO - Sleeping 300s until next check...
+
+2026-01-04 17:22:36 - TradingBot - INFO - === Loop 31 - 2026-01-04 17:22:36 UTC ===
+2026-01-04 17:22:37 - TradingBot - INFO - BTC Price: $91,362.50
+2026-01-04 17:22:37 - TradingBot - INFO - Enabled strategies: overnight, oi
+2026-01-04 17:22:37 - TradingBot - INFO - [overnight] Entry check: False - Not entry hour (current: 12:00, target: 15:00)
+2026-01-04 17:22:37 - TradingBot - INFO - [oi] Entry check: False - OI not dropping enough (+0.04% > -0.15%)
+2026-01-04 17:22:37 - TradingBot - INFO - Sleeping 300s until next check...
+
+2026-01-04 17:27:37 - TradingBot - INFO - === Loop 32 - 2026-01-04 17:27:37 UTC ===
+2026-01-04 17:27:38 - TradingBot - INFO - BTC Price: $91,325.50
+2026-01-04 17:27:38 - TradingBot - INFO - Enabled strategies: overnight, oi
+2026-01-04 17:27:38 - TradingBot - INFO - [overnight] Entry check: False - Not entry hour (current: 12:00, target: 15:00)
+2026-01-04 17:27:38 - TradingBot - INFO - [oi] Entry check: False - OI not dropping enough (+0.04% > -0.15%)
+2026-01-04 17:27:38 - TradingBot - INFO - Sleeping 300s until next check...
+
+2026-01-04 17:32:38 - TradingBot - INFO - === Loop 33 - 2026-01-04 17:32:38 UTC ===
+2026-01-04 17:32:39 - TradingBot - INFO - BTC Price: $91,359.50
+2026-01-04 17:32:39 - TradingBot - INFO - Enabled strategies: overnight, oi
+2026-01-04 17:32:39 - TradingBot - INFO - [overnight] Entry check: False - Not entry hour (current: 12:00, target: 15:00)
+2026-01-04 17:32:39 - TradingBot - INFO - [oi] Entry check: False - OI not dropping enough (+0.04% > -0.15%)
+2026-01-04 17:32:39 - TradingBot - INFO - Sleeping 300s until next check...
+
+2026-01-04 17:37:39 - TradingBot - INFO - === Loop 34 - 2026-01-04 17:37:39 UTC ===
+2026-01-04 17:37:40 - TradingBot - INFO - BTC Price: $91,375.50
+2026-01-04 17:37:40 - TradingBot - INFO - Enabled strategies: overnight, oi
+2026-01-04 17:37:40 - TradingBot - INFO - [overnight] Entry check: False - Not entry hour (current: 12:00, target: 15:00)
+2026-01-04 17:37:40 - TradingBot - INFO - [oi] Entry check: False - OI not dropping enough (+0.04% > -0.15%)
+2026-01-04 17:37:40 - TradingBot - INFO - Sleeping 300s until next check...
+
+2026-01-04 17:42:40 - TradingBot - INFO - === Loop 35 - 2026-01-04 17:42:40 UTC ===
+2026-01-04 17:42:41 - TradingBot - INFO - BTC Price: $91,352.50
+2026-01-04 17:42:41 - TradingBot - INFO - Enabled strategies: overnight, oi
+2026-01-04 17:42:41 - TradingBot - INFO - [overnight] Entry check: False - Not entry hour (current: 12:00, target: 15:00)
+2026-01-04 17:42:41 - TradingBot - INFO - [oi] Entry check: False - OI not dropping enough (+0.04% > -0.15%)
+2026-01-04 17:42:41 - TradingBot - INFO - Sleeping 300s until next check...
+
+2026-01-04 17:47:41 - TradingBot - INFO - === Loop 36 - 2026-01-04 17:47:41 UTC ===
+2026-01-04 17:47:42 - TradingBot - INFO - BTC Price: $91,352.50
+2026-01-04 17:47:42 - TradingBot - INFO - Enabled strategies: overnight, oi
+2026-01-04 17:47:42 - TradingBot - INFO - [overnight] Entry check: False - Not entry hour (current: 12:00, target: 15:00)
+2026-01-04 17:47:43 - TradingBot - INFO - [oi] Entry check: False - OI not dropping enough (+0.04% > -0.15%)
+2026-01-04 17:47:43 - TradingBot - INFO - Sleeping 300s until next check...
+
+2026-01-04 17:52:43 - TradingBot - INFO - === Loop 37 - 2026-01-04 17:52:43 UTC ===
+2026-01-04 17:52:43 - TradingBot - INFO - BTC Price: $91,339.50
+2026-01-04 17:52:43 - TradingBot - INFO - Enabled strategies: overnight, oi
+2026-01-04 17:52:43 - TradingBot - INFO - [overnight] Entry check: False - Not entry hour (current: 12:00, target: 15:00)
+2026-01-04 17:52:44 - TradingBot - INFO - [oi] Entry check: False - OI not dropping enough (+0.04% > -0.15%)
+2026-01-04 17:52:44 - TradingBot - INFO - Sleeping 300s until next check...
+
+2026-01-04 17:57:44 - TradingBot - INFO - === Loop 38 - 2026-01-04 17:57:44 UTC ===
+2026-01-04 17:57:44 - TradingBot - INFO - BTC Price: $91,300.50
+2026-01-04 17:57:44 - TradingBot - INFO - Enabled strategies: overnight, oi
+2026-01-04 17:57:44 - TradingBot - INFO - [overnight] Entry check: False - Not entry hour (current: 12:00, target: 15:00)
+2026-01-04 17:57:45 - TradingBot - INFO - [oi] Entry check: False - OI not dropping enough (+0.04% > -0.15%)
+2026-01-04 17:57:45 - TradingBot - INFO - Sleeping 300s until next check...
+
+2026-01-04 18:02:45 - TradingBot - INFO - === Loop 39 - 2026-01-04 18:02:45 UTC ===
+2026-01-04 18:02:45 - TradingBot - INFO - BTC Price: $91,269.50
+2026-01-04 18:02:45 - TradingBot - INFO - Enabled strategies: overnight, oi
+2026-01-04 18:02:45 - TradingBot - INFO - [overnight] Entry check: False - Not entry hour (current: 13:00, target: 15:00)
+2026-01-04 18:02:46 - TradingBot - INFO - [oi] Entry check: False - OI not dropping enough (+0.12% > -0.15%)
+2026-01-04 18:02:46 - TradingBot - INFO - Sleeping 300s until next check...
+
+2026-01-04 18:07:46 - TradingBot - INFO - === Loop 40 - 2026-01-04 18:07:46 UTC ===
+2026-01-04 18:07:46 - TradingBot - INFO - BTC Price: $91,242.50
+2026-01-04 18:07:46 - TradingBot - INFO - Enabled strategies: overnight, oi
+2026-01-04 18:07:46 - TradingBot - INFO - [overnight] Entry check: False - Not entry hour (current: 13:00, target: 15:00)
+2026-01-04 18:07:47 - TradingBot - INFO - [oi] Entry check: False - OI not dropping enough (+0.12% > -0.15%)
+2026-01-04 18:07:47 - TradingBot - INFO - Sleeping 300s until next check...
+
+bled strategies: overnight, oi
+2026-01-04 18:05:53 - TradingBot - INFO - [overnight] Entry check: False - Not entry hour (current: 13:00, target: 15:00)
+2026-01-04 18:05:53 - TradingBot - INFO - [oi] Entry check: False - OI not dropping enough (+0.12% > -0.15%)
+2026-01-04 18:05:53 - TradingBot - INFO - Sleeping 300s until next check...
+
+2026-01-04 18:10:53 - TradingBot - INFO - === Loop 41 - 2026-01-04 18:10:53 UTC ===
+2026-01-04 18:10:54 - TradingBot - INFO - BTC Price: $91,200.50
+2026-01-04 18:10:54 - TradingBot - INFO - Enabled strategies: overnight, oi
+2026-01-04 18:10:54 - TradingBot - INFO - [overnight] Entry check: False - Not entry hour (current: 13:00, target: 15:00)
+2026-01-04 18:10:54 - TradingBot - INFO - [oi] Entry check: False - OI not dropping enough (+0.12% > -0.15%)
+2026-01-04 18:10:54 - TradingBot - INFO - Sleeping 300s until next check...
+

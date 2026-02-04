@@ -1,0 +1,818 @@
+    INFO: 2026-01-04 22:13:41,929:               log.py:   20: Logging to /Users/chrisl/Claude Code/backtesting/mdpdf.log
+   DEBUG: 2026-01-04 22:13:41,929:               cli.py:  103: /Users/chrisl/Claude Code/Reports/ai-crypto-edge.md
+    INFO: 2026-01-04 22:13:41,930:         converter.py:   14: /Users/chrisl/Claude Code/Reports/ai-crypto-edge.md
+   DEBUG: 2026-01-04 22:13:41,944:      pdf_renderer.py:  470: printSegment: AI Crypto Edge: Practical Applications for Perps Trading
+   DEBUG: 2026-01-04 22:13:41,946:      pdf_renderer.py:  470: printSegment: How to actually use AI in crypto perpetuals trading - December 2025
+   DEBUG: 2026-01-04 22:13:41,948:      pdf_renderer.py:  470: printSegment: Overview
+   DEBUG: 2026-01-04 22:13:41,949:      pdf_renderer.py:  470: printSegment: This document covers four areas where AI genuinely helps in trading:
+   DEBUG: 2026-01-04 22:13:41,950:      pdf_renderer.py:  470: printSegment:  1 
+   DEBUG: 2026-01-04 22:13:41,951:      pdf_renderer.py:  470: printSegment: Alternative Data Processing
+   DEBUG: 2026-01-04 22:13:41,952:      pdf_renderer.py:  470: printSegment:  - Extract signals others can
+   DEBUG: 2026-01-04 22:13:41,952:      pdf_renderer.py:  470: printSegment: '
+   DEBUG: 2026-01-04 22:13:41,953:      pdf_renderer.py:  470: printSegment: t
+   DEBUG: 2026-01-04 22:13:41,953:      pdf_renderer.py:  470: printSegment:  2 
+   DEBUG: 2026-01-04 22:13:41,953:      pdf_renderer.py:  470: printSegment: Execution Optimization
+   DEBUG: 2026-01-04 22:13:41,954:      pdf_renderer.py:  470: printSegment:  - Minimize trading costs
+   DEBUG: 2026-01-04 22:13:41,954:      pdf_renderer.py:  470: printSegment:  3 
+   DEBUG: 2026-01-04 22:13:41,955:      pdf_renderer.py:  470: printSegment: Risk Management
+   DEBUG: 2026-01-04 22:13:41,955:      pdf_renderer.py:  470: printSegment:  - Detect when to reduce exposure
+   DEBUG: 2026-01-04 22:13:41,955:      pdf_renderer.py:  470: printSegment:  4 
+   DEBUG: 2026-01-04 22:13:41,956:      pdf_renderer.py:  470: printSegment: Feature Engineering
+   DEBUG: 2026-01-04 22:13:41,956:      pdf_renderer.py:  470: printSegment:  - Find which inputs matter
+   DEBUG: 2026-01-04 22:13:41,957:      pdf_renderer.py:  470: printSegment: Key insight:
+   DEBUG: 2026-01-04 22:13:41,957:      pdf_renderer.py:  470: printSegment:  AI is best used for 
+   DEBUG: 2026-01-04 22:13:41,957:      pdf_renderer.py:  470: printSegment: detection and optimization
+   DEBUG: 2026-01-04 22:13:41,958:      pdf_renderer.py:  470: printSegment: , not price prediction.
+   DEBUG: 2026-01-04 22:13:41,959:      pdf_renderer.py:  470: printSegment: 1. Alternative Data Processing
+   DEBUG: 2026-01-04 22:13:41,959:      pdf_renderer.py:  470: printSegment: LEARNING MOMENT: What 
+   DEBUG: 2026-01-04 22:13:41,959:      pdf_renderer.py:  470: printSegment: "
+   DEBUG: 2026-01-04 22:13:41,960:      pdf_renderer.py:  470: printSegment: Alternative Data
+   DEBUG: 2026-01-04 22:13:41,960:      pdf_renderer.py:  470: printSegment: "
+   DEBUG: 2026-01-04 22:13:41,961:      pdf_renderer.py:  470: printSegment:  Means in Crypto
+   DEBUG: 2026-01-04 22:13:41,961:      pdf_renderer.py:  470: printSegment: "
+   DEBUG: 2026-01-04 22:13:41,961:      pdf_renderer.py:  470: printSegment: Alternative data
+   DEBUG: 2026-01-04 22:13:41,962:      pdf_renderer.py:  470: printSegment: "
+   DEBUG: 2026-01-04 22:13:41,962:      pdf_renderer.py:  470: printSegment:  = data that isn
+   DEBUG: 2026-01-04 22:13:41,962:      pdf_renderer.py:  470: printSegment: '
+   DEBUG: 2026-01-04 22:13:41,963:      pdf_renderer.py:  470: printSegment: t price/volume
+   DEBUG: 2026-01-04 22:13:41,963:      pdf_renderer.py:  470: printSegment: In traditional finance, this costs $100K-$1M/year (satellite images, credit card data, etc.)
+   DEBUG: 2026-01-04 22:13:41,964:      pdf_renderer.py:  470: printSegment: In crypto, much of it is 
+   DEBUG: 2026-01-04 22:13:41,964:      pdf_renderer.py:  470: printSegment: FREE
+   DEBUG: 2026-01-04 22:13:41,965:      pdf_renderer.py:  470: printSegment:  because blockchains are public. This is your structural advantage over TradFi.
+   DEBUG: 2026-01-04 22:13:41,966:      pdf_renderer.py:  470: printSegment: A. On-Chain Data (Your Biggest Edge)
+   DEBUG: 2026-01-04 22:13:41,967:      pdf_renderer.py:  470: printSegment: 1. Whale Wallet Tracking
+   DEBUG: 2026-01-04 22:13:41,967:      pdf_renderer.py:  470: printSegment: l
+   DEBUG: 2026-01-04 22:13:41,968:      pdf_renderer.py:  470: printSegment: What:
+   DEBUG: 2026-01-04 22:13:41,969:      pdf_renderer.py:  470: printSegment:  Monitor wallets with >$10M in holdings
+   DEBUG: 2026-01-04 22:13:41,969:      pdf_renderer.py:  470: printSegment: l
+   DEBUG: 2026-01-04 22:13:41,969:      pdf_renderer.py:  470: printSegment: Signal:
+   DEBUG: 2026-01-04 22:13:41,970:      pdf_renderer.py:  470: printSegment:  Large transfers to exchanges = selling soon; Large withdrawals = accumulating
+   DEBUG: 2026-01-04 22:13:41,970:      pdf_renderer.py:  470: printSegment: l
+   DEBUG: 2026-01-04 22:13:41,971:      pdf_renderer.py:  470: printSegment: Tools:
+   DEBUG: 2026-01-04 22:13:41,971:      pdf_renderer.py:  470: printSegment:  Nansen, Arkham Intelligence, Dune Analytics
+   DEBUG: 2026-01-04 22:13:41,972:      pdf_renderer.py:  470: printSegment: l
+   DEBUG: 2026-01-04 22:13:41,972:      pdf_renderer.py:  470: printSegment: Free:
+   DEBUG: 2026-01-04 22:13:41,972:      pdf_renderer.py:  470: printSegment:  Etherscan alerts, custom scripts
+   DEBUG: 2026-01-04 22:13:41,973:      pdf_renderer.py:  470: printSegment: 2. Exchange Flow Data
+   DEBUG: 2026-01-04 22:13:41,973:      pdf_renderer.py:  470: printSegment: l
+   DEBUG: 2026-01-04 22:13:41,974:      pdf_renderer.py:  470: printSegment: What:
+   DEBUG: 2026-01-04 22:13:41,974:      pdf_renderer.py:  470: printSegment:  Net inflow/outflow to CEXs
+   DEBUG: 2026-01-04 22:13:41,975:      pdf_renderer.py:  470: printSegment: l
+   DEBUG: 2026-01-04 22:13:41,975:      pdf_renderer.py:  470: printSegment: Signal:
+   DEBUG: 2026-01-04 22:13:41,976:      pdf_renderer.py:  470: printSegment:  Big inflow = selling pressure coming; Big outflow = supply leaving (bullish)
+   DEBUG: 2026-01-04 22:13:41,976:      pdf_renderer.py:  470: printSegment: l
+   DEBUG: 2026-01-04 22:13:41,977:      pdf_renderer.py:  470: printSegment: Tools:
+   DEBUG: 2026-01-04 22:13:41,977:      pdf_renderer.py:  470: printSegment:  CryptoQuant, Glassnode
+   DEBUG: 2026-01-04 22:13:41,978:      pdf_renderer.py:  470: printSegment: l
+   DEBUG: 2026-01-04 22:13:41,978:      pdf_renderer.py:  470: printSegment: Free:
+   DEBUG: 2026-01-04 22:13:41,978:      pdf_renderer.py:  470: printSegment:  Build your own with exchange wallet labels
+   DEBUG: 2026-01-04 22:13:41,979:      pdf_renderer.py:  470: printSegment: 3. Smart Money Wallets
+   DEBUG: 2026-01-04 22:13:41,979:      pdf_renderer.py:  470: printSegment: l
+   DEBUG: 2026-01-04 22:13:41,980:      pdf_renderer.py:  470: printSegment: What:
+   DEBUG: 2026-01-04 22:13:41,980:      pdf_renderer.py:  470: printSegment:  Track wallets that consistently profit
+   DEBUG: 2026-01-04 22:13:41,981:      pdf_renderer.py:  470: printSegment: l
+   DEBUG: 2026-01-04 22:13:41,981:      pdf_renderer.py:  470: printSegment: Signal:
+   DEBUG: 2026-01-04 22:13:41,982:      pdf_renderer.py:  470: printSegment:  Copy their entries with small delay
+   DEBUG: 2026-01-04 22:13:41,982:      pdf_renderer.py:  470: printSegment: l
+   DEBUG: 2026-01-04 22:13:41,983:      pdf_renderer.py:  470: printSegment: Caveat:
+   DEBUG: 2026-01-04 22:13:41,983:      pdf_renderer.py:  470: printSegment:  Many are just lucky, not skilled
+   DEBUG: 2026-01-04 22:13:41,984:      pdf_renderer.py:  470: printSegment: l
+   DEBUG: 2026-01-04 22:13:41,984:      pdf_renderer.py:  470: printSegment: Tools:
+   DEBUG: 2026-01-04 22:13:41,985:      pdf_renderer.py:  470: printSegment:  Nansen 
+   DEBUG: 2026-01-04 22:13:41,985:      pdf_renderer.py:  470: printSegment: "
+   DEBUG: 2026-01-04 22:13:41,986:      pdf_renderer.py:  470: printSegment: Smart Money
+   DEBUG: 2026-01-04 22:13:41,986:      pdf_renderer.py:  470: printSegment: "
+   DEBUG: 2026-01-04 22:13:41,987:      pdf_renderer.py:  470: printSegment:  labels, Lookonchain
+   DEBUG: 2026-01-04 22:13:41,987:      pdf_renderer.py:  470: printSegment: 4. Stablecoin Flows
+   DEBUG: 2026-01-04 22:13:41,988:      pdf_renderer.py:  470: printSegment: l
+   DEBUG: 2026-01-04 22:13:41,988:      pdf_renderer.py:  470: printSegment: What:
+   DEBUG: 2026-01-04 22:13:41,989:      pdf_renderer.py:  470: printSegment:  USDT/USDC minting, burning, exchange deposits
+   DEBUG: 2026-01-04 22:13:41,989:      pdf_renderer.py:  470: printSegment: l
+   DEBUG: 2026-01-04 22:13:41,989:      pdf_renderer.py:  470: printSegment: Signal:
+   DEBUG: 2026-01-04 22:13:41,990:      pdf_renderer.py:  470: printSegment:  Large mint = capital entering crypto; Large deposit = buying power ready
+   DEBUG: 2026-01-04 22:13:41,990:      pdf_renderer.py:  470: printSegment: l
+   DEBUG: 2026-01-04 22:13:41,991:      pdf_renderer.py:  470: printSegment: Tools:
+   DEBUG: 2026-01-04 22:13:41,991:      pdf_renderer.py:  470: printSegment:  Tether transparency page, on-chain tracking
+   DEBUG: 2026-01-04 22:13:41,992:      pdf_renderer.py:  470: printSegment: B. Exchange-Specific Data (Critical for Perps)
+   DEBUG: 2026-01-04 22:13:41,993:      pdf_renderer.py:  470: printSegment: 1. Liquidation Levels / Heatmaps
+   DEBUG: 2026-01-04 22:13:41,993:      pdf_renderer.py:  470: printSegment: l
+   DEBUG: 2026-01-04 22:13:41,993:      pdf_renderer.py:  470: printSegment: What:
+   DEBUG: 2026-01-04 22:13:41,994:      pdf_renderer.py:  470: printSegment:  Where are stop losses and liquidation prices?
+   DEBUG: 2026-01-04 22:13:41,994:      pdf_renderer.py:  470: printSegment: l
+   DEBUG: 2026-01-04 22:13:41,994:      pdf_renderer.py:  470: printSegment: Signal:
+   DEBUG: 2026-01-04 22:13:41,995:      pdf_renderer.py:  470: printSegment:  Price often 
+   DEBUG: 2026-01-04 22:13:41,995:      pdf_renderer.py:  470: printSegment: "
+   DEBUG: 2026-01-04 22:13:41,995:      pdf_renderer.py:  470: printSegment: hunts
+   DEBUG: 2026-01-04 22:13:41,996:      pdf_renderer.py:  470: printSegment: "
+   DEBUG: 2026-01-04 22:13:41,996:      pdf_renderer.py:  470: printSegment:  these levels; Cluster = potential cascade
+   DEBUG: 2026-01-04 22:13:41,996:      pdf_renderer.py:  470: printSegment: l
+   DEBUG: 2026-01-04 22:13:41,997:      pdf_renderer.py:  470: printSegment: Tools:
+   DEBUG: 2026-01-04 22:13:41,997:      pdf_renderer.py:  470: printSegment:  Coinglass, Hyblock Capital, Kingfisher
+   DEBUG: 2026-01-04 22:13:41,998:      pdf_renderer.py:  470: printSegment: l
+   DEBUG: 2026-01-04 22:13:41,998:      pdf_renderer.py:  470: printSegment: Apply:
+   DEBUG: 2026-01-04 22:13:41,998:      pdf_renderer.py:  470: printSegment:  Position AFTER liquidation hunt, not before
+   DEBUG: 2026-01-04 22:13:41,999:      pdf_renderer.py:  470: printSegment: 2. Open Interest by Exchange
+   DEBUG: 2026-01-04 22:13:41,999:      pdf_renderer.py:  470: printSegment: l
+   DEBUG: 2026-01-04 22:13:42,000:      pdf_renderer.py:  470: printSegment: What:
+   DEBUG: 2026-01-04 22:13:42,000:      pdf_renderer.py:  470: printSegment:  Compare OI across Binance, Bybit, HyperLiquid
+   DEBUG: 2026-01-04 22:13:42,000:      pdf_renderer.py:  470: printSegment: l
+   DEBUG: 2026-01-04 22:13:42,001:      pdf_renderer.py:  470: printSegment: Signal:
+   DEBUG: 2026-01-04 22:13:42,001:      pdf_renderer.py:  470: printSegment:  OI concentration = vulnerability; OI divergence = potential arbitrage
+   DEBUG: 2026-01-04 22:13:42,002:      pdf_renderer.py:  470: printSegment: l
+   DEBUG: 2026-01-04 22:13:42,002:      pdf_renderer.py:  470: printSegment: Tools:
+   DEBUG: 2026-01-04 22:13:42,003:      pdf_renderer.py:  470: printSegment:  Coinglass, your own API aggregation
+   DEBUG: 2026-01-04 22:13:42,003:      pdf_renderer.py:  470: printSegment: 3. Funding Rates Across Exchanges
+   DEBUG: 2026-01-04 22:13:42,004:      pdf_renderer.py:  470: printSegment: l
+   DEBUG: 2026-01-04 22:13:42,004:      pdf_renderer.py:  470: printSegment: What:
+   DEBUG: 2026-01-04 22:13:42,005:      pdf_renderer.py:  470: printSegment:  Compare funding on different venues
+   DEBUG: 2026-01-04 22:13:42,005:      pdf_renderer.py:  470: printSegment: l
+   DEBUG: 2026-01-04 22:13:42,005:      pdf_renderer.py:  470: printSegment: Signal:
+   DEBUG: 2026-01-04 22:13:42,006:      pdf_renderer.py:  470: printSegment:  Funding divergence = arb opportunity; Extreme everywhere = crowded trade
+   DEBUG: 2026-01-04 22:13:42,006:      pdf_renderer.py:  470: printSegment: l
+   DEBUG: 2026-01-04 22:13:42,007:      pdf_renderer.py:  470: printSegment: Tools:
+   DEBUG: 2026-01-04 22:13:42,007:      pdf_renderer.py:  470: printSegment:  Coinglass funding comparison
+   DEBUG: 2026-01-04 22:13:42,008:      pdf_renderer.py:  470: printSegment: 4. Order Book Depth / Imbalance
+   DEBUG: 2026-01-04 22:13:42,008:      pdf_renderer.py:  470: printSegment: l
+   DEBUG: 2026-01-04 22:13:42,009:      pdf_renderer.py:  470: printSegment: What:
+   DEBUG: 2026-01-04 22:13:42,009:      pdf_renderer.py:  470: printSegment:  Bid vs ask depth at various levels
+   DEBUG: 2026-01-04 22:13:42,010:      pdf_renderer.py:  470: printSegment: l
+   DEBUG: 2026-01-04 22:13:42,010:      pdf_renderer.py:  470: printSegment: Signal:
+   DEBUG: 2026-01-04 22:13:42,010:      pdf_renderer.py:  470: printSegment:  Thin asks = less resistance up; Large bid wall = support (or spoof)
+   DEBUG: 2026-01-04 22:13:42,011:      pdf_renderer.py:  470: printSegment: l
+   DEBUG: 2026-01-04 22:13:42,011:      pdf_renderer.py:  470: printSegment: Caveat:
+   DEBUG: 2026-01-04 22:13:42,012:      pdf_renderer.py:  470: printSegment:  Can be spoofed, use with other signals
+   DEBUG: 2026-01-04 22:13:42,012:      pdf_renderer.py:  470: printSegment: 5. Long/Short Ratio
+   DEBUG: 2026-01-04 22:13:42,012:      pdf_renderer.py:  470: printSegment: l
+   DEBUG: 2026-01-04 22:13:42,013:      pdf_renderer.py:  470: printSegment: What:
+   DEBUG: 2026-01-04 22:13:42,013:      pdf_renderer.py:  470: printSegment:  Percentage of traders long vs short
+   DEBUG: 2026-01-04 22:13:42,014:      pdf_renderer.py:  470: printSegment: l
+   DEBUG: 2026-01-04 22:13:42,014:      pdf_renderer.py:  470: printSegment: Signal:
+   DEBUG: 2026-01-04 22:13:42,015:      pdf_renderer.py:  470: printSegment:  Extreme ratios = potential squeeze; Retail usually wrong at extremes
+   DEBUG: 2026-01-04 22:13:42,015:      pdf_renderer.py:  470: printSegment: l
+   DEBUG: 2026-01-04 22:13:42,016:      pdf_renderer.py:  470: printSegment: Tools:
+   DEBUG: 2026-01-04 22:13:42,016:      pdf_renderer.py:  470: printSegment:  Binance, Bybit publish this data
+   DEBUG: 2026-01-04 22:13:42,017:      pdf_renderer.py:  470: printSegment: C. Social/Sentiment Data
+   DEBUG: 2026-01-04 22:13:42,017:      pdf_renderer.py:  470: printSegment: 1. Crypto Twitter (X) Sentiment
+   DEBUG: 2026-01-04 22:13:42,018:      pdf_renderer.py:  470: printSegment: l
+   DEBUG: 2026-01-04 22:13:42,018:      pdf_renderer.py:  470: printSegment: What:
+   DEBUG: 2026-01-04 22:13:42,019:      pdf_renderer.py:  470: printSegment:  NLP on tweets from influential accounts
+   DEBUG: 2026-01-04 22:13:42,019:      pdf_renderer.py:  470: printSegment: l
+   DEBUG: 2026-01-04 22:13:42,020:      pdf_renderer.py:  470: printSegment: Signal:
+   DEBUG: 2026-01-04 22:13:42,020:      pdf_renderer.py:  470: printSegment:  Extreme bullish = potential top; Extreme fear = potential bottom
+   DEBUG: 2026-01-04 22:13:42,021:      pdf_renderer.py:  470: printSegment: l
+   DEBUG: 2026-01-04 22:13:42,021:      pdf_renderer.py:  470: printSegment: Caveat:
+   DEBUG: 2026-01-04 22:13:42,022:      pdf_renderer.py:  470: printSegment:  CT is noisy, filter for quality
+   DEBUG: 2026-01-04 22:13:42,022:      pdf_renderer.py:  470: printSegment: l
+   DEBUG: 2026-01-04 22:13:42,022:      pdf_renderer.py:  470: printSegment: Tools:
+   DEBUG: 2026-01-04 22:13:42,023:      pdf_renderer.py:  470: printSegment:  LunarCrush, Santiment, custom scraping
+   DEBUG: 2026-01-04 22:13:42,024:      pdf_renderer.py:  470: printSegment: 2. Telegram/Discord Alpha Groups
+   DEBUG: 2026-01-04 22:13:42,024:      pdf_renderer.py:  470: printSegment: l
+   DEBUG: 2026-01-04 22:13:42,025:      pdf_renderer.py:  470: printSegment: What:
+   DEBUG: 2026-01-04 22:13:42,025:      pdf_renderer.py:  470: printSegment:  Monitor private/semi-private groups
+   DEBUG: 2026-01-04 22:13:42,026:      pdf_renderer.py:  470: printSegment: l
+   DEBUG: 2026-01-04 22:13:42,026:      pdf_renderer.py:  470: printSegment: Signal:
+   DEBUG: 2026-01-04 22:13:42,026:      pdf_renderer.py:  470: printSegment:  Early narrative mentions, coordinated pumps
+   DEBUG: 2026-01-04 22:13:42,027:      pdf_renderer.py:  470: printSegment: l
+   DEBUG: 2026-01-04 22:13:42,027:      pdf_renderer.py:  470: printSegment: Caveat:
+   DEBUG: 2026-01-04 22:13:42,027:      pdf_renderer.py:  470: printSegment:  Most 
+   DEBUG: 2026-01-04 22:13:42,028:      pdf_renderer.py:  470: printSegment: "
+   DEBUG: 2026-01-04 22:13:42,028:      pdf_renderer.py:  470: printSegment: alpha
+   DEBUG: 2026-01-04 22:13:42,028:      pdf_renderer.py:  470: printSegment: "
+   DEBUG: 2026-01-04 22:13:42,029:      pdf_renderer.py:  470: printSegment:  is garbage; filter heavily
+   DEBUG: 2026-01-04 22:13:42,029:      pdf_renderer.py:  470: printSegment: l
+   DEBUG: 2026-01-04 22:13:42,029:      pdf_renderer.py:  470: printSegment: Apply:
+   DEBUG: 2026-01-04 22:13:42,030:      pdf_renderer.py:  470: printSegment:  AI to detect unusual activity spikes
+   DEBUG: 2026-01-04 22:13:42,030:      pdf_renderer.py:  470: printSegment: 3. Fear 
+   DEBUG: 2026-01-04 22:13:42,030:      pdf_renderer.py:  470: printSegment: &
+   DEBUG: 2026-01-04 22:13:42,031:      pdf_renderer.py:  470: printSegment:  Greed Index
+   DEBUG: 2026-01-04 22:13:42,031:      pdf_renderer.py:  470: printSegment: l
+   DEBUG: 2026-01-04 22:13:42,031:      pdf_renderer.py:  470: printSegment: What:
+   DEBUG: 2026-01-04 22:13:42,032:      pdf_renderer.py:  470: printSegment:  Composite sentiment indicator
+   DEBUG: 2026-01-04 22:13:42,032:      pdf_renderer.py:  470: printSegment: l
+   DEBUG: 2026-01-04 22:13:42,033:      pdf_renderer.py:  470: printSegment: Signal:
+   DEBUG: 2026-01-04 22:13:42,033:      pdf_renderer.py:  470: printSegment:  Extreme fear = historically good buy; Extreme greed = historically good sell
+   DEBUG: 2026-01-04 22:13:42,034:      pdf_renderer.py:  470: printSegment: l
+   DEBUG: 2026-01-04 22:13:42,034:      pdf_renderer.py:  470: printSegment: Tools:
+   DEBUG: 2026-01-04 22:13:42,034:      pdf_renderer.py:  470: printSegment:  Alternative.me Fear 
+   DEBUG: 2026-01-04 22:13:42,035:      pdf_renderer.py:  470: printSegment: &
+   DEBUG: 2026-01-04 22:13:42,035:      pdf_renderer.py:  470: printSegment:  Greed Index
+   DEBUG: 2026-01-04 22:13:42,035:      pdf_renderer.py:  470: printSegment: l
+   DEBUG: 2026-01-04 22:13:42,036:      pdf_renderer.py:  470: printSegment: Caveat:
+   DEBUG: 2026-01-04 22:13:42,036:      pdf_renderer.py:  470: printSegment:  Lagging, better for swing than scalp
+   DEBUG: 2026-01-04 22:13:42,037:      pdf_renderer.py:  470: printSegment: 4. Search Trends
+   DEBUG: 2026-01-04 22:13:42,037:      pdf_renderer.py:  470: printSegment: l
+   DEBUG: 2026-01-04 22:13:42,037:      pdf_renderer.py:  470: printSegment: What:
+   DEBUG: 2026-01-04 22:13:42,038:      pdf_renderer.py:  470: printSegment:  Google Trends, YouTube search volume
+   DEBUG: 2026-01-04 22:13:42,038:      pdf_renderer.py:  470: printSegment: l
+   DEBUG: 2026-01-04 22:13:42,038:      pdf_renderer.py:  470: printSegment: Signal:
+   DEBUG: 2026-01-04 22:13:42,039:      pdf_renderer.py:  470: printSegment:  Retail FOMO spike = potential local top
+   DEBUG: 2026-01-04 22:13:42,039:      pdf_renderer.py:  470: printSegment: l
+   DEBUG: 2026-01-04 22:13:42,040:      pdf_renderer.py:  470: printSegment: Apply:
+   DEBUG: 2026-01-04 22:13:42,040:      pdf_renderer.py:  470: printSegment:  Counter-trade retail with other data
+   DEBUG: 2026-01-04 22:13:42,041:      pdf_renderer.py:  470: printSegment: D. DeFi/Protocol Data
+   DEBUG: 2026-01-04 22:13:42,041:      pdf_renderer.py:  470: printSegment: 1. TVL Changes
+   DEBUG: 2026-01-04 22:13:42,042:      pdf_renderer.py:  470: printSegment: l
+   DEBUG: 2026-01-04 22:13:42,042:      pdf_renderer.py:  470: printSegment: What:
+   DEBUG: 2026-01-04 22:13:42,043:      pdf_renderer.py:  470: printSegment:  Total Value Locked in protocols
+   DEBUG: 2026-01-04 22:13:42,043:      pdf_renderer.py:  470: printSegment: l
+   DEBUG: 2026-01-04 22:13:42,044:      pdf_renderer.py:  470: printSegment: Signal:
+   DEBUG: 2026-01-04 22:13:42,044:      pdf_renderer.py:  470: printSegment:  Rising TVL = organic demand; Falling TVL = users leaving
+   DEBUG: 2026-01-04 22:13:42,044:      pdf_renderer.py:  470: printSegment: l
+   DEBUG: 2026-01-04 22:13:42,045:      pdf_renderer.py:  470: printSegment: Tools:
+   DEBUG: 2026-01-04 22:13:42,045:      pdf_renderer.py:  470: printSegment:  DeFiLlama
+   DEBUG: 2026-01-04 22:13:42,046:      pdf_renderer.py:  470: printSegment: 2. DEX/CEX Volume Ratio
+   DEBUG: 2026-01-04 22:13:42,046:      pdf_renderer.py:  470: printSegment: l
+   DEBUG: 2026-01-04 22:13:42,046:      pdf_renderer.py:  470: printSegment: What:
+   DEBUG: 2026-01-04 22:13:42,047:      pdf_renderer.py:  470: printSegment:  Where is trading happening?
+   DEBUG: 2026-01-04 22:13:42,047:      pdf_renderer.py:  470: printSegment: l
+   DEBUG: 2026-01-04 22:13:42,048:      pdf_renderer.py:  470: printSegment: Signal:
+   DEBUG: 2026-01-04 22:13:42,048:      pdf_renderer.py:  470: printSegment:  DEX spike = informed traders first; CEX-only = retail dominated
+   DEBUG: 2026-01-04 22:13:42,049:      pdf_renderer.py:  470: printSegment: l
+   DEBUG: 2026-01-04 22:13:42,049:      pdf_renderer.py:  470: printSegment: Tools:
+   DEBUG: 2026-01-04 22:13:42,050:      pdf_renderer.py:  470: printSegment:  DeFiLlama, Dune dashboards
+   DEBUG: 2026-01-04 22:13:42,050:      pdf_renderer.py:  470: printSegment: 3. Lending Rates
+   DEBUG: 2026-01-04 22:13:42,051:      pdf_renderer.py:  470: printSegment: l
+   DEBUG: 2026-01-04 22:13:42,051:      pdf_renderer.py:  470: printSegment: What:
+   DEBUG: 2026-01-04 22:13:42,052:      pdf_renderer.py:  470: printSegment:  Borrow rates on Aave, Compound
+   DEBUG: 2026-01-04 22:13:42,052:      pdf_renderer.py:  470: printSegment: l
+   DEBUG: 2026-01-04 22:13:42,053:      pdf_renderer.py:  470: printSegment: Signal:
+   DEBUG: 2026-01-04 22:13:42,053:      pdf_renderer.py:  470: printSegment:  High borrow rate = leverage demand; Spike in borrows = big move coming
+   DEBUG: 2026-01-04 22:13:42,054:      pdf_renderer.py:  470: printSegment: 4. Options Market Data
+   DEBUG: 2026-01-04 22:13:42,054:      pdf_renderer.py:  470: printSegment: l
+   DEBUG: 2026-01-04 22:13:42,055:      pdf_renderer.py:  470: printSegment: What:
+   DEBUG: 2026-01-04 22:13:42,055:      pdf_renderer.py:  470: printSegment:  Deribit options flow, put/call ratios
+   DEBUG: 2026-01-04 22:13:42,055:      pdf_renderer.py:  470: printSegment: l
+   DEBUG: 2026-01-04 22:13:42,056:      pdf_renderer.py:  470: printSegment: Signal:
+   DEBUG: 2026-01-04 22:13:42,056:      pdf_renderer.py:  470: printSegment:  Large put buying = hedging/bearish; Unusual call buying = expecting upside
+   DEBUG: 2026-01-04 22:13:42,057:      pdf_renderer.py:  470: printSegment: l
+   DEBUG: 2026-01-04 22:13:42,057:      pdf_renderer.py:  470: printSegment: Tools:
+   DEBUG: 2026-01-04 22:13:42,058:      pdf_renderer.py:  470: printSegment:  Deribit, Laevitas, Amberdata
+   DEBUG: 2026-01-04 22:13:42,059:      pdf_renderer.py:  470: printSegment: 2. Execution Optimization
+   DEBUG: 2026-01-04 22:13:42,060:      pdf_renderer.py:  470: printSegment: LEARNING MOMENT: Why Execution Matters in Crypto
+   DEBUG: 2026-01-04 22:13:42,060:      pdf_renderer.py:  470: printSegment: Crypto has WORSE execution than TradFi:
+   DEBUG: 2026-01-04 22:13:42,061:      pdf_renderer.py:  470: printSegment: l
+   DEBUG: 2026-01-04 22:13:42,061:      pdf_renderer.py:  470: printSegment: Higher spreads
+   DEBUG: 2026-01-04 22:13:42,061:      pdf_renderer.py:  470: printSegment: l
+   DEBUG: 2026-01-04 22:13:42,062:      pdf_renderer.py:  470: printSegment: Lower liquidity
+   DEBUG: 2026-01-04 22:13:42,062:      pdf_renderer.py:  470: printSegment: l
+   DEBUG: 2026-01-04 22:13:42,062:      pdf_renderer.py:  470: printSegment: More slippage
+   DEBUG: 2026-01-04 22:13:42,063:      pdf_renderer.py:  470: printSegment: l
+   DEBUG: 2026-01-04 22:13:42,063:      pdf_renderer.py:  470: printSegment: Funding payments every 8 hours (or 1 hour on HyperLiquid)
+   DEBUG: 2026-01-04 22:13:42,064:      pdf_renderer.py:  470: printSegment: A strategy with 60% win rate can LOSE money if execution costs eat your edge.
+   DEBUG: 2026-01-04 22:13:42,064:      pdf_renderer.py:  470: printSegment: Example:
+   DEBUG: 2026-01-04 22:13:42,064:      pdf_renderer.py:  470: printSegment: l
+   DEBUG: 2026-01-04 22:13:42,065:      pdf_renderer.py:  470: printSegment: Expected profit per trade: 0.3%
+   DEBUG: 2026-01-04 22:13:42,065:      pdf_renderer.py:  470: printSegment: l
+   DEBUG: 2026-01-04 22:13:42,066:      pdf_renderer.py:  470: printSegment: Slippage + fees: 0.15%
+   DEBUG: 2026-01-04 22:13:42,066:      pdf_renderer.py:  470: printSegment: l
+   DEBUG: 2026-01-04 22:13:42,066:      pdf_renderer.py:  470: printSegment: Actual profit: 0.15% (half your edge gone
+   DEBUG: 2026-01-04 22:13:42,067:      pdf_renderer.py:  470: printSegment: !
+   DEBUG: 2026-01-04 22:13:42,067:      pdf_renderer.py:  470: printSegment: )
+   DEBUG: 2026-01-04 22:13:42,068:      pdf_renderer.py:  470: printSegment: Where AI Helps with Execution
+   DEBUG: 2026-01-04 22:13:42,068:      pdf_renderer.py:  470: printSegment: 1. Optimal Order Timing
+   DEBUG: 2026-01-04 22:13:42,068:      pdf_renderer.py:  470: printSegment: l
+   DEBUG: 2026-01-04 22:13:42,069:      pdf_renderer.py:  470: printSegment: Problem:
+   DEBUG: 2026-01-04 22:13:42,069:      pdf_renderer.py:  470: printSegment:  Liquidity varies throughout the day
+   DEBUG: 2026-01-04 22:13:42,070:      pdf_renderer.py:  470: printSegment: l
+   DEBUG: 2026-01-04 22:13:42,070:      pdf_renderer.py:  470: printSegment: AI use:
+   DEBUG: 2026-01-04 22:13:42,070:      pdf_renderer.py:  470: printSegment:  Predict liquidity cycles
+   DEBUG: 2026-01-04 22:13:42,071:      pdf_renderer.py:  470: printSegment: l
+   DEBUG: 2026-01-04 22:13:42,071:      pdf_renderer.py:  470: printSegment: Apply:
+   DEBUG: 2026-01-04 22:13:42,072:      pdf_renderer.py:  470: printSegment:  Avoid Asian night (thin); Enter during US/EU overlap (deep books)
+   DEBUG: 2026-01-04 22:13:42,072:      pdf_renderer.py:  470: printSegment: 2. Funding Rate Timing
+   DEBUG: 2026-01-04 22:13:42,072:      pdf_renderer.py:  470: printSegment: l
+   DEBUG: 2026-01-04 22:13:42,073:      pdf_renderer.py:  470: printSegment: Problem:
+   DEBUG: 2026-01-04 22:13:42,073:      pdf_renderer.py:  470: printSegment:  Paying/receiving funding affects PnL
+   DEBUG: 2026-01-04 22:13:42,074:      pdf_renderer.py:  470: printSegment: l
+   DEBUG: 2026-01-04 22:13:42,074:      pdf_renderer.py:  470: printSegment: AI use:
+   DEBUG: 2026-01-04 22:13:42,074:      pdf_renderer.py:  470: printSegment:  Predict funding direction
+   DEBUG: 2026-01-04 22:13:42,075:      pdf_renderer.py:  470: printSegment: l
+   DEBUG: 2026-01-04 22:13:42,075:      pdf_renderer.py:  470: printSegment: Apply:
+   DEBUG: 2026-01-04 22:13:42,076:      pdf_renderer.py:  470: printSegment:  Enter long AFTER negative funding paid; Enter short AFTER positive funding paid
+   DEBUG: 2026-01-04 22:13:42,077:      pdf_renderer.py:  470: printSegment: 3. Order Splitting (TWAP/VWAP)
+   DEBUG: 2026-01-04 22:13:42,077:      pdf_renderer.py:  470: printSegment: l
+   DEBUG: 2026-01-04 22:13:42,077:      pdf_renderer.py:  470: printSegment: Problem:
+   DEBUG: 2026-01-04 22:13:42,078:      pdf_renderer.py:  470: printSegment:  Large orders move market against you
+   DEBUG: 2026-01-04 22:13:42,078:      pdf_renderer.py:  470: printSegment: l
+   DEBUG: 2026-01-04 22:13:42,078:      pdf_renderer.py:  470: printSegment: AI use:
+   DEBUG: 2026-01-04 22:13:42,079:      pdf_renderer.py:  470: printSegment:  Optimal split size and timing
+   DEBUG: 2026-01-04 22:13:42,079:      pdf_renderer.py:  470: printSegment: l
+   DEBUG: 2026-01-04 22:13:42,080:      pdf_renderer.py:  470: printSegment: Apply:
+   DEBUG: 2026-01-04 22:13:42,080:      pdf_renderer.py:  470: printSegment:  For >$50K positions
+   DEBUG: 2026-01-04 22:13:42,081:      pdf_renderer.py:  470: printSegment: 4. Slippage Prediction
+   DEBUG: 2026-01-04 22:13:42,081:      pdf_renderer.py:  470: printSegment: l
+   DEBUG: 2026-01-04 22:13:42,081:      pdf_renderer.py:  470: printSegment: Problem:
+   DEBUG: 2026-01-04 22:13:42,082:      pdf_renderer.py:  470: printSegment:  Market orders can slip significantly
+   DEBUG: 2026-01-04 22:13:42,082:      pdf_renderer.py:  470: printSegment: l
+   DEBUG: 2026-01-04 22:13:42,083:      pdf_renderer.py:  470: printSegment: AI use:
+   DEBUG: 2026-01-04 22:13:42,083:      pdf_renderer.py:  470: printSegment:  Predict slippage from order book state
+   DEBUG: 2026-01-04 22:13:42,084:      pdf_renderer.py:  470: printSegment: l
+   DEBUG: 2026-01-04 22:13:42,084:      pdf_renderer.py:  470: printSegment: Apply:
+   DEBUG: 2026-01-04 22:13:42,085:      pdf_renderer.py:  470: printSegment:  Use limit orders when slippage predicted high
+   DEBUG: 2026-01-04 22:13:42,085:      pdf_renderer.py:  470: printSegment: 5. Venue Selection
+   DEBUG: 2026-01-04 22:13:42,086:      pdf_renderer.py:  470: printSegment: l
+   DEBUG: 2026-01-04 22:13:42,086:      pdf_renderer.py:  470: printSegment: Problem:
+   DEBUG: 2026-01-04 22:13:42,086:      pdf_renderer.py:  470: printSegment:  Different prices/fees across exchanges
+   DEBUG: 2026-01-04 22:13:42,087:      pdf_renderer.py:  470: printSegment: l
+   DEBUG: 2026-01-04 22:13:42,087:      pdf_renderer.py:  470: printSegment: AI use:
+   DEBUG: 2026-01-04 22:13:42,088:      pdf_renderer.py:  470: printSegment:  Route to best venue considering all costs
+   DEBUG: 2026-01-04 22:13:42,088:      pdf_renderer.py:  470: printSegment: l
+   DEBUG: 2026-01-04 22:13:42,089:      pdf_renderer.py:  470: printSegment: Apply:
+   DEBUG: 2026-01-04 22:13:42,089:      pdf_renderer.py:  470: printSegment:  Compare HL vs Binance vs Bybit per trade
+   DEBUG: 2026-01-04 22:13:42,090:      pdf_renderer.py:  470: printSegment: Practical Execution Optimizer (Conceptual)
+   DEBUG: 2026-01-04 22:13:42,093:      pdf_renderer.py:  470: printSegment: def should_enter_now(signal_strength, market_state):
+   DEBUG: 2026-01-04 22:13:42,094:      pdf_renderer.py:  470: printSegment:     # Check liquidity
+   DEBUG: 2026-01-04 22:13:42,095:      pdf_renderer.py:  470: printSegment:     if book_depth < min_acceptable_depth:
+   DEBUG: 2026-01-04 22:13:42,095:      pdf_renderer.py:  470: printSegment:         return False, "Wait for deeper book"
+   DEBUG: 2026-01-04 22:13:42,096:      pdf_renderer.py:  470: printSegment:     # Check funding timing (HL has 1-hour funding)
+   DEBUG: 2026-01-04 22:13:42,096:      pdf_renderer.py:  470: printSegment:     if going_long and predicted_funding < -0.01:
+   DEBUG: 2026-01-04 22:13:42,096:      pdf_renderer.py:  470: printSegment:         if minutes_to_funding < 10:
+   DEBUG: 2026-01-04 22:13:42,097:      pdf_renderer.py:  470: printSegment:             return False, "Wait for negative funding"
+   DEBUG: 2026-01-04 22:13:42,097:      pdf_renderer.py:  470: printSegment:     # Check spread
+   DEBUG: 2026-01-04 22:13:42,098:      pdf_renderer.py:  470: printSegment:     if spread > 2 * average_spread:
+   DEBUG: 2026-01-04 22:13:42,098:      pdf_renderer.py:  470: printSegment:         return False, "Spread too wide"
+   DEBUG: 2026-01-04 22:13:42,098:      pdf_renderer.py:  470: printSegment:     # Check volatility
+   DEBUG: 2026-01-04 22:13:42,099:      pdf_renderer.py:  470: printSegment:     if recent_volatility > 3 * normal_volatility:
+   DEBUG: 2026-01-04 22:13:42,099:      pdf_renderer.py:  470: printSegment:         return False, "Too volatile, wait"
+   DEBUG: 2026-01-04 22:13:42,100:      pdf_renderer.py:  470: printSegment:     return True, "Conditions good"
+   DEBUG: 2026-01-04 22:13:42,100:      pdf_renderer.py:  470: printSegment: 3. Risk Management
+   DEBUG: 2026-01-04 22:13:42,101:      pdf_renderer.py:  470: printSegment: LEARNING MOMENT: Why Risk Management Is THE Edge
+   DEBUG: 2026-01-04 22:13:42,101:      pdf_renderer.py:  470: printSegment: Most traders focus on entries. Pros focus on risk.
+   DEBUG: 2026-01-04 22:13:42,103:      pdf_renderer.py:  470: printSegment: A mediocre entry strategy + excellent risk management BEATS an excellent entry strategy + poor risk
+   DEBUG: 2026-01-04 22:13:42,103:      pdf_renderer.py:  470: printSegment: management
+   DEBUG: 2026-01-04 22:13:42,104:      pdf_renderer.py:  470: printSegment: Why? You need to SURVIVE to compound gains. One catastrophic loss wipes out years of profits.
+   DEBUG: 2026-01-04 22:13:42,105:      pdf_renderer.py:  470: printSegment: Where AI Helps with Risk
+   DEBUG: 2026-01-04 22:13:42,105:      pdf_renderer.py:  470: printSegment: 1. Regime Detection
+   DEBUG: 2026-01-04 22:13:42,106:      pdf_renderer.py:  470: printSegment: l
+   DEBUG: 2026-01-04 22:13:42,106:      pdf_renderer.py:  470: printSegment: Problem:
+   DEBUG: 2026-01-04 22:13:42,107:      pdf_renderer.py:  470: printSegment:  Strategies work in some conditions, not others
+   DEBUG: 2026-01-04 22:13:42,107:      pdf_renderer.py:  470: printSegment: l
+   DEBUG: 2026-01-04 22:13:42,107:      pdf_renderer.py:  470: printSegment: AI use:
+   DEBUG: 2026-01-04 22:13:42,108:      pdf_renderer.py:  470: printSegment:  Detect regime (trending, ranging, volatile)
+   DEBUG: 2026-01-04 22:13:42,108:      pdf_renderer.py:  470: printSegment: l
+   DEBUG: 2026-01-04 22:13:42,109:      pdf_renderer.py:  470: printSegment: Apply:
+   DEBUG: 2026-01-04 22:13:42,110:      pdf_renderer.py:  470: printSegment:  Trending → momentum; Ranging → mean reversion; Volatile → reduce size
+   DEBUG: 2026-01-04 22:13:42,122:      pdf_renderer.py:  470: printSegment: l
+   DEBUG: 2026-01-04 22:13:42,122:      pdf_renderer.py:  470: printSegment: Signals:
+   DEBUG: 2026-01-04 22:13:42,123:      pdf_renderer.py:  470: printSegment:  ADX, Bollinger width, autocorrelation
+   DEBUG: 2026-01-04 22:13:42,123:      pdf_renderer.py:  470: printSegment: 2. Correlation Breakdown Detection
+   DEBUG: 2026-01-04 22:13:42,124:      pdf_renderer.py:  470: printSegment: l
+   DEBUG: 2026-01-04 22:13:42,124:      pdf_renderer.py:  470: printSegment: Problem:
+   DEBUG: 2026-01-04 22:13:42,125:      pdf_renderer.py:  470: printSegment:  Your hedges might stop working
+   DEBUG: 2026-01-04 22:13:42,125:      pdf_renderer.py:  470: printSegment: l
+   DEBUG: 2026-01-04 22:13:42,126:      pdf_renderer.py:  470: printSegment: AI use:
+   DEBUG: 2026-01-04 22:13:42,126:      pdf_renderer.py:  470: printSegment:  Monitor rolling correlations
+   DEBUG: 2026-01-04 22:13:42,127:      pdf_renderer.py:  470: printSegment: l
+   DEBUG: 2026-01-04 22:13:42,127:      pdf_renderer.py:  470: printSegment: Apply:
+   DEBUG: 2026-01-04 22:13:42,128:      pdf_renderer.py:  470: printSegment:  BTC/ETH correlation usually 0.8-0.9; If drops below 0.5 → reduce leverage
+   DEBUG: 2026-01-04 22:13:42,128:      pdf_renderer.py:  470: printSegment: 3. Drawdown Prediction
+   DEBUG: 2026-01-04 22:13:42,129:      pdf_renderer.py:  470: printSegment: l
+   DEBUG: 2026-01-04 22:13:42,129:      pdf_renderer.py:  470: printSegment: Problem:
+   DEBUG: 2026-01-04 22:13:42,130:      pdf_renderer.py:  470: printSegment:  Need to cut risk before losses compound
+   DEBUG: 2026-01-04 22:13:42,130:      pdf_renderer.py:  470: printSegment: l
+   DEBUG: 2026-01-04 22:13:42,130:      pdf_renderer.py:  470: printSegment: AI use:
+   DEBUG: 2026-01-04 22:13:42,131:      pdf_renderer.py:  470: printSegment:  Predict drawdown probability
+   DEBUG: 2026-01-04 22:13:42,131:      pdf_renderer.py:  470: printSegment: l
+   DEBUG: 2026-01-04 22:13:42,132:      pdf_renderer.py:  470: printSegment: Apply:
+   DEBUG: 2026-01-04 22:13:42,132:      pdf_renderer.py:  470: printSegment:  High funding + high OI + overbought → likely; Reduce size BEFORE
+   DEBUG: 2026-01-04 22:13:42,133:      pdf_renderer.py:  470: printSegment: 4. Liquidation Cascade Risk
+   DEBUG: 2026-01-04 22:13:42,134:      pdf_renderer.py:  470: printSegment: l
+   DEBUG: 2026-01-04 22:13:42,134:      pdf_renderer.py:  470: printSegment: Problem:
+   DEBUG: 2026-01-04 22:13:42,135:      pdf_renderer.py:  470: printSegment:  Cascading liquidations move markets 20%+
+   DEBUG: 2026-01-04 22:13:42,135:      pdf_renderer.py:  470: printSegment: l
+   DEBUG: 2026-01-04 22:13:42,136:      pdf_renderer.py:  470: printSegment: AI use:
+   DEBUG: 2026-01-04 22:13:42,136:      pdf_renderer.py:  470: printSegment:  Detect conditions ripe for cascade
+   DEBUG: 2026-01-04 22:13:42,137:      pdf_renderer.py:  470: printSegment: l
+   DEBUG: 2026-01-04 22:13:42,137:      pdf_renderer.py:  470: printSegment: Apply:
+   DEBUG: 2026-01-04 22:13:42,137:      pdf_renderer.py:  470: printSegment:  High OI + clustered liq levels + thin books → stay flat or position for cascade
+   DEBUG: 2026-01-04 22:13:42,138:      pdf_renderer.py:  470: printSegment: 5. Exchange Risk Monitoring
+   DEBUG: 2026-01-04 22:13:42,138:      pdf_renderer.py:  470: printSegment: l
+   DEBUG: 2026-01-04 22:13:42,139:      pdf_renderer.py:  470: printSegment: Problem:
+   DEBUG: 2026-01-04 22:13:42,139:      pdf_renderer.py:  470: printSegment:  FTX-style collapses happen
+   DEBUG: 2026-01-04 22:13:42,139:      pdf_renderer.py:  470: printSegment: l
+   DEBUG: 2026-01-04 22:13:42,140:      pdf_renderer.py:  470: printSegment: AI use:
+   DEBUG: 2026-01-04 22:13:42,140:      pdf_renderer.py:  470: printSegment:  Monitor exchange health signals
+   DEBUG: 2026-01-04 22:13:42,140:      pdf_renderer.py:  470: printSegment: l
+   DEBUG: 2026-01-04 22:13:42,141:      pdf_renderer.py:  470: printSegment: Apply:
+   DEBUG: 2026-01-04 22:13:42,142:      pdf_renderer.py:  470: printSegment:  Proof of reserves, withdrawal delays, social sentiment, token price
+   DEBUG: 2026-01-04 22:13:42,142:      pdf_renderer.py:  470: printSegment: Practical Risk Framework (Conceptual)
+   DEBUG: 2026-01-04 22:13:42,143:      pdf_renderer.py:  470: printSegment: def calculate_position_size(signal, market_state, portfolio):
+   DEBUG: 2026-01-04 22:13:42,144:      pdf_renderer.py:  470: printSegment:     base_size = portfolio.equity * 0.02  # 2% base risk
+   DEBUG: 2026-01-04 22:13:42,144:      pdf_renderer.py:  470: printSegment:     # Regime adjustment
+   DEBUG: 2026-01-04 22:13:42,144:      pdf_renderer.py:  470: printSegment:     regime_multiplier = {
+   DEBUG: 2026-01-04 22:13:42,145:      pdf_renderer.py:  470: printSegment:         'trending': 1.2,    # Larger in trends
+   DEBUG: 2026-01-04 22:13:42,145:      pdf_renderer.py:  470: printSegment:         'ranging': 0.8,     # Smaller in ranges
+   DEBUG: 2026-01-04 22:13:42,146:      pdf_renderer.py:  470: printSegment:         'volatile': 0.4,    # Much smaller in chaos
+   DEBUG: 2026-01-04 22:13:42,146:      pdf_renderer.py:  470: printSegment:     }[regime]
+   DEBUG: 2026-01-04 22:13:42,147:      pdf_renderer.py:  470: printSegment:     # Correlation adjustment
+   DEBUG: 2026-01-04 22:13:42,147:      pdf_renderer.py:  470: printSegment:     if correlation_health < 0.5:
+   DEBUG: 2026-01-04 22:13:42,148:      pdf_renderer.py:  470: printSegment:         correlation_multiplier = 0.5  # Cut when correlations break
+   DEBUG: 2026-01-04 22:13:42,148:      pdf_renderer.py:  470: printSegment:     else:
+   DEBUG: 2026-01-04 22:13:42,149:      pdf_renderer.py:  470: printSegment:         correlation_multiplier = 1.0
+   DEBUG: 2026-01-04 22:13:42,149:      pdf_renderer.py:  470: printSegment:     # Cascade risk adjustment
+   DEBUG: 2026-01-04 22:13:42,150:      pdf_renderer.py:  470: printSegment:     cascade_multiplier = 1.0 - (cascade_probability * 0.5)
+   DEBUG: 2026-01-04 22:13:42,150:      pdf_renderer.py:  470: printSegment:     # Drawdown adjustment
+   DEBUG: 2026-01-04 22:13:42,151:      pdf_renderer.py:  470: printSegment:     drawdown_multiplier = max(0.2, 1.0 - (current_drawdown * 2))
+   DEBUG: 2026-01-04 22:13:42,153:      pdf_renderer.py:  470: printSegment:     final_size = base_size * regime_multiplier *
+   DEBUG: 2026-01-04 22:13:42,153:      pdf_renderer.py:  470: printSegment: correlation_multiplier * cascade_multiplier * drawdown_multiplier
+   DEBUG: 2026-01-04 22:13:42,154:      pdf_renderer.py:  470: printSegment:     return final_size
+   DEBUG: 2026-01-04 22:13:42,154:      pdf_renderer.py:  470: printSegment: 4. Feature Engineering
+   DEBUG: 2026-01-04 22:13:42,155:      pdf_renderer.py:  470: printSegment: LEARNING MOMENT: What Feature Engineering Actually Is
+   DEBUG: 2026-01-04 22:13:42,156:      pdf_renderer.py:  470: printSegment: Raw data is usually useless for prediction. 
+   DEBUG: 2026-01-04 22:13:42,156:      pdf_renderer.py:  470: printSegment: "
+   DEBUG: 2026-01-04 22:13:42,156:      pdf_renderer.py:  470: printSegment: Features
+   DEBUG: 2026-01-04 22:13:42,157:      pdf_renderer.py:  470: printSegment: "
+   DEBUG: 2026-01-04 22:13:42,157:      pdf_renderer.py:  470: printSegment:  are DERIVED signals that capture patterns.
+   DEBUG: 2026-01-04 22:13:42,158:      pdf_renderer.py:  470: printSegment: l
+   DEBUG: 2026-01-04 22:13:42,158:      pdf_renderer.py:  470: printSegment: Raw data:
+   DEBUG: 2026-01-04 22:13:42,159:      pdf_renderer.py:  470: printSegment:  Price at each timestamp
+   DEBUG: 2026-01-04 22:13:42,159:      pdf_renderer.py:  470: printSegment: l
+   DEBUG: 2026-01-04 22:13:42,159:      pdf_renderer.py:  470: printSegment: Feature:
+   DEBUG: 2026-01-04 22:13:42,160:      pdf_renderer.py:  470: printSegment:  
+   DEBUG: 2026-01-04 22:13:42,160:      pdf_renderer.py:  470: printSegment: "
+   DEBUG: 2026-01-04 22:13:42,161:      pdf_renderer.py:  470: printSegment: 20-period RSI
+   DEBUG: 2026-01-04 22:13:42,161:      pdf_renderer.py:  470: printSegment: "
+   DEBUG: 2026-01-04 22:13:42,161:      pdf_renderer.py:  470: printSegment:  or 
+   DEBUG: 2026-01-04 22:13:42,162:      pdf_renderer.py:  470: printSegment: "
+   DEBUG: 2026-01-04 22:13:42,162:      pdf_renderer.py:  470: printSegment: OI change rate
+   DEBUG: 2026-01-04 22:13:42,163:      pdf_renderer.py:  470: printSegment: "
+   DEBUG: 2026-01-04 22:13:42,163:      pdf_renderer.py:  470: printSegment: AI can help find WHICH features matter and HOW to combine them - without doing end-to-end price prediction.
+   DEBUG: 2026-01-04 22:13:42,164:      pdf_renderer.py:  470: printSegment: Useful Features for Crypto Perps
+   DEBUG: 2026-01-04 22:13:42,165:      pdf_renderer.py:  470: printSegment: Price-Derived
+   DEBUG: 2026-01-04 22:13:42,165:      pdf_renderer.py:  470: printSegment: l
+   DEBUG: 2026-01-04 22:13:42,166:      pdf_renderer.py:  470: printSegment: Returns (1m, 5m, 1h, 4h, 1d)
+   DEBUG: 2026-01-04 22:13:42,166:      pdf_renderer.py:  470: printSegment: l
+   DEBUG: 2026-01-04 22:13:42,166:      pdf_renderer.py:  470: printSegment: Volatility (rolling std dev)
+   DEBUG: 2026-01-04 22:13:42,167:      pdf_renderer.py:  470: printSegment: l
+   DEBUG: 2026-01-04 22:13:42,167:      pdf_renderer.py:  470: printSegment: Momentum (ROC, RSI, MACD)
+   DEBUG: 2026-01-04 22:13:42,167:      pdf_renderer.py:  470: printSegment: l
+   DEBUG: 2026-01-04 22:13:42,168:      pdf_renderer.py:  470: printSegment: Mean reversion (distance from MA)
+   DEBUG: 2026-01-04 22:13:42,168:      pdf_renderer.py:  470: printSegment: Volume
+   DEBUG: 2026-01-04 22:13:42,168:      pdf_renderer.py:  470: printSegment: l
+   DEBUG: 2026-01-04 22:13:42,169:      pdf_renderer.py:  470: printSegment: Volume relative to average
+   DEBUG: 2026-01-04 22:13:42,169:      pdf_renderer.py:  470: printSegment: l
+   DEBUG: 2026-01-04 22:13:42,170:      pdf_renderer.py:  470: printSegment: Buy vs sell volume (CVD)
+   DEBUG: 2026-01-04 22:13:42,170:      pdf_renderer.py:  470: printSegment: l
+   DEBUG: 2026-01-04 22:13:42,170:      pdf_renderer.py:  470: printSegment: Volume at price levels
+   DEBUG: 2026-01-04 22:13:42,171:      pdf_renderer.py:  470: printSegment: l
+   DEBUG: 2026-01-04 22:13:42,171:      pdf_renderer.py:  470: printSegment: Volume trend
+   DEBUG: 2026-01-04 22:13:42,171:      pdf_renderer.py:  470: printSegment: Order Book
+   DEBUG: 2026-01-04 22:13:42,172:      pdf_renderer.py:  470: printSegment: l
+   DEBUG: 2026-01-04 22:13:42,172:      pdf_renderer.py:  470: printSegment: Bid/ask imbalance
+   DEBUG: 2026-01-04 22:13:42,172:      pdf_renderer.py:  470: printSegment: l
+   DEBUG: 2026-01-04 22:13:42,173:      pdf_renderer.py:  470: printSegment: Depth at key levels (1%, 2%, 5%)
+   DEBUG: 2026-01-04 22:13:42,173:      pdf_renderer.py:  470: printSegment: l
+   DEBUG: 2026-01-04 22:13:42,173:      pdf_renderer.py:  470: printSegment: Order book slope
+   DEBUG: 2026-01-04 22:13:42,174:      pdf_renderer.py:  470: printSegment: l
+   DEBUG: 2026-01-04 22:13:42,174:      pdf_renderer.py:  470: printSegment: Large order detection
+   DEBUG: 2026-01-04 22:13:42,174:      pdf_renderer.py:  470: printSegment: Derivatives
+   DEBUG: 2026-01-04 22:13:42,175:      pdf_renderer.py:  470: printSegment: l
+   DEBUG: 2026-01-04 22:13:42,175:      pdf_renderer.py:  470: printSegment: Open interest level and change
+   DEBUG: 2026-01-04 22:13:42,175:      pdf_renderer.py:  470: printSegment: l
+   DEBUG: 2026-01-04 22:13:42,176:      pdf_renderer.py:  470: printSegment: Funding rate level and trend
+   DEBUG: 2026-01-04 22:13:42,176:      pdf_renderer.py:  470: printSegment: l
+   DEBUG: 2026-01-04 22:13:42,176:      pdf_renderer.py:  470: printSegment: Long/short ratio
+   DEBUG: 2026-01-04 22:13:42,177:      pdf_renderer.py:  470: printSegment: l
+   DEBUG: 2026-01-04 22:13:42,177:      pdf_renderer.py:  470: printSegment: Liquidation proximity
+   DEBUG: 2026-01-04 22:13:42,177:      pdf_renderer.py:  470: printSegment: l
+   DEBUG: 2026-01-04 22:13:42,178:      pdf_renderer.py:  470: printSegment: Basis (perp vs spot)
+   DEBUG: 2026-01-04 22:13:42,178:      pdf_renderer.py:  470: printSegment: Cross-Asset
+   DEBUG: 2026-01-04 22:13:42,178:      pdf_renderer.py:  470: printSegment: l
+   DEBUG: 2026-01-04 22:13:42,179:      pdf_renderer.py:  470: printSegment: BTC correlation (rolling)
+   DEBUG: 2026-01-04 22:13:42,179:      pdf_renderer.py:  470: printSegment: l
+   DEBUG: 2026-01-04 22:13:42,179:      pdf_renderer.py:  470: printSegment: ETH correlation
+   DEBUG: 2026-01-04 22:13:42,180:      pdf_renderer.py:  470: printSegment: l
+   DEBUG: 2026-01-04 22:13:42,180:      pdf_renderer.py:  470: printSegment: BTC dominance trend
+   DEBUG: 2026-01-04 22:13:42,180:      pdf_renderer.py:  470: printSegment: On-Chain
+   DEBUG: 2026-01-04 22:13:42,181:      pdf_renderer.py:  470: printSegment: l
+   DEBUG: 2026-01-04 22:13:42,181:      pdf_renderer.py:  470: printSegment: Exchange netflow
+   DEBUG: 2026-01-04 22:13:42,181:      pdf_renderer.py:  470: printSegment: l
+   DEBUG: 2026-01-04 22:13:42,182:      pdf_renderer.py:  470: printSegment: Whale activity
+   DEBUG: 2026-01-04 22:13:42,182:      pdf_renderer.py:  470: printSegment: l
+   DEBUG: 2026-01-04 22:13:42,183:      pdf_renderer.py:  470: printSegment: Active addresses
+   DEBUG: 2026-01-04 22:13:42,183:      pdf_renderer.py:  470: printSegment: l
+   DEBUG: 2026-01-04 22:13:42,183:      pdf_renderer.py:  470: printSegment: Stablecoin supply
+   DEBUG: 2026-01-04 22:13:42,184:      pdf_renderer.py:  470: printSegment: Sentiment
+   DEBUG: 2026-01-04 22:13:42,184:      pdf_renderer.py:  470: printSegment: l
+   DEBUG: 2026-01-04 22:13:42,184:      pdf_renderer.py:  470: printSegment: Fear 
+   DEBUG: 2026-01-04 22:13:42,185:      pdf_renderer.py:  470: printSegment: &
+   DEBUG: 2026-01-04 22:13:42,185:      pdf_renderer.py:  470: printSegment:  Greed Index
+   DEBUG: 2026-01-04 22:13:42,185:      pdf_renderer.py:  470: printSegment: l
+   DEBUG: 2026-01-04 22:13:42,186:      pdf_renderer.py:  470: printSegment: Social volume
+   DEBUG: 2026-01-04 22:13:42,186:      pdf_renderer.py:  470: printSegment: l
+   DEBUG: 2026-01-04 22:13:42,187:      pdf_renderer.py:  470: printSegment: Funding vs historical percentile
+   DEBUG: 2026-01-04 22:13:42,187:      pdf_renderer.py:  470: printSegment: How AI Helps with Features
+   DEBUG: 2026-01-04 22:13:42,188:      pdf_renderer.py:  470: printSegment: 1. Feature Selection
+   DEBUG: 2026-01-04 22:13:42,188:      pdf_renderer.py:  470: printSegment: l
+   DEBUG: 2026-01-04 22:13:42,189:      pdf_renderer.py:  470: printSegment: Problem:
+   DEBUG: 2026-01-04 22:13:42,189:      pdf_renderer.py:  470: printSegment:  100 features, but most are noise
+   DEBUG: 2026-01-04 22:13:42,190:      pdf_renderer.py:  470: printSegment: l
+   DEBUG: 2026-01-04 22:13:42,190:      pdf_renderer.py:  470: printSegment: AI use:
+   DEBUG: 2026-01-04 22:13:42,190:      pdf_renderer.py:  470: printSegment:  Identify which features actually predict
+   DEBUG: 2026-01-04 22:13:42,191:      pdf_renderer.py:  470: printSegment: l
+   DEBUG: 2026-01-04 22:13:42,191:      pdf_renderer.py:  470: printSegment: Methods:
+   DEBUG: 2026-01-04 22:13:42,192:      pdf_renderer.py:  470: printSegment:  Random Forest importance, LASSO, mutual info
+   DEBUG: 2026-01-04 22:13:42,192:      pdf_renderer.py:  470: printSegment: 2. Feature Combination
+   DEBUG: 2026-01-04 22:13:42,192:      pdf_renderer.py:  470: printSegment: l
+   DEBUG: 2026-01-04 22:13:42,193:      pdf_renderer.py:  470: printSegment: Problem:
+   DEBUG: 2026-01-04 22:13:42,193:      pdf_renderer.py:  470: printSegment:  Individual features weak, combos strong
+   DEBUG: 2026-01-04 22:13:42,193:      pdf_renderer.py:  470: printSegment: l
+   DEBUG: 2026-01-04 22:13:42,194:      pdf_renderer.py:  470: printSegment: AI use:
+   DEBUG: 2026-01-04 22:13:42,194:      pdf_renderer.py:  470: printSegment:  Learn non-linear combinations
+   DEBUG: 2026-01-04 22:13:42,195:      pdf_renderer.py:  470: printSegment: l
+   DEBUG: 2026-01-04 22:13:42,195:      pdf_renderer.py:  470: printSegment: Example:
+   DEBUG: 2026-01-04 22:13:42,195:      pdf_renderer.py:  470: printSegment:  
+   DEBUG: 2026-01-04 22:13:42,195:      pdf_renderer.py:  470: printSegment: "
+   DEBUG: 2026-01-04 22:13:42,196:      pdf_renderer.py:  470: printSegment: High OI
+   DEBUG: 2026-01-04 22:13:42,196:      pdf_renderer.py:  470: printSegment: "
+   DEBUG: 2026-01-04 22:13:42,196:      pdf_renderer.py:  470: printSegment:  alone is weak; 
+   DEBUG: 2026-01-04 22:13:42,197:      pdf_renderer.py:  470: printSegment: "
+   DEBUG: 2026-01-04 22:13:42,197:      pdf_renderer.py:  470: printSegment: High OI + extreme funding + thin book
+   DEBUG: 2026-01-04 22:13:42,198:      pdf_renderer.py:  470: printSegment: "
+   DEBUG: 2026-01-04 22:13:42,198:      pdf_renderer.py:  470: printSegment:  strong
+   DEBUG: 2026-01-04 22:13:42,198:      pdf_renderer.py:  470: printSegment: 3. Regime-Conditional Features
+   DEBUG: 2026-01-04 22:13:42,199:      pdf_renderer.py:  470: printSegment: l
+   DEBUG: 2026-01-04 22:13:42,199:      pdf_renderer.py:  470: printSegment: Problem:
+   DEBUG: 2026-01-04 22:13:42,200:      pdf_renderer.py:  470: printSegment:  Features work differently per regime
+   DEBUG: 2026-01-04 22:13:42,200:      pdf_renderer.py:  470: printSegment: l
+   DEBUG: 2026-01-04 22:13:42,200:      pdf_renderer.py:  470: printSegment: AI use:
+   DEBUG: 2026-01-04 22:13:42,201:      pdf_renderer.py:  470: printSegment:  Learn which features matter when
+   DEBUG: 2026-01-04 22:13:42,201:      pdf_renderer.py:  470: printSegment: l
+   DEBUG: 2026-01-04 22:13:42,201:      pdf_renderer.py:  470: printSegment: Example:
+   DEBUG: 2026-01-04 22:13:42,202:      pdf_renderer.py:  470: printSegment:  RSI works in ranges, fails in trends
+   DEBUG: 2026-01-04 22:13:42,202:      pdf_renderer.py:  470: printSegment: 4. Feature Transformation
+   DEBUG: 2026-01-04 22:13:42,203:      pdf_renderer.py:  470: printSegment: l
+   DEBUG: 2026-01-04 22:13:42,203:      pdf_renderer.py:  470: printSegment: Problem:
+   DEBUG: 2026-01-04 22:13:42,204:      pdf_renderer.py:  470: printSegment:  Raw features may have wrong distribution
+   DEBUG: 2026-01-04 22:13:42,204:      pdf_renderer.py:  470: printSegment: l
+   DEBUG: 2026-01-04 22:13:42,204:      pdf_renderer.py:  470: printSegment: AI use:
+   DEBUG: 2026-01-04 22:13:42,205:      pdf_renderer.py:  470: printSegment:  Learn optimal transformations
+   DEBUG: 2026-01-04 22:13:42,205:      pdf_renderer.py:  470: printSegment: l
+   DEBUG: 2026-01-04 22:13:42,206:      pdf_renderer.py:  470: printSegment: Example:
+   DEBUG: 2026-01-04 22:13:42,206:      pdf_renderer.py:  470: printSegment:  Log returns, Z-score normalization
+   DEBUG: 2026-01-04 22:13:42,207:      pdf_renderer.py:  470: printSegment: Putting It All Together
+   DEBUG: 2026-01-04 22:13:42,207:      pdf_renderer.py:  470: printSegment: Realistic 2025 Crypto AI Stack
+   DEBUG: 2026-01-04 22:13:42,208:      pdf_renderer.py:  470: printSegment: Layer 1: Data Collection
+   DEBUG: 2026-01-04 22:13:42,208:      pdf_renderer.py:  470: printSegment: l
+   DEBUG: 2026-01-04 22:13:42,209:      pdf_renderer.py:  470: printSegment: Price/volume from exchanges
+   DEBUG: 2026-01-04 22:13:42,209:      pdf_renderer.py:  470: printSegment: l
+   DEBUG: 2026-01-04 22:13:42,209:      pdf_renderer.py:  470: printSegment: Order book snapshots
+   DEBUG: 2026-01-04 22:13:42,210:      pdf_renderer.py:  470: printSegment: l
+   DEBUG: 2026-01-04 22:13:42,210:      pdf_renderer.py:  470: printSegment: Funding rates across venues
+   DEBUG: 2026-01-04 22:13:42,211:      pdf_renderer.py:  470: printSegment: l
+   DEBUG: 2026-01-04 22:13:42,211:      pdf_renderer.py:  470: printSegment: Open interest data
+   DEBUG: 2026-01-04 22:13:42,211:      pdf_renderer.py:  470: printSegment: l
+   DEBUG: 2026-01-04 22:13:42,212:      pdf_renderer.py:  470: printSegment: Liquidation data
+   DEBUG: 2026-01-04 22:13:42,212:      pdf_renderer.py:  470: printSegment: l
+   DEBUG: 2026-01-04 22:13:42,213:      pdf_renderer.py:  470: printSegment: On-chain flows
+   DEBUG: 2026-01-04 22:13:42,213:      pdf_renderer.py:  470: printSegment: l
+   DEBUG: 2026-01-04 22:13:42,213:      pdf_renderer.py:  470: printSegment: Sentiment metrics
+   DEBUG: 2026-01-04 22:13:42,214:      pdf_renderer.py:  470: printSegment: Layer 2: Feature Engineering
+   DEBUG: 2026-01-04 22:13:42,214:      pdf_renderer.py:  470: printSegment: l
+   DEBUG: 2026-01-04 22:13:42,215:      pdf_renderer.py:  470: printSegment: Calculate derived features
+   DEBUG: 2026-01-04 22:13:42,215:      pdf_renderer.py:  470: printSegment: l
+   DEBUG: 2026-01-04 22:13:42,216:      pdf_renderer.py:  470: printSegment: Normalize and transform
+   DEBUG: 2026-01-04 22:13:42,216:      pdf_renderer.py:  470: printSegment: l
+   DEBUG: 2026-01-04 22:13:42,216:      pdf_renderer.py:  470: printSegment: Create cross-asset features
+   DEBUG: 2026-01-04 22:13:42,217:      pdf_renderer.py:  470: printSegment: l
+   DEBUG: 2026-01-04 22:13:42,217:      pdf_renderer.py:  470: printSegment: Update feature importance (ML)
+   DEBUG: 2026-01-04 22:13:42,218:      pdf_renderer.py:  470: printSegment: Layer 3: Situation Detection (not price prediction
+   DEBUG: 2026-01-04 22:13:42,218:      pdf_renderer.py:  470: printSegment: !
+   DEBUG: 2026-01-04 22:13:42,219:      pdf_renderer.py:  470: printSegment: )
+   DEBUG: 2026-01-04 22:13:42,219:      pdf_renderer.py:  470: printSegment: l
+   DEBUG: 2026-01-04 22:13:42,220:      pdf_renderer.py:  470: printSegment: Squeeze setup detector
+   DEBUG: 2026-01-04 22:13:42,220:      pdf_renderer.py:  470: printSegment: l
+   DEBUG: 2026-01-04 22:13:42,221:      pdf_renderer.py:  470: printSegment: Liquidity vacuum detector
+   DEBUG: 2026-01-04 22:13:42,221:      pdf_renderer.py:  470: printSegment: l
+   DEBUG: 2026-01-04 22:13:42,221:      pdf_renderer.py:  470: printSegment: Regime classifier
+   DEBUG: 2026-01-04 22:13:42,221:      pdf_renderer.py:  470: printSegment: l
+   DEBUG: 2026-01-04 22:13:42,222:      pdf_renderer.py:  470: printSegment: Cascade risk estimator
+   DEBUG: 2026-01-04 22:13:42,222:      pdf_renderer.py:  470: printSegment: l
+   DEBUG: 2026-01-04 22:13:42,222:      pdf_renderer.py:  470: printSegment: Funding arbitrage detector
+   DEBUG: 2026-01-04 22:13:42,223:      pdf_renderer.py:  470: printSegment: Layer 4: Risk Management
+   DEBUG: 2026-01-04 22:13:42,223:      pdf_renderer.py:  470: printSegment: l
+   DEBUG: 2026-01-04 22:13:42,223:      pdf_renderer.py:  470: printSegment: Dynamic position sizing
+   DEBUG: 2026-01-04 22:13:42,224:      pdf_renderer.py:  470: printSegment: l
+   DEBUG: 2026-01-04 22:13:42,224:      pdf_renderer.py:  470: printSegment: Correlation monitoring
+   DEBUG: 2026-01-04 22:13:42,224:      pdf_renderer.py:  470: printSegment: l
+   DEBUG: 2026-01-04 22:13:42,225:      pdf_renderer.py:  470: printSegment: Drawdown controls
+   DEBUG: 2026-01-04 22:13:42,225:      pdf_renderer.py:  470: printSegment: l
+   DEBUG: 2026-01-04 22:13:42,225:      pdf_renderer.py:  470: printSegment: Exchange health monitoring
+   DEBUG: 2026-01-04 22:13:42,226:      pdf_renderer.py:  470: printSegment: Layer 5: Execution
+   DEBUG: 2026-01-04 22:13:42,226:      pdf_renderer.py:  470: printSegment: l
+   DEBUG: 2026-01-04 22:13:42,226:      pdf_renderer.py:  470: printSegment: Entry timing optimization
+   DEBUG: 2026-01-04 22:13:42,227:      pdf_renderer.py:  470: printSegment: l
+   DEBUG: 2026-01-04 22:13:42,227:      pdf_renderer.py:  470: printSegment: Funding-aware entries
+   DEBUG: 2026-01-04 22:13:42,227:      pdf_renderer.py:  470: printSegment: l
+   DEBUG: 2026-01-04 22:13:42,228:      pdf_renderer.py:  470: printSegment: Slippage prediction
+   DEBUG: 2026-01-04 22:13:42,228:      pdf_renderer.py:  470: printSegment: l
+   DEBUG: 2026-01-04 22:13:42,229:      pdf_renderer.py:  470: printSegment: Order type selection
+   DEBUG: 2026-01-04 22:13:42,229:      pdf_renderer.py:  470: printSegment: Layer 6: Simple Rules (not AI
+   DEBUG: 2026-01-04 22:13:42,229:      pdf_renderer.py:  470: printSegment: !
+   DEBUG: 2026-01-04 22:13:42,230:      pdf_renderer.py:  470: printSegment: )
+   DEBUG: 2026-01-04 22:13:42,230:      pdf_renderer.py:  470: printSegment: l
+   DEBUG: 2026-01-04 22:13:42,230:      pdf_renderer.py:  470: printSegment: "
+   DEBUG: 2026-01-04 22:13:42,231:      pdf_renderer.py:  470: printSegment: If squeeze setup AND trending → enter
+   DEBUG: 2026-01-04 22:13:42,231:      pdf_renderer.py:  470: printSegment: "
+   DEBUG: 2026-01-04 22:13:42,231:      pdf_renderer.py:  470: printSegment: l
+   DEBUG: 2026-01-04 22:13:42,231:      pdf_renderer.py:  470: printSegment: "
+   DEBUG: 2026-01-04 22:13:42,232:      pdf_renderer.py:  470: printSegment: Max position size = X
+   DEBUG: 2026-01-04 22:13:42,232:      pdf_renderer.py:  470: printSegment: "
+   DEBUG: 2026-01-04 22:13:42,233:      pdf_renderer.py:  470: printSegment: l
+   DEBUG: 2026-01-04 22:13:42,233:      pdf_renderer.py:  470: printSegment: "
+   DEBUG: 2026-01-04 22:13:42,233:      pdf_renderer.py:  470: printSegment: Stop loss at Y%
+   DEBUG: 2026-01-04 22:13:42,234:      pdf_renderer.py:  470: printSegment: "
+   DEBUG: 2026-01-04 22:13:42,234:      pdf_renderer.py:  470: printSegment: l
+   DEBUG: 2026-01-04 22:13:42,234:      pdf_renderer.py:  470: printSegment: "
+   DEBUG: 2026-01-04 22:13:42,235:      pdf_renderer.py:  470: printSegment: Take profit at Z%
+   DEBUG: 2026-01-04 22:13:42,235:      pdf_renderer.py:  470: printSegment: "
+   DEBUG: 2026-01-04 22:13:42,235:      pdf_renderer.py:  470: printSegment: KEY INSIGHT:
+   DEBUG: 2026-01-04 22:13:42,236:      pdf_renderer.py:  470: printSegment:  AI is used for DETECTION and OPTIMIZATION. Final trading decisions are SIMPLE RULES
+   DEBUG: 2026-01-04 22:13:42,237:      pdf_renderer.py:  470: printSegment: you understand.
+   DEBUG: 2026-01-04 22:13:42,238:      pdf_renderer.py:  470: printSegment: Data Sources Reference
+   DEBUG: 2026-01-04 22:13:42,238:      pdf_renderer.py:  470: printSegment: Free/Cheap Sources (2025)
+   DEBUG: 2026-01-04 22:13:42,238:      pdf_renderer.py:  470: printSegment: | Data Type | Free Sources |
+   DEBUG: 2026-01-04 22:13:42,239:      pdf_renderer.py:  470: printSegment:  
+   DEBUG: 2026-01-04 22:13:42,239:      pdf_renderer.py:  470: printSegment: |-----------|--------------|
+   DEBUG: 2026-01-04 22:13:42,240:      pdf_renderer.py:  470: printSegment:  
+   DEBUG: 2026-01-04 22:13:42,240:      pdf_renderer.py:  470: printSegment: | Price/Volume | Exchange APIs, CoinGecko |
+   DEBUG: 2026-01-04 22:13:42,240:      pdf_renderer.py:  470: printSegment:  
+   DEBUG: 2026-01-04 22:13:42,241:      pdf_renderer.py:  470: printSegment: | Order Book |
+   DEBUG: 2026-01-04 22:13:42,241:      pdf_renderer.py:  470: printSegment: Exchange websockets |
+   DEBUG: 2026-01-04 22:13:42,242:      pdf_renderer.py:  470: printSegment:  
+   DEBUG: 2026-01-04 22:13:42,242:      pdf_renderer.py:  470: printSegment: | Funding Rates | Coinglass, exchange APIs |
+   DEBUG: 2026-01-04 22:13:42,243:      pdf_renderer.py:  470: printSegment:  
+   DEBUG: 2026-01-04 22:13:42,243:      pdf_renderer.py:  470: printSegment: | Open Interest | Coinglass, exchange APIs |
+   DEBUG: 2026-01-04 22:13:42,243:      pdf_renderer.py:  470: printSegment:  
+   DEBUG: 2026-01-04 22:13:42,244:      pdf_renderer.py:  470: printSegment: |
+   DEBUG: 2026-01-04 22:13:42,245:      pdf_renderer.py:  470: printSegment: Liquidations | Coinglass websocket |
+   DEBUG: 2026-01-04 22:13:42,245:      pdf_renderer.py:  470: printSegment:  
+   DEBUG: 2026-01-04 22:13:42,245:      pdf_renderer.py:  470: printSegment: | On-Chain | Dune Analytics, Etherscan |
+   DEBUG: 2026-01-04 22:13:42,246:      pdf_renderer.py:  470: printSegment:  
+   DEBUG: 2026-01-04 22:13:42,246:      pdf_renderer.py:  470: printSegment: | Sentiment | Fear 
+   DEBUG: 2026-01-04 22:13:42,247:      pdf_renderer.py:  470: printSegment: &
+   DEBUG: 2026-01-04 22:13:42,247:      pdf_renderer.py:  470: printSegment:  Greed,
+   DEBUG: 2026-01-04 22:13:42,248:      pdf_renderer.py:  470: printSegment: LunarCrush free |
+   DEBUG: 2026-01-04 22:13:42,248:      pdf_renderer.py:  470: printSegment:  
+   DEBUG: 2026-01-04 22:13:42,248:      pdf_renderer.py:  470: printSegment: | Options | Deribit API |
+   DEBUG: 2026-01-04 22:13:42,249:      pdf_renderer.py:  470: printSegment: Paid Sources
+   DEBUG: 2026-01-04 22:13:42,249:      pdf_renderer.py:  470: printSegment: | Data Type | Paid Sources |
+   DEBUG: 2026-01-04 22:13:42,250:      pdf_renderer.py:  470: printSegment:  
+   DEBUG: 2026-01-04 22:13:42,250:      pdf_renderer.py:  470: printSegment: |-----------|--------------|
+   DEBUG: 2026-01-04 22:13:42,251:      pdf_renderer.py:  470: printSegment:  
+   DEBUG: 2026-01-04 22:13:42,251:      pdf_renderer.py:  470: printSegment: | Price/Volume | Kaiko, Amberdata |
+   DEBUG: 2026-01-04 22:13:42,251:      pdf_renderer.py:  470: printSegment:  
+   DEBUG: 2026-01-04 22:13:42,252:      pdf_renderer.py:  470: printSegment: | Order Book | Kaiko L2/L3
+   DEBUG: 2026-01-04 22:13:42,253:      pdf_renderer.py:  470: printSegment: data |
+   DEBUG: 2026-01-04 22:13:42,253:      pdf_renderer.py:  470: printSegment:  
+   DEBUG: 2026-01-04 22:13:42,253:      pdf_renderer.py:  470: printSegment: | Liquidations | Hyblock Capital |
+   DEBUG: 2026-01-04 22:13:42,254:      pdf_renderer.py:  470: printSegment:  
+   DEBUG: 2026-01-04 22:13:42,254:      pdf_renderer.py:  470: printSegment: | On-Chain | Nansen, Arkham, Glassnode |
+   DEBUG: 2026-01-04 22:13:42,255:      pdf_renderer.py:  470: printSegment:  
+   DEBUG: 2026-01-04 22:13:42,255:      pdf_renderer.py:  470: printSegment: | Sentiment | Santiment,
+   DEBUG: 2026-01-04 22:13:42,256:      pdf_renderer.py:  470: printSegment: LunarCrush Pro |
+   DEBUG: 2026-01-04 22:13:42,256:      pdf_renderer.py:  470: printSegment:  
+   DEBUG: 2026-01-04 22:13:42,257:      pdf_renderer.py:  470: printSegment: | Options | Laevitas, Amberdata |
+   DEBUG: 2026-01-04 22:13:42,257:      pdf_renderer.py:  470: printSegment: What to Build Next
+   DEBUG: 2026-01-04 22:13:42,258:      pdf_renderer.py:  470: printSegment: Progressive Enhancements
+   DEBUG: 2026-01-04 22:13:42,259:      pdf_renderer.py:  470: printSegment: 1. Multi-Signal Situation Detector
+   DEBUG: 2026-01-04 22:13:42,259:      pdf_renderer.py:  470: printSegment: l
+   DEBUG: 2026-01-04 22:13:42,259:      pdf_renderer.py:  470: printSegment: Combine:
+   DEBUG: 2026-01-04 22:13:42,260:      pdf_renderer.py:  470: printSegment:  OI + funding + book depth + divergence
+   DEBUG: 2026-01-04 22:13:42,260:      pdf_renderer.py:  470: printSegment: l
+   DEBUG: 2026-01-04 22:13:42,261:      pdf_renderer.py:  470: printSegment: Output:
+   DEBUG: 2026-01-04 22:13:42,261:      pdf_renderer.py:  470: printSegment:  
+   DEBUG: 2026-01-04 22:13:42,261:      pdf_renderer.py:  470: printSegment: "
+   DEBUG: 2026-01-04 22:13:42,262:      pdf_renderer.py:  470: printSegment: Squeeze setup probability: 73%
+   DEBUG: 2026-01-04 22:13:42,262:      pdf_renderer.py:  470: printSegment: "
+   DEBUG: 2026-01-04 22:13:42,262:      pdf_renderer.py:  470: printSegment: 2. Execution Timing Module
+   DEBUG: 2026-01-04 22:13:42,263:      pdf_renderer.py:  470: printSegment: l
+   DEBUG: 2026-01-04 22:13:42,263:      pdf_renderer.py:  470: printSegment: Add:
+   DEBUG: 2026-01-04 22:13:42,263:      pdf_renderer.py:  470: printSegment:  Entry timing around funding, depth checks
+   DEBUG: 2026-01-04 22:13:42,264:      pdf_renderer.py:  470: printSegment: l
+   DEBUG: 2026-01-04 22:13:42,264:      pdf_renderer.py:  470: printSegment: Output:
+   DEBUG: 2026-01-04 22:13:42,264:      pdf_renderer.py:  470: printSegment:  
+   DEBUG: 2026-01-04 22:13:42,265:      pdf_renderer.py:  470: printSegment: "
+   DEBUG: 2026-01-04 22:13:42,265:      pdf_renderer.py:  470: printSegment: Wait 4 minutes for funding, then enter
+   DEBUG: 2026-01-04 22:13:42,265:      pdf_renderer.py:  470: printSegment: "
+   DEBUG: 2026-01-04 22:13:42,266:      pdf_renderer.py:  470: printSegment: 3. Dynamic Position Sizer
+   DEBUG: 2026-01-04 22:13:42,266:      pdf_renderer.py:  470: printSegment: l
+   DEBUG: 2026-01-04 22:13:42,266:      pdf_renderer.py:  470: printSegment: Add:
+   DEBUG: 2026-01-04 22:13:42,267:      pdf_renderer.py:  470: printSegment:  Regime detection, correlation monitoring
+   DEBUG: 2026-01-04 22:13:42,267:      pdf_renderer.py:  470: printSegment: l
+   DEBUG: 2026-01-04 22:13:42,268:      pdf_renderer.py:  470: printSegment: Output:
+   DEBUG: 2026-01-04 22:13:42,268:      pdf_renderer.py:  470: printSegment:  
+   DEBUG: 2026-01-04 22:13:42,268:      pdf_renderer.py:  470: printSegment: "
+   DEBUG: 2026-01-04 22:13:42,269:      pdf_renderer.py:  470: printSegment: Reduce size to 50% - volatile regime
+   DEBUG: 2026-01-04 22:13:42,269:      pdf_renderer.py:  470: printSegment: "
+   DEBUG: 2026-01-04 22:13:42,269:      pdf_renderer.py:  470: printSegment: 4. Liquidation Level Tracker
+   DEBUG: 2026-01-04 22:13:42,270:      pdf_renderer.py:  470: printSegment: l
+   DEBUG: 2026-01-04 22:13:42,270:      pdf_renderer.py:  470: printSegment: Add:
+   DEBUG: 2026-01-04 22:13:42,271:      pdf_renderer.py:  470: printSegment:  Track where liquidations cluster
+   DEBUG: 2026-01-04 22:13:42,271:      pdf_renderer.py:  470: printSegment: l
+   DEBUG: 2026-01-04 22:13:42,271:      pdf_renderer.py:  470: printSegment: Output:
+   DEBUG: 2026-01-04 22:13:42,272:      pdf_renderer.py:  470: printSegment:  
+   DEBUG: 2026-01-04 22:13:42,272:      pdf_renderer.py:  470: printSegment: "
+   DEBUG: 2026-01-04 22:13:42,273:      pdf_renderer.py:  470: printSegment: Large cluster at $94,200 - avoid longs above
+   DEBUG: 2026-01-04 22:13:42,273:      pdf_renderer.py:  470: printSegment: "
+   DEBUG: 2026-01-04 22:13:42,274:      pdf_renderer.py:  470: printSegment: Key Takeaways
+   DEBUG: 2026-01-04 22:13:42,274:      pdf_renderer.py:  470: printSegment:  1 
+   DEBUG: 2026-01-04 22:13:42,274:      pdf_renderer.py:  470: printSegment: Alternative data in crypto is often FREE
+   DEBUG: 2026-01-04 22:13:42,275:      pdf_renderer.py:  470: printSegment:  (on-chain data is public)
+   DEBUG: 2026-01-04 22:13:42,275:      pdf_renderer.py:  470: printSegment:  2 
+   DEBUG: 2026-01-04 22:13:42,276:      pdf_renderer.py:  470: printSegment: Execution costs matter
+   DEBUG: 2026-01-04 22:13:42,276:      pdf_renderer.py:  470: printSegment:  - a small edge can be eaten by poor execution
+   DEBUG: 2026-01-04 22:13:42,277:      pdf_renderer.py:  470: printSegment:  3 
+   DEBUG: 2026-01-04 22:13:42,277:      pdf_renderer.py:  470: printSegment: Risk management IS the edge
+   DEBUG: 2026-01-04 22:13:42,277:      pdf_renderer.py:  470: printSegment:  - survival enables compounding
+   DEBUG: 2026-01-04 22:13:42,278:      pdf_renderer.py:  470: printSegment:  4 
+   DEBUG: 2026-01-04 22:13:42,278:      pdf_renderer.py:  470: printSegment: AI helps with detection and optimization
+   DEBUG: 2026-01-04 22:13:42,279:      pdf_renderer.py:  470: printSegment: , not price prediction
+   DEBUG: 2026-01-04 22:13:42,279:      pdf_renderer.py:  470: printSegment:  5 
+   DEBUG: 2026-01-04 22:13:42,280:      pdf_renderer.py:  470: printSegment: Combine multiple signals
+   DEBUG: 2026-01-04 22:13:42,280:      pdf_renderer.py:  470: printSegment:  - single indicators are weak
+   DEBUG: 2026-01-04 22:13:42,280:      pdf_renderer.py:  470: printSegment:  6 
+   DEBUG: 2026-01-04 22:13:42,281:      pdf_renderer.py:  470: printSegment: Keep final rules simple
+   DEBUG: 2026-01-04 22:13:42,281:      pdf_renderer.py:  470: printSegment:  - AI informs, you decide
+   DEBUG: 2026-01-04 22:13:42,282:      pdf_renderer.py:  470: printSegment:  7 
+   DEBUG: 2026-01-04 22:13:42,282:      pdf_renderer.py:  470: printSegment: Situation detection beats price prediction
+   DEBUG: 2026-01-04 22:13:42,283:      pdf_renderer.py:  470: printSegment:  - measure the present, don
+   DEBUG: 2026-01-04 22:13:42,283:      pdf_renderer.py:  470: printSegment: '
+   DEBUG: 2026-01-04 22:13:42,284:      pdf_renderer.py:  470: printSegment: t predict the future
+   DEBUG: 2026-01-04 22:13:42,284:      pdf_renderer.py:  470: printSegment: Generated: January 2025
+   DEBUG: 2026-01-04 22:13:42,285:      pdf_renderer.py:   53: 0, [1, 'AI Crypto Edge: Practical Applications for Perps Trading', 1, 68.0]
+   DEBUG: 2026-01-04 22:13:42,285:      pdf_renderer.py:   53: 1, [2, 'Overview', 1, 136.0]
+   DEBUG: 2026-01-04 22:13:42,285:      pdf_renderer.py:   53: 2, [1, '1. Alternative Data Processing', 1, 278.0]
+   DEBUG: 2026-01-04 22:13:42,285:      pdf_renderer.py:   53: 3, [2, 'LEARNING MOMENT: What ', 1, 316.0]
+   DEBUG: 2026-01-04 22:13:42,285:      pdf_renderer.py:   53: 4, [2, 'A. On-Chain Data (Your Biggest Edge)', 1, 415.6]
+   DEBUG: 2026-01-04 22:13:42,285:      pdf_renderer.py:   53: 5, [3, '1. Whale Wallet Tracking', 1, 448.8]
+   DEBUG: 2026-01-04 22:13:42,285:      pdf_renderer.py:   53: 6, [3, '2. Exchange Flow Data', 1, 537.6]
+   DEBUG: 2026-01-04 22:13:42,285:      pdf_renderer.py:   53: 7, [3, '3. Smart Money Wallets', 1, 626.4]
+   DEBUG: 2026-01-04 22:13:42,285:      pdf_renderer.py:   53: 8, [3, '4. Stablecoin Flows', 2, 72.0]
+   DEBUG: 2026-01-04 22:13:42,285:      pdf_renderer.py:   53: 9, [2, 'B. Exchange-Specific Data (Critical for Perps)', 2, 161.20000000000002]
+   DEBUG: 2026-01-04 22:13:42,285:      pdf_renderer.py:   53: 10, [3, '1. Liquidation Levels / Heatmaps', 2, 194.40000000000003]
+   DEBUG: 2026-01-04 22:13:42,285:      pdf_renderer.py:   53: 11, [3, '2. Open Interest by Exchange', 2, 283.20000000000005]
+   DEBUG: 2026-01-04 22:13:42,285:      pdf_renderer.py:   53: 12, [3, '3. Funding Rates Across Exchanges', 2, 360.0]
+   DEBUG: 2026-01-04 22:13:42,285:      pdf_renderer.py:   53: 13, [3, '4. Order Book Depth / Imbalance', 2, 436.79999999999995]
+   DEBUG: 2026-01-04 22:13:42,285:      pdf_renderer.py:   53: 14, [3, '5. Long/Short Ratio', 2, 513.5999999999999]
+   DEBUG: 2026-01-04 22:13:42,285:      pdf_renderer.py:   53: 15, [2, 'C. Social/Sentiment Data', 2, 602.7999999999998]
+   DEBUG: 2026-01-04 22:13:42,285:      pdf_renderer.py:   53: 16, [3, '1. Crypto Twitter (X) Sentiment', 2, 635.9999999999998]
+   DEBUG: 2026-01-04 22:13:42,285:      pdf_renderer.py:   53: 17, [3, '2. Telegram/Discord Alpha Groups', 3, 72.0]
+   DEBUG: 2026-01-04 22:13:42,285:      pdf_renderer.py:   53: 18, [3, '3. Fear ', 3, 160.8]
+   DEBUG: 2026-01-04 22:13:42,285:      pdf_renderer.py:   53: 19, [3, '4. Search Trends', 3, 249.60000000000002]
+   DEBUG: 2026-01-04 22:13:42,285:      pdf_renderer.py:   53: 20, [2, 'D. DeFi/Protocol Data', 3, 338.8]
+   DEBUG: 2026-01-04 22:13:42,285:      pdf_renderer.py:   53: 21, [3, '1. TVL Changes', 3, 372.0]
+   DEBUG: 2026-01-04 22:13:42,285:      pdf_renderer.py:   53: 22, [3, '2. DEX/CEX Volume Ratio', 3, 448.79999999999995]
+   DEBUG: 2026-01-04 22:13:42,285:      pdf_renderer.py:   53: 23, [3, '3. Lending Rates', 3, 525.5999999999999]
+   DEBUG: 2026-01-04 22:13:42,285:      pdf_renderer.py:   53: 24, [3, '4. Options Market Data', 3, 590.3999999999999]
+   DEBUG: 2026-01-04 22:13:42,285:      pdf_renderer.py:   53: 25, [1, '2. Execution Optimization', 3, 679.9999999999999]
+   DEBUG: 2026-01-04 22:13:42,285:      pdf_renderer.py:   53: 26, [2, 'LEARNING MOMENT: Why Execution Matters in Crypto', 4, 70.0]
+   DEBUG: 2026-01-04 22:13:42,285:      pdf_renderer.py:   53: 27, [2, 'Where AI Helps with Execution', 4, 277.6]
+   DEBUG: 2026-01-04 22:13:42,285:      pdf_renderer.py:   53: 28, [3, '1. Optimal Order Timing', 4, 310.8]
+   DEBUG: 2026-01-04 22:13:42,285:      pdf_renderer.py:   53: 29, [3, '2. Funding Rate Timing', 4, 387.59999999999997]
+   DEBUG: 2026-01-04 22:13:42,285:      pdf_renderer.py:   53: 30, [3, '3. Order Splitting (TWAP/VWAP)', 4, 464.3999999999999]
+   DEBUG: 2026-01-04 22:13:42,285:      pdf_renderer.py:   53: 31, [3, '4. Slippage Prediction', 4, 541.1999999999999]
+   DEBUG: 2026-01-04 22:13:42,285:      pdf_renderer.py:   53: 32, [3, '5. Venue Selection', 4, 617.9999999999999]
+   DEBUG: 2026-01-04 22:13:42,285:      pdf_renderer.py:   53: 33, [2, 'Practical Execution Optimizer (Conceptual)', 5, 70.0]
+   DEBUG: 2026-01-04 22:13:42,285:      pdf_renderer.py:   53: 34, [1, '3. Risk Management', 5, 308.0]
+   DEBUG: 2026-01-04 22:13:42,285:      pdf_renderer.py:   53: 35, [2, 'LEARNING MOMENT: Why Risk Management Is THE Edge', 5, 346.0]
+   DEBUG: 2026-01-04 22:13:42,286:      pdf_renderer.py:   53: 36, [2, 'Where AI Helps with Risk', 5, 457.6]
+   DEBUG: 2026-01-04 22:13:42,286:      pdf_renderer.py:   53: 37, [3, '1. Regime Detection', 5, 490.8]
+   DEBUG: 2026-01-04 22:13:42,286:      pdf_renderer.py:   53: 38, [3, '2. Correlation Breakdown Detection', 5, 579.6]
+   DEBUG: 2026-01-04 22:13:42,286:      pdf_renderer.py:   53: 39, [3, '3. Drawdown Prediction', 5, 656.4]
+   DEBUG: 2026-01-04 22:13:42,286:      pdf_renderer.py:   53: 40, [3, '4. Liquidation Cascade Risk', 6, 92.4]
+   DEBUG: 2026-01-04 22:13:42,286:      pdf_renderer.py:   53: 41, [3, '5. Exchange Risk Monitoring', 6, 169.20000000000002]
+   DEBUG: 2026-01-04 22:13:42,286:      pdf_renderer.py:   53: 42, [2, 'Practical Risk Framework (Conceptual)', 6, 258.40000000000003]
+   DEBUG: 2026-01-04 22:13:42,286:      pdf_renderer.py:   53: 43, [1, '4. Feature Engineering', 6, 556.4000000000001]
+   DEBUG: 2026-01-04 22:13:42,286:      pdf_renderer.py:   53: 44, [2, 'LEARNING MOMENT: What Feature Engineering Actually Is', 6, 594.4000000000001]
+   DEBUG: 2026-01-04 22:13:42,286:      pdf_renderer.py:   53: 45, [2, 'Useful Features for Crypto Perps', 7, 70.0]
+   DEBUG: 2026-01-04 22:13:42,286:      pdf_renderer.py:   53: 46, [3, 'Price-Derived', 7, 103.19999999999999]
+   DEBUG: 2026-01-04 22:13:42,286:      pdf_renderer.py:   53: 47, [3, 'Volume', 7, 192.0]
+   DEBUG: 2026-01-04 22:13:42,286:      pdf_renderer.py:   53: 48, [3, 'Order Book', 7, 280.79999999999995]
+   DEBUG: 2026-01-04 22:13:42,286:      pdf_renderer.py:   53: 49, [3, 'Derivatives', 7, 369.5999999999999]
+   DEBUG: 2026-01-04 22:13:42,286:      pdf_renderer.py:   53: 50, [3, 'Cross-Asset', 7, 470.39999999999986]
+   DEBUG: 2026-01-04 22:13:42,286:      pdf_renderer.py:   53: 51, [3, 'On-Chain', 7, 547.1999999999998]
+   DEBUG: 2026-01-04 22:13:42,286:      pdf_renderer.py:   53: 52, [3, 'Sentiment', 7, 635.9999999999998]
+   DEBUG: 2026-01-04 22:13:42,286:      pdf_renderer.py:   53: 53, [2, 'How AI Helps with Features', 8, 70.0]
+   DEBUG: 2026-01-04 22:13:42,286:      pdf_renderer.py:   53: 54, [3, '1. Feature Selection', 8, 103.19999999999999]
+   DEBUG: 2026-01-04 22:13:42,286:      pdf_renderer.py:   53: 55, [3, '2. Feature Combination', 8, 180.0]
+   DEBUG: 2026-01-04 22:13:42,286:      pdf_renderer.py:   53: 56, [3, '3. Regime-Conditional Features', 8, 256.8]
+   DEBUG: 2026-01-04 22:13:42,286:      pdf_renderer.py:   53: 57, [3, '4. Feature Transformation', 8, 333.59999999999997]
+   DEBUG: 2026-01-04 22:13:42,286:      pdf_renderer.py:   53: 58, [1, 'Putting It All Together', 8, 423.19999999999993]
+   DEBUG: 2026-01-04 22:13:42,286:      pdf_renderer.py:   53: 59, [2, 'Realistic 2025 Crypto AI Stack', 8, 461.19999999999993]
+   DEBUG: 2026-01-04 22:13:42,286:      pdf_renderer.py:   53: 60, [3, 'Layer 1: Data Collection', 8, 494.3999999999999]
+   DEBUG: 2026-01-04 22:13:42,286:      pdf_renderer.py:   53: 61, [3, 'Layer 2: Feature Engineering', 8, 619.1999999999999]
+   DEBUG: 2026-01-04 22:13:42,286:      pdf_renderer.py:   53: 62, [3, 'Layer 3: Situation Detection (not price prediction', 8, 707.9999999999999]
+   DEBUG: 2026-01-04 22:13:42,286:      pdf_renderer.py:   53: 63, [3, 'Layer 4: Risk Management', 9, 158.4]
+   DEBUG: 2026-01-04 22:13:42,286:      pdf_renderer.py:   53: 64, [3, 'Layer 5: Execution', 9, 247.2]
+   DEBUG: 2026-01-04 22:13:42,286:      pdf_renderer.py:   53: 65, [3, 'Layer 6: Simple Rules (not AI', 9, 335.99999999999994]
+   DEBUG: 2026-01-04 22:13:42,286:      pdf_renderer.py:   53: 66, [1, 'Data Sources Reference', 9, 467.5999999999999]
+   DEBUG: 2026-01-04 22:13:42,286:      pdf_renderer.py:   53: 67, [2, 'Free/Cheap Sources (2025)', 9, 505.5999999999999]
+   DEBUG: 2026-01-04 22:13:42,286:      pdf_renderer.py:   53: 68, [2, 'Paid Sources', 9, 593.1999999999998]
+   DEBUG: 2026-01-04 22:13:42,286:      pdf_renderer.py:   53: 69, [1, 'What to Build Next', 9, 681.1999999999998]
+   DEBUG: 2026-01-04 22:13:42,286:      pdf_renderer.py:   53: 70, [2, 'Progressive Enhancements', 10, 70.0]
+   DEBUG: 2026-01-04 22:13:42,286:      pdf_renderer.py:   53: 71, [3, '1. Multi-Signal Situation Detector', 10, 103.19999999999999]
+   DEBUG: 2026-01-04 22:13:42,286:      pdf_renderer.py:   53: 72, [3, '2. Execution Timing Module', 10, 168.0]
+   DEBUG: 2026-01-04 22:13:42,286:      pdf_renderer.py:   53: 73, [3, '3. Dynamic Position Sizer', 10, 232.8]
+   DEBUG: 2026-01-04 22:13:42,286:      pdf_renderer.py:   53: 74, [3, '4. Liquidation Level Tracker', 10, 297.59999999999997]
+   DEBUG: 2026-01-04 22:13:42,286:      pdf_renderer.py:   53: 75, [1, 'Key Takeaways', 10, 375.19999999999993]

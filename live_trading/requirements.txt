@@ -16,6 +16,9 @@ pytz==2024.1
 # Numerical computing (used by OI strategy)
 numpy==1.26.4
 
+# Clickhouse database client (used by BH strategy)
+clickhouse-connect==0.7.0
+
 # Testing dependencies (optional)
 pytest==7.4.3
 pytest-cov==4.1.0

@@ -358,6 +358,53 @@ Bot is ready to trade.
 
         return result
 
+    def set_bot_commands(self) -> bool:
+        """
+        Register bot commands with Telegram for the command menu dropdown
+
+        This makes commands appear in the "/" menu in Telegram.
+
+        Returns:
+            True if commands set successfully, False otherwise
+        """
+        import logging
+        logger = logging.getLogger('TradingBot')
+
+        commands = [
+            {"command": "start", "description": "Start the bot"},
+            {"command": "help", "description": "Show all commands"},
+            {"command": "status", "description": "Bot status & environment"},
+            {"command": "positions", "description": "View positions & P&L"},
+            {"command": "balance", "description": "Quick balance check"},
+            {"command": "strategy", "description": "Manage trading strategies"},
+            {"command": "deposit", "description": "Get deposit address (USDC/Arbitrum)"},
+            {"command": "withdraw", "description": "Withdraw USDC"},
+            {"command": "enable", "description": "Unpause the bot"},
+            {"command": "disable", "description": "Pause the bot (PIN required)"},
+            {"command": "close", "description": "Close all positions (PIN required)"},
+            {"command": "auth", "description": "Authenticate with PIN"},
+        ]
+
+        try:
+            url = f"{self.base_url}/setMyCommands"
+            response = requests.post(url, json={"commands": commands}, timeout=10)
+
+            if response.status_code == 200:
+                result = response.json()
+                if result.get('ok'):
+                    logger.info("✅ Bot commands registered with Telegram")
+                    return True
+                else:
+                    logger.error(f"Failed to set commands: {result}")
+                    return False
+            else:
+                logger.error(f"Failed to set commands: {response.status_code}")
+                return False
+
+        except Exception as e:
+            logger.error(f"Error setting bot commands: {e}")
+            return False
+
     def get_updates(self, offset: Optional[int] = None, timeout: int = 30) -> list:
         """
         Get updates (messages) from Telegram using long polling
