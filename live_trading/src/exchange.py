@@ -369,6 +369,77 @@ class HyperLiquidClient:
         except Exception as e:
             raise Exception(f"Failed to get positions: {str(e)}")
 
+    def get_trade_history(self) -> list:
+        """
+        Fetch completed trades from HyperLiquid API.
+
+        Pairs up Open/Close fills into round-trip trades.
+
+        Returns:
+            List of trade dicts with entry/exit details, newest first
+        """
+        def fetch_and_pair():
+            fills = self.info.user_fills(self.wallet_address)
+            if not fills:
+                return []
+
+            # Separate opens and closes, group by coin
+            opens = []
+            closes = []
+            for f in fills:
+                if f.get('dir', '').startswith('Open'):
+                    opens.append(f)
+                elif f.get('dir', '').startswith('Close'):
+                    closes.append(f)
+
+            # Sort both by time ascending
+            opens.sort(key=lambda f: f['time'])
+            closes.sort(key=lambda f: f['time'])
+
+            # Pair opens with closes (simple sequential matching per coin)
+            trades = []
+            used_opens = set()
+
+            for close in closes:
+                coin = close['coin']
+                # Find the matching open (same coin, earlier time, not yet used)
+                for i, op in enumerate(opens):
+                    if i not in used_opens and op['coin'] == coin and op['time'] < close['time']:
+                        entry_price = float(op['px'])
+                        exit_price = float(close['px'])
+                        size = float(close['sz'])
+                        closed_pnl = float(close.get('closedPnl', 0))
+                        entry_fee = float(op.get('fee', 0))
+                        exit_fee = float(close.get('fee', 0))
+
+                        profit_pct = ((exit_price - entry_price) / entry_price) * 100
+
+                        trades.append({
+                            'coin': coin,
+                            'entry_time_ms': op['time'],
+                            'exit_time_ms': close['time'],
+                            'entry_price': entry_price,
+                            'exit_price': exit_price,
+                            'size': size,
+                            'profit_pct': round(profit_pct, 2),
+                            'profit_usd': round(closed_pnl, 2),
+                            'fees': round(entry_fee + exit_fee, 4),
+                            'result': 'win' if closed_pnl >= 0 else 'loss'
+                        })
+
+                        used_opens.add(i)
+                        break
+
+            # Sort newest first
+            trades.sort(key=lambda t: t['exit_time_ms'], reverse=True)
+            return trades
+
+        try:
+            return self._retry_operation(fetch_and_pair, "Get trade history")
+        except Exception as e:
+            print(f"Failed to get trade history: {e}")
+            return []
+
     def get_order_status(self, order_id: str) -> Dict:
         """
         Check status of a specific order

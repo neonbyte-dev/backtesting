@@ -431,26 +431,17 @@ Send /help for all commands."""
             return f"Error: {str(e)}"
 
     def _history_message(self, args: list) -> str:
-        """Show trade history"""
+        """Show trade history from HyperLiquid API"""
         try:
-            # Optional: filter by strategy name
-            strategy_filter = args[0].lower() if args else None
-
-            trades = self.bot.state_manager.get_trade_history(
-                strategy_name=strategy_filter,
-                limit=20
-            )
+            trades = self.bot.exchange.get_trade_history()
 
             if not trades:
-                if strategy_filter:
-                    return f"📜 No trade history for <b>{strategy_filter}</b>"
                 return "📜 No trade history yet"
 
             msg = "📜 <b>TRADE HISTORY</b>\n"
-            if strategy_filter:
-                msg += f"<i>Filter: {strategy_filter}</i>\n"
 
             total_pnl = 0
+            total_fees = 0
             wins = 0
 
             for t in trades:
@@ -458,25 +449,28 @@ Send /help for all commands."""
                 if t['profit_pct'] >= 0:
                     wins += 1
                 total_pnl += t.get('profit_usd', 0)
+                total_fees += t.get('fees', 0)
 
-                # Format exit time
+                # Convert ms timestamp to readable date
                 try:
-                    exit_dt = datetime.fromisoformat(t['exit_time'])
+                    exit_dt = datetime.utcfromtimestamp(t['exit_time_ms'] / 1000)
                     date_str = exit_dt.strftime('%b %d %H:%M')
                 except:
                     date_str = "?"
 
-                msg += f"\n{emoji} <b>[{t['strategy'].upper()}]</b> {date_str}\n"
+                msg += f"\n{emoji} <b>{t['coin']}</b> {date_str} UTC\n"
                 msg += f"   ${t['entry_price']:,.0f} → ${t['exit_price']:,.0f}"
-                msg += f"  {t['profit_pct']:+.2f}% (${t.get('profit_usd', 0):+,.0f})\n"
+                msg += f"  {t['profit_pct']:+.2f}% (${t.get('profit_usd', 0):+,.2f})\n"
 
             # Summary
             msg += f"\n{'─'*25}\n"
             msg += f"<b>Trades:</b> {len(trades)}"
             if trades:
                 msg += f" | <b>Win Rate:</b> {wins}/{len(trades)} ({wins/len(trades)*100:.0f}%)"
-            msg += f"\n<b>Total P&L:</b> ${total_pnl:+,.2f}\n"
-            msg += f"\n<i>Usage: /history or /history oi</i>"
+            net_pnl = total_pnl - total_fees
+            msg += f"\n<b>Gross P&L:</b> ${total_pnl:+,.2f}"
+            msg += f"\n<b>Fees:</b> -${total_fees:,.2f}"
+            msg += f"\n<b>Net P&L:</b> ${net_pnl:+,.2f}"
 
             return msg
 
