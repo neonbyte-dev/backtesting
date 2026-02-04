@@ -674,6 +674,59 @@ class TradingBot:
                 f"<b>Allocated Capital:</b> ${capital_usd:,.0f}\n"
                 f"<b>Description:</b> {STRATEGY_DESCRIPTIONS.get(strategy_name, 'N/A')}")
 
+    def reallocate_strategy(self, strategy_name: str, new_capital: float) -> str:
+        """
+        Change the allocated capital for a running strategy
+
+        Unlike enable_strategy, this accounts for the existing allocation
+        so the balance check is accurate.
+
+        Args:
+            strategy_name: Name of strategy to reallocate
+            new_capital: New USD amount to allocate
+
+        Returns:
+            Status message
+        """
+        if strategy_name not in STRATEGY_CLASSES:
+            available = ', '.join(STRATEGY_CLASSES.keys())
+            return f"Unknown strategy: {strategy_name}\n\nAvailable: {available}"
+
+        # Get current allocation for this strategy
+        current_allocation = self.state_manager.get_strategy_capital(strategy_name)
+
+        # Check total allocation doesn't exceed balance
+        # Subtract current allocation since it will be replaced
+        current_total = self.state_manager.get_total_allocated_capital()
+        other_strategies_total = current_total - current_allocation
+
+        try:
+            account_balance = self.exchange.get_account_balance()
+        except:
+            account_balance = None
+
+        if account_balance and (other_strategies_total + new_capital) > account_balance:
+            available = account_balance - other_strategies_total
+            return (f"Cannot allocate ${new_capital:,.0f}\n\n"
+                    f"Account balance: ${account_balance:,.0f}\n"
+                    f"Other strategies: ${other_strategies_total:,.0f}\n"
+                    f"Available: ${available:,.0f}")
+
+        # Update the allocation
+        old_capital = current_allocation
+        self.state_manager.enable_strategy(strategy_name, new_capital)
+
+        # Update config
+        if 'strategies' in self.config and strategy_name in self.config['strategies']:
+            self.config['strategies'][strategy_name]['allocated_capital_usd'] = new_capital
+        self.save_config()
+
+        self.logger.info(f"Strategy '{strategy_name}' reallocated: ${old_capital:,.0f} → ${new_capital:,.0f}")
+
+        return (f"Strategy <b>{strategy_name}</b> reallocated\n\n"
+                f"<b>Previous:</b> ${old_capital:,.0f}\n"
+                f"<b>New:</b> ${new_capital:,.0f}")
+
     def disable_strategy(self, strategy_name: str) -> str:
         """
         Disable a strategy

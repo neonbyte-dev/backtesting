@@ -132,6 +132,11 @@ class CommandHandler:
                 strategy_name = data.replace('strategy_deploy_', '')
                 return self._ask_for_capital(chat_id, strategy_name)
 
+            # Reallocate strategy capital
+            elif data.startswith('strategy_reallocate_'):
+                strategy_name = data.replace('strategy_reallocate_', '')
+                return self._ask_for_reallocate(chat_id, strategy_name)
+
             # Disable strategy
             elif data.startswith('strategy_disable_'):
                 strategy_name = data.replace('strategy_disable_', '')
@@ -189,6 +194,32 @@ class CommandHandler:
             }
 
             return (f"✅ {result}", keyboard)
+
+        elif action == 'awaiting_reallocate':
+            strategy_name = state.get('strategy')
+
+            # Clear conversation state
+            del self.conversation_state[chat_id]
+
+            # Parse amount
+            try:
+                amount = float(text.replace(',', '').replace('$', '').strip())
+            except ValueError:
+                return (f"Invalid amount: {text}\n\nPlease enter a number (e.g., 100)", None)
+
+            if amount <= 0:
+                return ("Amount must be greater than 0", None)
+
+            # Reallocate the strategy
+            result = self.bot.reallocate_strategy(strategy_name, amount)
+
+            keyboard = {
+                "inline_keyboard": [[
+                    {"text": "Back to Strategies", "callback_data": "strategy_list"}
+                ]]
+            }
+
+            return (result, keyboard)
 
         # Unknown state
         del self.conversation_state[chat_id]
@@ -533,6 +564,11 @@ Send /help for all commands."""
                         "text": "🛑 Close Position",
                         "callback_data": f"close_{strategy_name}"
                     }])
+                # Show update capital button
+                buttons.append([{
+                    "text": "💰 Update Capital",
+                    "callback_data": f"strategy_reallocate_{strategy_name}"
+                }])
                 # Show disable button
                 buttons.append([{
                     "text": "⏹️ Stop Strategy",
@@ -580,6 +616,41 @@ Send /help for all commands."""
             keyboard = {
                 "inline_keyboard": [[{
                     "text": "❌ Cancel",
+                    "callback_data": f"strategy_view_{strategy_name}"
+                }]]
+            }
+
+            return (msg, keyboard)
+
+        except Exception as e:
+            del self.conversation_state[chat_id]
+            return (f"Error: {str(e)}", None)
+
+    def _ask_for_reallocate(self, chat_id: str, strategy_name: str) -> Tuple[str, dict]:
+        """Ask user to enter new capital amount for reallocation"""
+        self.conversation_state[chat_id] = {
+            'action': 'awaiting_reallocate',
+            'strategy': strategy_name
+        }
+
+        try:
+            balance = self.bot.exchange.get_account_balance()
+            current_capital = self.bot.state_manager.get_strategy_capital(strategy_name)
+            total_allocated = self.bot.state_manager.get_total_allocated_capital()
+            other_allocated = total_allocated - current_capital
+            available = balance - other_allocated
+
+            msg = f"💰 <b>REALLOCATE {strategy_name.upper()}</b>\n\n"
+            msg += f"<b>Current Allocation:</b> ${current_capital:,.0f}\n"
+            msg += f"<b>Account Balance:</b> ${balance:,.0f}\n"
+            msg += f"<b>Other Strategies:</b> ${other_allocated:,.0f}\n"
+            msg += f"<b>Max Available:</b> ${available:,.0f}\n\n"
+            msg += f"Enter the new capital amount:\n\n"
+            msg += f"<i>Example: {int(available)}</i>"
+
+            keyboard = {
+                "inline_keyboard": [[{
+                    "text": "Cancel",
                     "callback_data": f"strategy_view_{strategy_name}"
                 }]]
             }
@@ -639,29 +710,29 @@ Send /help for all commands."""
     def _deposit_message(self) -> str:
         """Show deposit information"""
         try:
-            info = self.bot.exchange.get_deposit_info()
+            balance = self.bot.exchange.get_account_balance()
+            wallet = self.bot.exchange.wallet_address
 
             msg = "💰 <b>DEPOSIT USDC</b>\n\n"
+            msg += f"<b>Current Balance:</b> ${balance:,.2f}\n\n"
 
-            msg += f"<b>Network:</b> {info['chain']}\n"
-            msg += f"<b>Token:</b> {info['token']}\n\n"
+            msg += "<b>Option 1: Send USDC on HyperLiquid L1</b>\n"
+            msg += f"<code>{wallet}</code>\n"
+            msg += "Send USDC directly on HyperLiquid L1 (not HyperEVM).\n"
+            msg += "Lands in your trading account instantly.\n\n"
 
-            msg += f"<b>Deposit Address:</b>\n"
-            msg += f"<code>{info['address']}</code>\n\n"
+            msg += "<b>Option 2: Bridge from Arbitrum</b>\n"
+            msg += "Go to <a href='https://app.hyperliquid.xyz/portfolio'>app.hyperliquid.xyz</a>\n"
+            msg += "Connect wallet → Deposit → Follow prompts.\n"
+            msg += "Takes 1-5 minutes.\n\n"
 
-            msg += f"<b>USDC Contract (Arbitrum):</b>\n"
-            msg += f"<code>{info['token_contract']}</code>\n\n"
-
-            msg += "⚠️ <b>IMPORTANT:</b>\n"
-            for note in info['notes']:
-                msg += f"• {note}\n"
-
-            msg += f"\n<i>Environment: {info['network']}</i>"
+            msg += "⚠️ Do NOT send on HyperEVM — that's a different chain.\n\n"
+            msg += "🔑 Wallet is under <b>Bob McGee</b> Chrome profile."
 
             return msg
 
         except Exception as e:
-            return f"Error getting deposit info: {str(e)}"
+            return f"Error: {str(e)}"
 
     def _handle_withdraw(self, args: list) -> str:
         """Handle withdraw command"""

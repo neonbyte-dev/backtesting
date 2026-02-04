@@ -53,7 +53,8 @@
       "mcp__clickhouse__connect_database",
       "mcp__clickhouse__execute_query",
       "mcp__clickhouse__run_select_query",
-      "mcp__clickhouse__list_tables"
+      "mcp__clickhouse__list_tables",
+      "mcp__railway-mcp-server__check-railway-status"
     ]
   }
 }
