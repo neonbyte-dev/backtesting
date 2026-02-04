@@ -431,42 +431,114 @@ Send /help for all commands."""
             return f"Error: {str(e)}"
 
     def _history_message(self, args: list) -> str:
-        """Show trade history from HyperLiquid API"""
+        """Show trade history grouped by strategy"""
         try:
-            trades = self.bot.exchange.get_trade_history()
+            # Get locally tracked trades (have strategy names)
+            local_trades = self.bot.state_manager.get_trade_history(limit=50)
 
-            if not trades:
+            # Get API trades (have fees, cover pre-tracking history)
+            api_trades = self.bot.exchange.get_trade_history()
+
+            if not local_trades and not api_trades:
                 return "📜 No trade history yet"
 
             msg = "📜 <b>TRADE HISTORY</b>\n"
-
             total_pnl = 0
             total_fees = 0
             wins = 0
+            trade_count = 0
 
-            for t in trades:
-                emoji = "🟢" if t['profit_pct'] >= 0 else "🔴"
-                if t['profit_pct'] >= 0:
-                    wins += 1
-                total_pnl += t.get('profit_usd', 0)
-                total_fees += t.get('fees', 0)
+            # Group local trades by strategy
+            by_strategy = {}
+            local_exit_times = set()
+            for t in local_trades:
+                name = t.get('strategy', 'unknown')
+                if name not in by_strategy:
+                    by_strategy[name] = []
+                by_strategy[name].append(t)
+                # Track exit times to identify API-only trades
+                if t.get('exit_time'):
+                    local_exit_times.add(t['exit_time'])
 
-                # Convert ms timestamp to readable date
+            # Show each strategy's trades
+            for strategy_name, trades in by_strategy.items():
+                msg += f"\n<b>▸ {strategy_name.upper()}</b>\n"
+
+                for t in trades:
+                    emoji = "🟢" if t['profit_pct'] >= 0 else "🔴"
+                    if t['profit_pct'] >= 0:
+                        wins += 1
+                    total_pnl += t.get('profit_usd', 0)
+                    trade_count += 1
+
+                    try:
+                        exit_dt = datetime.fromisoformat(t['exit_time'])
+                        date_str = exit_dt.strftime('%b %d %H:%M')
+                    except:
+                        date_str = "?"
+
+                    msg += f"  {emoji} {date_str} UTC\n"
+                    msg += f"     ${t['entry_price']:,.0f} → ${t['exit_price']:,.0f}"
+                    msg += f"  {t['profit_pct']:+.2f}% (${t.get('profit_usd', 0):+,.2f})\n"
+
+            # Find API trades not in local history (pre-tracking)
+            unmatched_api = []
+            for api_t in api_trades:
+                # Convert API ms timestamp to ISO for comparison
                 try:
-                    exit_dt = datetime.utcfromtimestamp(t['exit_time_ms'] / 1000)
-                    date_str = exit_dt.strftime('%b %d %H:%M')
+                    api_exit_iso = datetime.utcfromtimestamp(
+                        api_t['exit_time_ms'] / 1000
+                    ).isoformat()
                 except:
-                    date_str = "?"
+                    api_exit_iso = None
 
-                msg += f"\n{emoji} <b>{t['coin']}</b> {date_str} UTC\n"
-                msg += f"   ${t['entry_price']:,.0f} → ${t['exit_price']:,.0f}"
-                msg += f"  {t['profit_pct']:+.2f}% (${t.get('profit_usd', 0):+,.2f})\n"
+                # Check if this trade is already in local history
+                matched = False
+                if api_exit_iso:
+                    for local_time in local_exit_times:
+                        # Match within 60 seconds
+                        try:
+                            local_dt = datetime.fromisoformat(local_time)
+                            api_dt = datetime.fromisoformat(api_exit_iso)
+                            if abs((local_dt - api_dt).total_seconds()) < 60:
+                                matched = True
+                                break
+                        except:
+                            pass
+                if not matched:
+                    unmatched_api.append(api_t)
+
+            # Show pre-tracking trades from API
+            if unmatched_api:
+                msg += f"\n<b>▸ EARLIER (pre-tracking)</b>\n"
+                for t in unmatched_api:
+                    emoji = "🟢" if t['profit_pct'] >= 0 else "🔴"
+                    if t['profit_pct'] >= 0:
+                        wins += 1
+                    total_pnl += t.get('profit_usd', 0)
+                    total_fees += t.get('fees', 0)
+                    trade_count += 1
+
+                    try:
+                        exit_dt = datetime.utcfromtimestamp(t['exit_time_ms'] / 1000)
+                        date_str = exit_dt.strftime('%b %d %H:%M')
+                    except:
+                        date_str = "?"
+
+                    msg += f"  {emoji} {t['coin']} {date_str} UTC\n"
+                    msg += f"     ${t['entry_price']:,.0f} → ${t['exit_price']:,.0f}"
+                    msg += f"  {t['profit_pct']:+.2f}% (${t.get('profit_usd', 0):+,.2f})\n"
+
+            # Also tally fees from API trades that matched local ones
+            for api_t in api_trades:
+                if api_t not in unmatched_api:
+                    total_fees += api_t.get('fees', 0)
 
             # Summary
             msg += f"\n{'─'*25}\n"
-            msg += f"<b>Trades:</b> {len(trades)}"
-            if trades:
-                msg += f" | <b>Win Rate:</b> {wins}/{len(trades)} ({wins/len(trades)*100:.0f}%)"
+            msg += f"<b>Trades:</b> {trade_count}"
+            if trade_count:
+                msg += f" | <b>Win Rate:</b> {wins}/{trade_count} ({wins/trade_count*100:.0f}%)"
             net_pnl = total_pnl - total_fees
             msg += f"\n<b>Gross P&L:</b> ${total_pnl:+,.2f}"
             msg += f"\n<b>Fees:</b> -${total_fees:,.2f}"
