@@ -23,9 +23,11 @@ from typing import Dict, Optional, Tuple
 
 # Solana libraries for signing and submitting transactions
 from solders.keypair import Keypair
+from solders.pubkey import Pubkey
 from solders.transaction import VersionedTransaction
 from solana.rpc.api import Client as SolanaClient
 from solana.rpc.commitment import Confirmed
+from solana.rpc.types import TokenAccountOpts
 
 
 class SolanaDEXClient:
@@ -204,9 +206,10 @@ class SolanaDEXClient:
         """
         def fetch_balance():
             # Get all token accounts for this wallet
+            opts = TokenAccountOpts(mint=Pubkey.from_string(self.USDC_MINT))
             response = self.solana.get_token_accounts_by_owner_json_parsed(
                 self.keypair.pubkey(),
-                {"mint": self.USDC_MINT},
+                opts,
                 commitment=Confirmed
             )
 
@@ -259,9 +262,10 @@ class SolanaDEXClient:
             Tuple of (ui_amount, raw_amount)
         """
         def fetch_balance():
+            opts = TokenAccountOpts(mint=Pubkey.from_string(token_address))
             response = self.solana.get_token_accounts_by_owner_json_parsed(
                 self.keypair.pubkey(),
-                {"mint": token_address},
+                opts,
                 commitment=Confirmed
             )
 
