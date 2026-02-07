@@ -6,7 +6,7 @@
       "description": "Buy at 3 PM EST, trailing stop 1%",
       "params": {
         "entry_hour": 15,
-        "max_entry_price_usd": 120000,
+        "max_entry_price_usd": 90000,
         "trailing_stop_pct": 1.0,
         "timezone": "America/New_York"
       }
