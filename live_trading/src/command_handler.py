@@ -655,6 +655,34 @@ Send /help for all commands."""
                 msg += f"• <b>Max Drawdown:</b> -4.1%\n"
                 msg += f"• <b>Avg Hold:</b> 2-6 hours\n"
 
+            elif strategy_name == 'pastel_melon':
+                params = self.config.get('strategies', {}).get('pastel_melon', {}).get('params', {})
+                targets = params.get('tranche_targets', [2, 5, 10])
+                position_pct = params.get('position_size_pct', 0.10) * 100
+                min_liq = params.get('min_liquidity_usd', 10000)
+
+                msg += f"<b>🎯 Overview:</b>\n"
+                msg += f"Follows Melon's token calls in Pastel degen channel. "
+                msg += f"Trades on Solana via Jupiter aggregator.\n\n"
+
+                msg += f"<b>📥 ENTRY CONDITIONS:</b>\n"
+                msg += f"• <b>Signal:</b> Melon posts token address → Rick bot responds\n"
+                msg += f"• <b>Chain:</b> Solana only (91% of Melon's calls)\n"
+                msg += f"• <b>Min Liquidity:</b> ${min_liq:,}\n"
+                msg += f"• <b>Position Size:</b> {position_pct:.0f}% of capital per trade\n\n"
+
+                msg += f"<b>📤 EXIT CONDITIONS (Tiered):</b>\n"
+                msg += f"• <b>{targets[0]}x:</b> Sell 33% at 2x entry price\n"
+                msg += f"• <b>{targets[1]}x:</b> Sell 33% at 5x entry price\n"
+                msg += f"• <b>{targets[2]}x:</b> Sell 34% at 10x entry price\n"
+                msg += f"• <b>Dead Token:</b> Stop monitoring if liquidity = 0\n\n"
+
+                msg += f"<b>📊 BACKTEST (Mar-Oct 2025):</b>\n"
+                msg += f"• <b>Win Rate:</b> 65.1% (hit at least 2x)\n"
+                msg += f"• <b>Expected ROI:</b> +208% per trade\n"
+                msg += f"• <b>Frequency:</b> ~2.7 calls/month\n"
+                msg += f"• <b>Best Performer:</b> KWEEN (44.1x)\n"
+
             if enabled:
                 msg += f"\n<b>💰 Allocated Capital:</b> ${capital:,.0f}\n"
 

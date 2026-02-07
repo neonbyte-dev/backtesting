@@ -35,23 +35,29 @@ from src.exchange import HyperLiquidClient
 from src.strategy import OvernightRecoveryStrategy
 from src.oi_strategy import OIStrategy
 from src.bh_strategy import BHInsightsStrategy
+from src.melon_strategy import MelonStrategy
 from src.state_manager import StateManager
 from src.notifier import TelegramNotifier
 from src.risk_manager import RiskManager
 from src.command_handler import CommandHandler
+
+# Solana client - only imported if enabled
+SolanaDEXClient = None
 
 
 # Strategy registry - maps names to classes
 STRATEGY_CLASSES = {
     'overnight': OvernightRecoveryStrategy,
     'oi': OIStrategy,
-    'bh': BHInsightsStrategy
+    'bh': BHInsightsStrategy,
+    'pastel_melon': MelonStrategy
 }
 
 STRATEGY_DESCRIPTIONS = {
     'overnight': 'Buy at 3 PM EST, trailing stop 1%',
     'oi': 'Open Interest signals, never sell at loss',
-    'bh': 'BH Insights Discord signals (multi-asset)'
+    'bh': 'BH Insights Discord signals (multi-asset)',
+    'pastel_melon': 'Pastel Melon - Solana memecoin calls'
 }
 
 
@@ -127,7 +133,7 @@ class TradingBot:
 
     def _initialize_components(self):
         """Initialize all bot components"""
-        # Exchange client
+        # Exchange client (HyperLiquid for perps)
         self.exchange = HyperLiquidClient(
             api_key=os.getenv('HYPERLIQUID_API_KEY'),
             api_secret=os.getenv('HYPERLIQUID_API_SECRET'),
@@ -136,6 +142,22 @@ class TradingBot:
             timeout=self.config['exchange']['request_timeout_seconds']
         )
         self.logger.info(f"Exchange: {'TESTNET' if self.config['exchange']['testnet'] else 'MAINNET'}")
+
+        # Solana DEX client (for Pastel Melon strategy)
+        self.solana_client = None
+        if self.config.get('solana', {}).get('enabled'):
+            try:
+                global SolanaDEXClient
+                from src.solana_client import SolanaDEXClient
+                self.solana_client = SolanaDEXClient(
+                    private_key=os.getenv('SOLANA_PRIVATE_KEY'),
+                    rpc_url=os.getenv('SOLANA_RPC_URL', 'https://api.mainnet-beta.solana.com'),
+                    slippage_bps=self.config.get('solana', {}).get('slippage_bps', 100),
+                    priority_fee_lamports=self.config.get('solana', {}).get('priority_fee_lamports', 100000)
+                )
+                self.logger.info("Solana DEX client initialized (high priority fees enabled)")
+            except Exception as e:
+                self.logger.error(f"Failed to initialize Solana client: {e}")
 
         # Initialize ALL strategy instances
         self.strategies: Dict[str, object] = {}
@@ -146,6 +168,10 @@ class TradingBot:
 
                 # Special handling for BH strategy - inject Clickhouse password from env
                 if name == 'bh':
+                    params['clickhouse_password'] = os.getenv('CLICKHOUSE_PASSWORD', '')
+
+                # Special handling for Pastel Melon strategy - inject Clickhouse password from env
+                if name == 'pastel_melon':
                     params['clickhouse_password'] = os.getenv('CLICKHOUSE_PASSWORD', '')
 
                 self.strategies[name] = strategy_class(params)
@@ -347,6 +373,172 @@ class TradingBot:
                 except Exception as e:
                     self.logger.error(f"[BH] Failed to exit {asset}: {e}")
                     self.notifier.send_error_alert(f"[BH] EXIT {asset} failed: {str(e)}", None)
+
+    def _handle_melon_strategy(self, current_time: datetime):
+        """
+        Handle Pastel Melon strategy - Solana DEX trading based on Pastel degen calls.
+
+        Trades on Solana via Jupiter aggregator (not HyperLiquid).
+
+        Called each loop iteration to:
+        1. Check Clickhouse for new Melon calls
+        2. Parse signals from Rick bot responses
+        3. Execute buys for new signals
+        4. Monitor positions for tiered exits (2x, 5x, 10x)
+        """
+        strategy = self.strategies.get('pastel_melon')
+        if not strategy:
+            return
+
+        if not self.solana_client:
+            self.logger.warning("[Pastel Melon] Solana client not initialized - check config")
+            return
+
+        # Check for new signals from Clickhouse
+        try:
+            new_signals = strategy.check_for_signals()
+            if new_signals:
+                strategy.process_new_signals(new_signals)
+        except Exception as e:
+            self.logger.error(f"[Pastel Melon] Error checking signals: {e}")
+
+        # Get pending signals and process them
+        pending = strategy.get_pending_signals()
+
+        for address, signal in pending.items():
+            # Skip if already in position
+            if address in strategy.active_positions:
+                strategy.clear_signal(address)
+                continue
+
+            # Get allocated capital for Pastel Melon strategy
+            allocated_capital = self.state_manager.get_strategy_capital('pastel_melon')
+            if allocated_capital <= 0:
+                self.logger.warning("[Pastel Melon] No capital allocated")
+                continue
+
+            # Calculate position size
+            position_size_pct = strategy.position_size_pct
+            usdc_to_spend = allocated_capital * position_size_pct * 0.999  # Leave 0.1% for fees
+
+            # Check liquidity
+            try:
+                token_info = self.solana_client.get_token_info(address)
+                if token_info['liquidity'] < strategy.min_liquidity:
+                    self.logger.info(f"[Pastel Melon] Skipping {signal['ticker']} - low liquidity: ${token_info['liquidity']:,.0f}")
+                    strategy.clear_signal(address)
+                    continue
+            except Exception as e:
+                self.logger.error(f"[Pastel Melon] Failed to get token info for {address}: {e}")
+                strategy.clear_signal(address)
+                continue
+
+            # Execute buy
+            self.logger.info(f"[Pastel Melon] Buying {signal['ticker']} for ${usdc_to_spend:,.0f}")
+
+            try:
+                tx_sig, fill_price, tokens_received = self.solana_client.buy_token(
+                    token_address=address,
+                    usdc_amount=usdc_to_spend,
+                    min_liquidity=strategy.min_liquidity
+                )
+
+                # Create position with tranches
+                position = strategy.create_position(
+                    address=address,
+                    entry_price=fill_price,
+                    tokens_bought=tokens_received,
+                    usdc_spent=usdc_to_spend,
+                    signal=signal
+                )
+
+                # Clear the pending signal
+                strategy.clear_signal(address)
+
+                # Send notification
+                self.notifier.send_message(
+                    f"🍈 <b>[PASTEL MELON] BUY {signal['ticker']}</b>\n\n"
+                    f"<b>Price:</b> ${fill_price:.8f}\n"
+                    f"<b>Size:</b> {tokens_received:,.2f} tokens (${usdc_to_spend:,.0f})\n"
+                    f"<b>FDV at call:</b> ${signal['entry_fdv']:,.0f}\n"
+                    f"<b>Targets:</b> 2x, 5x, 10x\n"
+                    f"<b>TX:</b> {tx_sig[:16]}..."
+                )
+
+                self.logger.info(f"[Pastel Melon] BUY {signal['ticker']}: {tokens_received:,.2f} @ ${fill_price:.8f}")
+
+            except Exception as e:
+                self.logger.error(f"[Pastel Melon] Failed to buy {signal['ticker']}: {e}")
+                self.notifier.send_error_alert(f"[Pastel Melon] BUY {signal['ticker']} failed: {str(e)}", None)
+                strategy.clear_signal(address)
+
+        # Check exit targets for active positions
+        active_positions = strategy.get_active_positions()
+
+        for address, position in active_positions.items():
+            try:
+                # Get current price
+                current_price = self.solana_client.get_price(address)
+                token_info = self.solana_client.get_token_info(address)
+
+                # Check if token is dead
+                if strategy.check_dead_token(address, token_info['fdv'], token_info['liquidity']):
+                    self.notifier.send_message(
+                        f"💀 <b>[MELON] TOKEN DEAD: {position['ticker']}</b>\n\n"
+                        f"<b>Entry:</b> ${position['entry_price']:.8f}\n"
+                        f"<b>Spent:</b> ${position['usdc_spent']:,.0f}\n"
+                        f"<b>Liquidity:</b> ${token_info['liquidity']:.0f}"
+                    )
+                    continue
+
+                # Check which tranches to sell
+                tranches_to_sell = strategy.check_exit_targets(address, current_price)
+
+                for tranche in tranches_to_sell:
+                    target = tranche['target_multiple']
+                    size = tranche['size']
+
+                    self.logger.info(f"[Pastel Melon] Selling tranche {target}x for {position['ticker']}")
+
+                    try:
+                        tx_sig, sell_price, usdc_received = self.solana_client.sell_token(
+                            token_address=address,
+                            token_amount=size
+                        )
+
+                        # Record the exit
+                        strategy.record_tranche_exit(
+                            address=address,
+                            target_multiple=target,
+                            sold_price=sell_price,
+                            usdc_received=usdc_received
+                        )
+
+                        # Calculate profit
+                        entry_value = size * position['entry_price']
+                        profit_usd = usdc_received - entry_value
+                        profit_pct = (profit_usd / entry_value) * 100 if entry_value > 0 else 0
+
+                        emoji = "🟢" if profit_pct >= 0 else "🔴"
+                        self.notifier.send_message(
+                            f"{emoji} <b>[MELON] {target}x EXIT {position['ticker']}</b>\n\n"
+                            f"<b>Entry:</b> ${position['entry_price']:.8f}\n"
+                            f"<b>Exit:</b> ${sell_price:.8f}\n"
+                            f"<b>Size:</b> {size:,.2f} tokens\n"
+                            f"<b>Received:</b> ${usdc_received:,.2f}\n"
+                            f"<b>P&L:</b> {profit_pct:+.1f}% (${profit_usd:+,.2f})"
+                        )
+
+                        self.logger.info(f"[Pastel Melon] EXIT {position['ticker']} tranche {target}x: ${sell_price:.8f} (+{profit_pct:.1f}%)")
+
+                    except Exception as e:
+                        self.logger.error(f"[Pastel Melon] Failed to sell tranche {target}x for {position['ticker']}: {e}")
+                        self.notifier.send_error_alert(
+                            f"[Pastel Melon] SELL {position['ticker']} {target}x failed: {str(e)}", None
+                        )
+
+            except Exception as e:
+                self.logger.error(f"[Pastel Melon] Error checking position {address}: {e}")
 
     def _handle_strategy_entry(self, strategy_name: str, strategy, current_price: float, current_time: datetime):
         """
@@ -588,9 +780,13 @@ class TradingBot:
             if 'bh' in enabled_strategies and 'bh' in self.strategies:
                 self._handle_bh_strategy(current_time)
 
-            # Process each enabled strategy (except BH which is handled above)
+            # Handle Pastel Melon strategy specially (if enabled) - it trades on Solana DEX
+            if 'pastel_melon' in enabled_strategies and 'pastel_melon' in self.strategies:
+                self._handle_melon_strategy(current_time)
+
+            # Process each enabled strategy (except BH and Pastel Melon which are handled above)
             for strategy_name in enabled_strategies:
-                if strategy_name == 'bh':
+                if strategy_name in ('bh', 'pastel_melon'):
                     continue  # Handled above
 
                 if strategy_name not in self.strategies:
@@ -605,8 +801,8 @@ class TradingBot:
                 else:
                     self._handle_strategy_entry(strategy_name, strategy, current_price, current_time)
 
-            # Send heartbeat
-            self._send_heartbeat(current_price)
+            # Heartbeat disabled - only send alerts on entries/exits/errors
+            # self._send_heartbeat(current_price)
 
         except Exception as e:
             self.logger.error(f"ERROR in loop iteration: {e}", exc_info=True)

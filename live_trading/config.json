@@ -37,7 +37,29 @@
         "tracked_assets": ["BTC", "ETH", "SOL", "HYPE"],
         "poll_interval_seconds": 30
       }
+    },
+    "pastel_melon": {
+      "enabled": false,
+      "allocated_capital_usd": 200,
+      "description": "Pastel Melon - Solana memecoin calls",
+      "params": {
+        "clickhouse_host": "ch.ops.xexlab.com",
+        "clickhouse_port": 443,
+        "clickhouse_user": "dev_ado",
+        "clickhouse_database": "crush_ats",
+        "poll_interval_seconds": 10,
+        "price_check_interval_seconds": 10,
+        "tranche_targets": [2, 5, 10],
+        "tranche_sizes": [0.33, 0.33, 0.34],
+        "position_size_pct": 0.10,
+        "min_liquidity_usd": 10000
+      }
     }
+  },
+  "solana": {
+    "enabled": true,
+    "slippage_bps": 100,
+    "priority_fee_lamports": 100000
   },
   "exchange": {
     "symbol": "BTC",
