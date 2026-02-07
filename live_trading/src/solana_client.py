@@ -212,11 +212,37 @@ class SolanaDEXClient:
 
             if response.value:
                 for account in response.value:
-                    info = account.account.data.parsed.get('info', {})
-                    if info.get('mint') == self.USDC_MINT:
-                        # USDC has 6 decimals
-                        amount = float(info.get('tokenAmount', {}).get('uiAmount', 0) or 0)
-                        return amount
+                    # Handle both object and dict access patterns
+                    try:
+                        # Try object attribute access first
+                        data = account.account.data
+                        if hasattr(data, 'parsed'):
+                            parsed = data.parsed
+                        else:
+                            parsed = data.get('parsed', {})
+
+                        if isinstance(parsed, dict):
+                            info = parsed.get('info', {})
+                        else:
+                            info = getattr(parsed, 'info', {})
+                            if not isinstance(info, dict):
+                                info = {}
+
+                        if info.get('mint') == self.USDC_MINT:
+                            token_amount = info.get('tokenAmount', {})
+                            amount = float(token_amount.get('uiAmount', 0) or 0)
+                            return amount
+                    except (AttributeError, TypeError):
+                        # Fallback: try pure dict access
+                        try:
+                            acc_data = account.get('account', {}).get('data', {})
+                            parsed = acc_data.get('parsed', {})
+                            info = parsed.get('info', {})
+                            if info.get('mint') == self.USDC_MINT:
+                                amount = float(info.get('tokenAmount', {}).get('uiAmount', 0) or 0)
+                                return amount
+                        except:
+                            pass
 
             return 0.0
 
@@ -241,11 +267,28 @@ class SolanaDEXClient:
 
             if response.value:
                 for account in response.value:
-                    info = account.account.data.parsed.get('info', {})
-                    if info.get('mint') == token_address:
-                        ui_amount = float(info.get('tokenAmount', {}).get('uiAmount', 0) or 0)
-                        raw_amount = int(info.get('tokenAmount', {}).get('amount', 0) or 0)
-                        return (ui_amount, raw_amount)
+                    try:
+                        # Handle both object and dict access patterns
+                        data = account.account.data
+                        if hasattr(data, 'parsed'):
+                            parsed = data.parsed
+                        else:
+                            parsed = data.get('parsed', {})
+
+                        if isinstance(parsed, dict):
+                            info = parsed.get('info', {})
+                        else:
+                            info = getattr(parsed, 'info', {})
+                            if not isinstance(info, dict):
+                                info = {}
+
+                        if info.get('mint') == token_address:
+                            token_amount = info.get('tokenAmount', {})
+                            ui_amount = float(token_amount.get('uiAmount', 0) or 0)
+                            raw_amount = int(token_amount.get('amount', 0) or 0)
+                            return (ui_amount, raw_amount)
+                    except (AttributeError, TypeError):
+                        pass
 
             return (0.0, 0)
 
