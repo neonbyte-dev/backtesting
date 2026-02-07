@@ -753,14 +753,26 @@ Send /help for all commands."""
         }
 
         try:
-            balance = self.bot.exchange.get_account_balance()
-            allocated = self.bot.state_manager.get_total_allocated_capital()
-            available = balance - allocated
+            # Pastel Melon uses Solana wallet, others use HyperLiquid
+            if strategy_name == 'pastel_melon' and self.bot.solana_client:
+                usdc_balance = self.bot.solana_client.get_usdc_balance()
+                sol_balance = self.bot.solana_client.get_sol_balance()
 
-            msg = f"💵 <b>DEPLOY {strategy_name.upper()}</b>\n\n"
-            msg += f"<b>Available Balance:</b> ${available:,.0f}\n\n"
-            msg += f"Enter the amount of capital to allocate:\n\n"
-            msg += f"<i>Example: 50000</i>"
+                msg = f"🍈 <b>DEPLOY {strategy_name.upper()}</b>\n\n"
+                msg += f"<b>Solana Wallet:</b>\n"
+                msg += f"  USDC: ${usdc_balance:,.2f}\n"
+                msg += f"  SOL: {sol_balance:.4f} (for fees)\n\n"
+                msg += f"Enter USDC amount to allocate:\n\n"
+                msg += f"<i>Example: 200</i>"
+            else:
+                balance = self.bot.exchange.get_account_balance()
+                allocated = self.bot.state_manager.get_total_allocated_capital()
+                available = balance - allocated
+
+                msg = f"💵 <b>DEPLOY {strategy_name.upper()}</b>\n\n"
+                msg += f"<b>Available Balance:</b> ${available:,.0f}\n\n"
+                msg += f"Enter the amount of capital to allocate:\n\n"
+                msg += f"<i>Example: 50000</i>"
 
             # Cancel button
             keyboard = {
@@ -784,19 +796,33 @@ Send /help for all commands."""
         }
 
         try:
-            balance = self.bot.exchange.get_account_balance()
             current_capital = self.bot.state_manager.get_strategy_capital(strategy_name)
-            total_allocated = self.bot.state_manager.get_total_allocated_capital()
-            other_allocated = total_allocated - current_capital
-            available = balance - other_allocated
 
-            msg = f"💰 <b>REALLOCATE {strategy_name.upper()}</b>\n\n"
-            msg += f"<b>Current Allocation:</b> ${current_capital:,.0f}\n"
-            msg += f"<b>Account Balance:</b> ${balance:,.0f}\n"
-            msg += f"<b>Other Strategies:</b> ${other_allocated:,.0f}\n"
-            msg += f"<b>Max Available:</b> ${available:,.0f}\n\n"
-            msg += f"Enter the new capital amount:\n\n"
-            msg += f"<i>Example: {int(available)}</i>"
+            # Pastel Melon uses Solana wallet, others use HyperLiquid
+            if strategy_name == 'pastel_melon' and self.bot.solana_client:
+                usdc_balance = self.bot.solana_client.get_usdc_balance()
+                sol_balance = self.bot.solana_client.get_sol_balance()
+
+                msg = f"🍈 <b>REALLOCATE {strategy_name.upper()}</b>\n\n"
+                msg += f"<b>Current Allocation:</b> ${current_capital:,.0f}\n"
+                msg += f"<b>Solana Wallet:</b>\n"
+                msg += f"  USDC: ${usdc_balance:,.2f}\n"
+                msg += f"  SOL: {sol_balance:.4f} (for fees)\n\n"
+                msg += f"Enter new USDC amount:\n\n"
+                msg += f"<i>Example: {int(usdc_balance)}</i>"
+            else:
+                balance = self.bot.exchange.get_account_balance()
+                total_allocated = self.bot.state_manager.get_total_allocated_capital()
+                other_allocated = total_allocated - current_capital
+                available = balance - other_allocated
+
+                msg = f"💰 <b>REALLOCATE {strategy_name.upper()}</b>\n\n"
+                msg += f"<b>Current Allocation:</b> ${current_capital:,.0f}\n"
+                msg += f"<b>Account Balance:</b> ${balance:,.0f}\n"
+                msg += f"<b>Other Strategies:</b> ${other_allocated:,.0f}\n"
+                msg += f"<b>Max Available:</b> ${available:,.0f}\n\n"
+                msg += f"Enter the new capital amount:\n\n"
+                msg += f"<i>Example: {int(available)}</i>"
 
             keyboard = {
                 "inline_keyboard": [[{
