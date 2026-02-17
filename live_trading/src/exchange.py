@@ -73,6 +73,12 @@ class HyperLiquidClient:
         self._sz_decimals = {}
         self._load_asset_metadata()
 
+        # Price cache - avoids hitting all_mids() multiple times per loop iteration
+        # Cache lasts 30 seconds, which covers a full 5-minute loop's price lookups
+        self._price_cache = {}       # {asset: price}
+        self._price_cache_time = 0   # timestamp of last fetch
+        self._price_cache_ttl = 30   # seconds before cache expires
+
     def _load_asset_metadata(self):
         """
         Fetch asset metadata from HyperLiquid (szDecimals for each asset).
@@ -154,8 +160,8 @@ class HyperLiquidClient:
                     # Rate limits get MORE attempts (up to 5 total)
                     max_rate_limit_attempts = 5
                     if attempt < max_rate_limit_attempts - 1:
-                        # Longer backoff: 60s, 120s, 180s, 240s
-                        sleep_time = 60 + (60 * attempt)
+                        # Backoff: 10s, 20s, 30s, 40s (enough for CloudFront to cool down)
+                        sleep_time = 10 + (10 * attempt)
                         print(f"Rate limited (429), waiting {sleep_time}s before retry {attempt + 2}/{max_rate_limit_attempts}...")
                         time.sleep(sleep_time)
                         continue
@@ -185,29 +191,34 @@ class HyperLiquidClient:
 
     def get_price(self, asset: str = 'BTC') -> float:
         """
-        Get current market price for any asset
+        Get current market price for any asset.
+
+        Uses a 30-second cache so multiple price lookups within the same
+        bot loop iteration reuse one API call instead of hammering all_mids().
 
         Args:
             asset: Asset symbol (e.g., 'BTC', 'ETH', 'SOL')
 
         Returns:
             Current price in USDC
-
-        Example:
-            >>> price = client.get_price('ETH')
-            >>> print(f"ETH: ${price:,.2f}")
-            ETH: $3,432.50
         """
-        def fetch_price():
-            # Get all mid prices
+        now = time.time()
+
+        # Return cached price if fresh enough
+        if asset in self._price_cache and (now - self._price_cache_time) < self._price_cache_ttl:
+            return self._price_cache[asset]
+
+        def fetch_all_prices():
             all_mids = self.info.all_mids()
-            if asset in all_mids:
-                return float(all_mids[asset])
-            else:
+            if asset not in all_mids:
                 raise Exception(f"{asset} price not found in response: {list(all_mids.keys())[:10]}")
+            # Cache ALL prices from this single API call
+            self._price_cache = {k: float(v) for k, v in all_mids.items()}
+            self._price_cache_time = time.time()
+            return self._price_cache[asset]
 
         try:
-            return self._retry_operation(fetch_price, f"Get {asset} price")
+            return self._retry_operation(fetch_all_prices, f"Get {asset} price")
         except Exception as e:
             raise Exception(f"Failed to get {asset} price: {str(e)}")
 
